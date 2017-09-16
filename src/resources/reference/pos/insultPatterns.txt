@@ -1,0 +1,4 @@
+t(my)A{1,3}b(while I)vt(your)A{1,3}d
+[V|t]P(my)A{1,3}b(or I'll)vt(your)A{1,2}[d|B]
+!(Where did you get that)A{1,3}[b|B](?)
+(Why don't you just come over here and)v?[V|t](my)A{1,2}[b|B](?)

@@ -1,0 +1,20 @@
+CIA	N
+FBI	N
+Afganistan	N
+Iran	N
+Iraq	N
+Obama	LN
+terrorist	N
+islamist	N
+Shiit	N
+Suni	N
+United States	NL
+USA	NL
+Putin	LN
+Democrat	LN
+Republican	LN
+ISIS	LN
+Nixon	LN
+Regan	LN
+Bush	LN
+Trump	LN
