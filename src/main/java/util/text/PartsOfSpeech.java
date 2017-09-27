@@ -271,16 +271,16 @@ public class PartsOfSpeech {
 		}
 		posFileReader.close();
 		
-		logger.info(nwords + " words analyzed " + aPosFile.getName());
-		logger.info(lwords + " loaded " + aPosFile.getName());
+		logger.debug(nwords + " words analyzed " + aPosFile.getName());
+		logger.debug(lwords + " loaded " + aPosFile.getName());
 		if(properWordsSkipped > 0)
-			logger.info(properWordsSkipped + " proper words skipped");
+			logger.debug(properWordsSkipped + " proper words skipped");
 		if(upperWordsSkipped > 0)
-			logger.info(upperWordsSkipped + " upper case words skipped");
+			logger.debug(upperWordsSkipped + " upper case words skipped");
 		if(numericWordsSkipped > 0)
-			logger.info(numericWordsSkipped + " numeric words skipped");
+			logger.debug(numericWordsSkipped + " numeric words skipped");
 		if(compoundWordsSkipped > 0)
-			logger.info(compoundWordsSkipped + " compound words skipped");
+			logger.debug(compoundWordsSkipped + " compound words skipped");
 	}
 
 	private int analyzeAndSaveWord(String line) {

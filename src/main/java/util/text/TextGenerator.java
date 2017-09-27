@@ -283,7 +283,7 @@ public class TextGenerator implements ITextGenerator {
 			boolean startOfSentence = true;
 			for(int i=0; i<len; i++){
 				String s = generatedList.get(i);
-				log.info("'" + s + "'");
+				log.debug("'" + s + "'");
 				int punctIndex = PUNCUTATION.indexOf(s);	// >=0 if the string is a single PUNCTUATION character
 				if(punctIndex >= 0) {
 					sb.append(s);

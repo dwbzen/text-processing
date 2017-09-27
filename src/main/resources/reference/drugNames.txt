@@ -1,4 +1,3 @@
-Prevnar
 Abilify
 Acanya
 Acetaminophen
@@ -6,7 +5,9 @@ Acyclovir
 Aczone
 Adcirca
 Adderall
+Adzenys
 Aggrenox
+Aliqopa
 Amiodarone
 Amitiza
 Amitriptyline
@@ -27,6 +28,7 @@ Benazepril
 Benicar
 Benzaclin
 Benzoyl
+Besponsa
 Betamethasone
 Bethkis
 Bisoprolol
@@ -38,6 +40,7 @@ Bupropion
 Butalbital
 Bystolic
 Calibration
+CaroSpir
 Cartia
 Carvedilol
 Cefdinir
@@ -64,6 +67,7 @@ Coreg
 Cosentyx
 Coumadin
 Crestor
+Cyltezo
 Cymbalta
 Desonide
 Dexmethylphenidate
@@ -77,6 +81,7 @@ Doxepin
 Doxycycline
 Duloxetine
 Dutoprol
+Duzallo
 Econazole
 Edarbi
 Edarbyclor
@@ -93,6 +98,7 @@ Estradiol
 Exforge
 Famciclovir
 Farxiga
+Faslodex
 Felodipine
 Fenofibrate
 Finacea
@@ -108,12 +114,15 @@ Gardasil
 Gemfibrozil
 Gender
 Gleevec
+Gocovri
 Guanfacine
 Harvoni
 Humira
 Hydralazine
 Hydrochlorothiazide
 Hydrocortisone
+Idhifa
+Imbruvica
 Intuniv
 Invokana
 Irbesartan
@@ -124,11 +133,13 @@ Jublia
 Ketoconazole
 Keytruda
 Kybella
+Kymriah
 Labetalol
 Latuda
 Letairis
 Letrozole
 Levofloxacin
+Liletta
 Linzess
 Lipitor
 Lisinopril
@@ -136,7 +147,9 @@ Livalo
 Losartan
 Lovastatin
 Lovaza
+Lynparza
 Lyrica
+Mavyret
 Methylphenidate
 Metoprolol
 Metrogel
@@ -149,6 +162,8 @@ Monohydrate
 Movantik
 Multiclix
 Mupirocin
+Mvasi
+Mylotarg
 Myrbetriq
 Nadolol
 Namenda
@@ -177,6 +192,7 @@ Phrenilin
 Pradaxa
 Praluent
 Pravastatin
+Prevnar
 Prior
 Pristiq
 Programs
@@ -198,6 +214,7 @@ Sildenafil
 Simcor
 Simvastatin
 Solodyn
+Solosec
 Sotalol
 Sovaldi
 Spironolactone
@@ -221,6 +238,7 @@ Torsemide
 Toujeo
 Tracleer
 Trazodone
+Trelegy Ellipta
 Tresiba
 Tretinoin
 Triamcinolone
@@ -231,6 +249,7 @@ Trintellix
 Triumeq
 Trivora
 Trulicity
+Vabomere
 Valacyclovir
 Valsartan
 Vascepa
@@ -242,12 +261,15 @@ Viberzi
 Victoza
 Viibryd
 Vitorin
+Vosevi
 Vytorin
 Vyvanse
+Vyxeos
 Warfarin
 Welchol
 Xarelto
 Xeljanz
+Xhance
 Xifaxan
 Xifaxan
 Zetia

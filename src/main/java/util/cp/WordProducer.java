@@ -1,6 +1,8 @@
 package util.cp;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -36,7 +38,7 @@ public class WordProducer implements IProducer<MarkovChain<Character, Word>, Wor
 	private int recycleSeedCount = 1;	// pick a new seed every recycleSeedNumber iterations
 	private int minimumLength = 4;	// doesn't save Words with fewer characters than this
 	private int count = 0;
-	
+	private Collection<Word> wordListChain = new ArrayList<Word>();	// in order generated
 	
 	public static WordProducer getWordProducer(int keylen, MarkovChain<Character, Word> cstatsMap, Word seed ) {
 		WordProducer producer = new WordProducer(keylen, cstatsMap);
@@ -59,6 +61,7 @@ public class WordProducer implements IProducer<MarkovChain<Character, Word>, Wor
 			if(word != null && word.toString().length() >= minimumLength) {
 				log.debug("adding: '" + word + "'");
 				generatedWords.add(word);
+				wordListChain.add(word);
 			}
 			if(reuseSeed) {
 				if(++recycleSeedCount <= recycleSeedNumber) {
@@ -100,7 +103,8 @@ public class WordProducer implements IProducer<MarkovChain<Character, Word>, Wor
 		 * This would indicate some kind of internal error so throw a RuntimeException
 		 */
 		if(cstats == null) {
-			throw new RuntimeException("getNextCharacter(): cstats null for nextSeed: " + nextSeed);
+			return Word.TERMINAL;
+			//throw new RuntimeException("getNextCharacter(): cstats null for nextSeed: " + nextSeed);
 		}
 
 		int occur = cstats.getTotalOccurrance();
@@ -218,6 +222,10 @@ public class WordProducer implements IProducer<MarkovChain<Character, Word>, Wor
 		return originalSeed;
 	}
 
+	public Collection<Word> getWordListChain() {
+		return this.wordListChain;
+	}
+	
 	protected void setOriginalSeed(Word originalSeed) {
 		this.originalSeed = originalSeed;
 	}
@@ -242,6 +250,7 @@ public class WordProducer implements IProducer<MarkovChain<Character, Word>, Wor
 		int keylen = 2;
 		int repeats = 1;	// number of times to run WordProducer
 		int minLength = 4;
+		boolean showOrderGenerated = false;
 		CharacterCollector collector = null;
 		
 		for(int i=0; i<args.length; i++) {
@@ -278,6 +287,9 @@ public class WordProducer implements IProducer<MarkovChain<Character, Word>, Wor
 			else if(args[i].equalsIgnoreCase("-reuse")) {
 				reuse = true;
 			}
+			else if(args[i].startsWith("-list")) {
+				showOrderGenerated = true;
+			}
 			else {
 				text = args[i];
 			}
@@ -306,7 +318,9 @@ public class WordProducer implements IProducer<MarkovChain<Character, Word>, Wor
 			producer.setStatisticalPick(statistical);
 			producer.setMinimumWordLength(minLength);
 			Set<Word> words = producer.produce();
-			for(Word word : words) {
+			Collection<Word> wordCollection = showOrderGenerated ?  producer.getWordListChain() : words;
+			
+			for(Word word : wordCollection) {
 				System.out.println(word.toString().trim());
 			}
 		}

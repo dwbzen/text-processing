@@ -67,7 +67,7 @@ public class CharacterCollector implements ICollector<Word, MarkovChain<Characte
 
 	@Override
 	public void accept(Sentence sentence) {
-		log.info("accept sentence: " + sentence);
+		log.debug("accept sentence: " + sentence);
 		Word word = null;
 		while((word = sentence.get()) != null) {
 			apply(word);

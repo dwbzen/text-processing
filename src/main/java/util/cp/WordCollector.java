@@ -96,7 +96,7 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 	
 	@Override
 	public void accept(Book sourceBook) {
-		log.info("accept book");
+		log.debug("accept book");
 		Sentence sentence = null;
 		while((sentence = sourceBook.get())  != null ) {
 			apply(sentence);
