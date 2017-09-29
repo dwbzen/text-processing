@@ -1,21 +1,23 @@
 package util.cp;
 
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
  * A TreeMap bound to a base class K and some class T that is a List<K>
- * For example, K : HarmonyChord, T : ChordProgression (which implements List<HarmonyChord>
+ * Some examples, 
+ * K : HarmonyChord, T : ChordProgression (which implements List<HarmonyChord>
  * K : Character, T : Word (implements List<Character>)
- * K : Word, T : Sentence
+ * K : Word, T : Sentence (implements List<Word> )
+ * 
  * A Comparator must be provided so it knows how to order the elements in the TreeMap.
  * @author don_bacon
  *
@@ -36,6 +38,9 @@ public class CollectorStatsMap<K, T extends List<K>> extends TreeMap<T, Collecto
 		super(comparator);
 	}
 	
+	/**
+	 * @return T seed
+	 */
 	public T pickSeed() {
 		T seed = null;
 		CollectorStats<K,T> cstats = null;
@@ -49,23 +54,18 @@ public class CollectorStatsMap<K, T extends List<K>> extends TreeMap<T, Collecto
 	
 	/**
 	 * Selects a random T seed
-	 * @return
+	 * @return T seed
 	 */
-	public T pickCandidateSeed() {
-		T seed = null;
+	protected T pickCandidateSeed() {
 		Set<T> keys = keySet();
-		Iterator<T>   keysIt = keys.iterator();
 		ThreadLocalRandom random = ThreadLocalRandom.current();
-		int totalAll = keys.size();
-		int randomIndex = random.nextInt(0, totalAll);
-		int i = 0;
-		while(keysIt.hasNext() && randomIndex >= i++) {
-			seed = keysIt.next();
-		}
+		int index = random.nextInt(0, keys.size());
+		T seed = keys.stream().collect(Collectors.toList()).get(index);
+
 		log.debug("picked candidate seed: '" + seed + "'");
 		return seed;
 	}
-	
+
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
 		for(T key : this.keySet()) {

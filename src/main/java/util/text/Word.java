@@ -16,7 +16,8 @@ public class Word extends ArrayList<Character> implements Comparable<Word>, List
 
 	private static final long serialVersionUID = 7157404340284643268L;
 	private StringBuffer wordString = new StringBuffer();
-	static Character DELIM = new Character(' ');
+	public static Character DELIM_CHARACTER = new Character(' ');
+	public static String DELIM_STRING = String.valueOf(DELIM_CHARACTER);
 	
 	/** 0xB6 Used to represent a Terminal state in a Markov Chain */
 	public static Character TERMINAL = new Character('¶');
@@ -114,11 +115,11 @@ public class Word extends ArrayList<Character> implements Comparable<Word>, List
 	public Word trim() {
 		wordString = new StringBuffer();
 		stream().filter(c -> c != ' ').forEach(c -> wordString.append(c) );
-		while(remove(DELIM)) { remove(DELIM); }
+		while(remove(DELIM_CHARACTER)) { remove(DELIM_CHARACTER); }
 		return this;
 	}
 	public static Character getDelimiter() {
-		return DELIM;
+		return DELIM_CHARACTER;
 	}
 	
 	public Character getTerminal() {

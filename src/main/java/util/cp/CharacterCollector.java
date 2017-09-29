@@ -76,7 +76,7 @@ public class CharacterCollector implements ICollector<Word, MarkovChain<Characte
 
 	@Override
 	public MarkovChain<Character, Word> apply(Word theWord) {
-		Word word = new Word(" ",theWord);	// space is the word delimiter
+		Word word = new Word(Word.DELIM_STRING, theWord);	// space is the word delimiter
 		Word subset = null;
 		Character nextChar = null;
 		log.debug("word: '" + word + "'");

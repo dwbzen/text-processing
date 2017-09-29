@@ -15,7 +15,7 @@ import org.apache.logging.log4j.Logger;
 import util.text.Word;
 
 /**
- * Produces made-up Words based on the CollectorStats output from a CharacterCollector.
+ * Produces made-up Words based on the MarkovChain result from a CharacterCollector.
  * 
  * @author don_bacon
  *
@@ -32,11 +32,10 @@ public class WordProducer implements IProducer<MarkovChain<Character, Word>, Wor
 	private ThreadLocalRandom random = ThreadLocalRandom.current();
 	private boolean sortedResult = false;
 	private boolean ignoreCase = true;
-	private boolean reuseSeed = false;
 	private boolean statisticalPick = true;
 	private int recycleSeedNumber = 1;	
-	private int recycleSeedCount = 1;	// pick a new seed every recycleSeedNumber iterations
-	private int minimumLength = 4;	// doesn't save Words with fewer characters than this
+	private int recycleSeedCount = 0;	// pick a new seed every recycleSeedNumber iterations
+	private int minimumLength = 4;		// doesn't save Words with fewer characters than this
 	private int count = 0;
 	private Collection<Word> wordListChain = new ArrayList<Word>();	// in order generated
 	
@@ -63,19 +62,14 @@ public class WordProducer implements IProducer<MarkovChain<Character, Word>, Wor
 				generatedWords.add(word);
 				wordListChain.add(word);
 			}
-			if(reuseSeed) {
-				if(++recycleSeedCount <= recycleSeedNumber) {
-					nextSeed = seed;
-				}
-				else {
-					seed =  markovChain.pickSeed();
-					nextSeed = seed;
-					recycleSeedCount = 0;
-				}
+			if(++recycleSeedCount < recycleSeedNumber) {
+				// reuse the current seed
+				nextSeed = seed;
 			}
 			else {
-				seed = markovChain.pickSeed();	// need a new seed for next iteration
+				seed = markovChain.pickSeed();
 				nextSeed = seed;
+				recycleSeedCount = 0;
 			}
 		}
 		return generatedWords;
@@ -178,14 +172,6 @@ public class WordProducer implements IProducer<MarkovChain<Character, Word>, Wor
 		return markovChain;
 	}
 
-	public boolean isReuseSeed() {
-		return reuseSeed;
-	}
-
-	public void setReuseSeed(boolean reuseSeed) {
-		this.reuseSeed = reuseSeed;
-	}
-
 	public Word getNextSeed() {
 		return nextSeed;
 	}
@@ -244,9 +230,8 @@ public class WordProducer implements IProducer<MarkovChain<Character, Word>, Wor
 		String text = null;
 		boolean ignoreCase = false;
 		boolean sort = false;
-		boolean reuse = false;
 		boolean statistical = true;
-		int recycleSeedNumber = 10;
+		int recycleSeedNumber = 1;		// how often to pick a new seed.
 		int keylen = 2;
 		int repeats = 1;	// number of times to run WordProducer
 		int minLength = 4;
@@ -284,9 +269,6 @@ public class WordProducer implements IProducer<MarkovChain<Character, Word>, Wor
 			else if(args[i].startsWith("-statis")) {
 				statistical = args[++i].equalsIgnoreCase("Y");
 			}
-			else if(args[i].equalsIgnoreCase("-reuse")) {
-				reuse = true;
-			}
 			else if(args[i].startsWith("-list")) {
 				showOrderGenerated = true;
 			}
@@ -302,8 +284,6 @@ public class WordProducer implements IProducer<MarkovChain<Character, Word>, Wor
 		}
 		collector.collect();
 		MarkovChain<Character, Word> markovChain = collector.getMarkovChain();
-		//cstatsMap.display();
-		//cstatsMap.displaySummaryMap();
 		if(seed == null) {
 			seed = markovChain.pickSeed();
 		}
@@ -313,7 +293,6 @@ public class WordProducer implements IProducer<MarkovChain<Character, Word>, Wor
 			WordProducer producer = WordProducer.getWordProducer(keylen, markovChain, seed);
 			producer.setSortedResult(sort);
 			producer.setNumberOfWords(num);
-			producer.setReuseSeed(reuse);
 			producer.setRecycleSeedNumber(recycleSeedNumber);
 			producer.setStatisticalPick(statistical);
 			producer.setMinimumWordLength(minLength);
