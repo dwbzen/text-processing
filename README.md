@@ -5,3 +5,6 @@ Generates random text, using
 * Markov chains for creating
 	* words
 	* sentences
+
+Jackson integration for JSON.
+
