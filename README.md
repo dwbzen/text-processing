@@ -5,3 +5,4 @@ Generates random text, using
 * Markov chains for creating
 	* words
 	* sentences
+Temporary branch for experimenting
