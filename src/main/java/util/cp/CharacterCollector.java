@@ -14,6 +14,31 @@ import util.text.Word;
 /**
  * Collects statistics on Characters within Words
  * The corresponding producer is WordProducer.
+ * CharacterCollector implements the following functional interfaces through ICollector:
+ * 	Function<Word, MarkovChain<Character, Word>> : apply(Word w) takes Word input, produces MarkovChain result
+ * 	Consumer<Sentence>  : accept(Sentence s) consumes Sentence(s) to create the MarkovChain
+ * 
+ * The resulting MarkovChain (CollectorStatsMap) uses 2 special characters to indicate terminal and null values.
+ * For example the testWordSample.txt has 5 Sentences (in this example each Sentence is a single Word)
+ 	DON
+	DONALD
+	DONNA
+	ALDO
+	NEDA
+ * The resulting MarkovChain includes the following which can be verified by inspecting the data.
+ * 		'ALD'	2
+ * 		'O'	1	1,1		0.5
+ * 		'¶'	1	2,2		0.5
+ * The key "ALD" occurs twice (DONALD and ALDO)
+ * it is followed by an 'O' once (in ALDO), and by a logical end of word (the TERMINAL '¶') in DONALD
+ * 
+ * 		'DA¶'	1
+ *		 '§'	1	1,1		1.0
+ * The key 'DA¶' occurs once in NEDA (it ends in "DA")
+ * As is evident from the data, there is no Word where DA is followed by a Character.
+ * This is indicated by the stand-in Character value for null '§'
+ * Running the CharacterCollector on the sample in trace mode shows how the data is processed.
+ * 
  * 
  * @author don_bacon
  *
@@ -24,6 +49,7 @@ public class CharacterCollector implements ICollector<Word, MarkovChain<Characte
 	private int keylen; 
 	private String fileName = null;
 	private String text = null;
+	private boolean trace = false;
 	private MarkovChain<Character, Word> markovChain = new MarkovChain<Character, Word>(null);
 	private static TextFileReader reader = null;
 	
@@ -79,7 +105,7 @@ public class CharacterCollector implements ICollector<Word, MarkovChain<Characte
 		Word word = new Word(Word.DELIM_STRING, theWord);	// space is the word delimiter
 		Word subset = null;
 		Character nextChar = null;
-		log.debug("word: '" + word + "'");
+		logMessage("apply(word): '" + word + "'");
 		int numberOfTokens = word.size();
 		int lim = numberOfTokens - keylen + 1;
 		for(int i=0; i< lim; i++) {
@@ -87,7 +113,7 @@ public class CharacterCollector implements ICollector<Word, MarkovChain<Characte
 			if(index <= numberOfTokens) {		// don't run off the end of the List
 				subset = word.subset(i, index);
 				nextChar = (index == numberOfTokens) ? Word.TERMINAL : word.get(i+keylen);
-				log.debug("  subset: '" + subset + "' next char: '" + nextChar + "'");
+				logMessage("  subset: '" + subset + "' next char: '" + nextChar + "'");
 				addOccurrence(subset, nextChar);
 			}
 		}
@@ -143,11 +169,29 @@ public class CharacterCollector implements ICollector<Word, MarkovChain<Characte
 		return fileName;
 	}
 	
+	public boolean isTrace() {
+		return trace;
+	}
+
+	public void setTrace(boolean trace) {
+		this.trace = trace;
+		markovChain.setTrace(trace);
+	}
+	
+	private void logMessage(String text) {
+		log.debug(text);
+		if(trace) {
+			System.out.println(text);
+		}
+	}
+
 	public static void main(String...args) throws IOException {
 		String filename = null;
 		String text = null;
 		int keylen = 2;
 		boolean ignoreCase = false;
+		boolean trace = false;
+		
 		for(int i=0; i<args.length; i++) {
 			if(args[i].equalsIgnoreCase("-file")) {
 				filename = args[++i];
@@ -158,6 +202,9 @@ public class CharacterCollector implements ICollector<Word, MarkovChain<Characte
 			else if(args[i].equalsIgnoreCase("-keylen")) {
 				keylen = Integer.parseInt(args[++i]);
 			}
+			else if(args[i].equalsIgnoreCase("-trace")) {
+				trace = true;
+			}
 			else {
 				text = args[i];
 			}
@@ -166,6 +213,7 @@ public class CharacterCollector implements ICollector<Word, MarkovChain<Characte
 		if(filename == null) {
 			collector.setText(text);
 		}
+		collector.setTrace(trace);
 		collector.collect();
 		MarkovChain<Character, Word> markovChain = collector.getMarkovChain();
 		markovChain.display();

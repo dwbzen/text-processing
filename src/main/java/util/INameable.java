@@ -3,7 +3,7 @@ package util;
 
 /**
  * Predictably enough, something that has a name.
- * @author DBacon
+ * @author don_bacon
  *
  */
 public interface INameable  {

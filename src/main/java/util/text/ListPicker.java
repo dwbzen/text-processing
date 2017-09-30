@@ -13,7 +13,7 @@ import util.RandomGenerator;
 
 /**
  * Picks 1 or more items from a list stored in a text file
- * @author dbacon
+ * @author don_bacon
  *
  */
 public class ListPicker {

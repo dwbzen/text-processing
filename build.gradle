@@ -28,6 +28,18 @@ description = "Text Processing Framework"
 
 repositories {
      maven { url "http://repo.maven.apache.org/maven2" }
+     mavenLocal()
+     flatDir {
+        name "jarRepository"
+        dirs "lib"
+    }
+}
+
+uploadArchives {
+		repositories {
+			add project.repositories.jarRepository
+			mavenLocal()
+		}
 }
 
 dependencies {

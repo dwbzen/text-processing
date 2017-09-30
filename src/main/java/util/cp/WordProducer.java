@@ -16,7 +16,27 @@ import util.text.Word;
 
 /**
  * Produces made-up Words based on the MarkovChain result from a CharacterCollector.
+ * Command Line Arguments:
+ * 	-seed <text>		Initial seed to use
+ *  -keylen	n			Length of the seed, used when picking a seed from the Markov Chain.
+ *  					This is set from -seed if one is provided
+ *  -file <filename>	Text file containing source Words, used to create the MarkovChain for generation.
+ *  					If not provided, source is taken from the command line
+ *  -num n				Number of Words to produce
+ *  -min n				Minimum work length, default is 4 characters
+ *  -recycle n			How often to pick a new seed, default is after each produced word
+ *  -ignoreCase			Ignores case (converts input to lower)
+ *  -repeat n			#times to run the producer - each run produces <num> Words
+ *  -sort				Sort the output.
+ *  -list				Display produce Words in order produced
+ *  -trace				Follow the action on seed picking. Sets trace mode on CharacterCollector
+ *  
+ *  
+ * If you wanted to use the same seed, for example " KA" for womens names, specify -recycle number
+ * to be > number of words to produce (-num) times #repeats (-repeat):
  * 
+ * -file "build\resources\main\reference\femaleFirstNames.txt" -num 50 -keylen 3  -list -seed " KA" -recycle 50
+ *  
  * @author don_bacon
  *
  */
@@ -94,11 +114,11 @@ public class WordProducer implements IProducer<MarkovChain<Character, Word>, Wor
 		CollectorStats<Character, Word> cstats = markovChain.get(nextSeed);
 		/*
 		 * it's impossible that nextSeed does not occur in collectorStatsMap
-		 * This would indicate some kind of internal error so throw a RuntimeException
+		 * This would indicate some kind of internal error so return a TERMINAL character and log an error
 		 */
 		if(cstats == null) {
+			log.error("No CollectorStats value for '" + nextSeed + "' returning TERMINAL");
 			return Word.TERMINAL;
-			//throw new RuntimeException("getNextCharacter(): cstats null for nextSeed: " + nextSeed);
 		}
 
 		int occur = cstats.getTotalOccurrance();
@@ -237,6 +257,7 @@ public class WordProducer implements IProducer<MarkovChain<Character, Word>, Wor
 		int minLength = 4;
 		boolean showOrderGenerated = false;
 		CharacterCollector collector = null;
+		boolean trace = false;
 		
 		for(int i=0; i<args.length; i++) {
 			if(args[i].equalsIgnoreCase("-file")) {
@@ -266,6 +287,9 @@ public class WordProducer implements IProducer<MarkovChain<Character, Word>, Wor
 			else if(args[i].equalsIgnoreCase("-sort")) {
 				sort = true;
 			}
+			else if(args[i].equalsIgnoreCase("-trace")) {
+				trace = true;
+			}
 			else if(args[i].startsWith("-statis")) {
 				statistical = args[++i].equalsIgnoreCase("Y");
 			}
@@ -282,6 +306,7 @@ public class WordProducer implements IProducer<MarkovChain<Character, Word>, Wor
 		if(filename == null) {
 			collector.setText(text);
 		}
+		collector.setTrace(trace);
 		collector.collect();
 		MarkovChain<Character, Word> markovChain = collector.getMarkovChain();
 		if(seed == null) {

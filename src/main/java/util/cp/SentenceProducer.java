@@ -27,10 +27,9 @@ public class SentenceProducer  implements IProducer<MarkovChain<Word, Sentence>,
 	private ThreadLocalRandom random = ThreadLocalRandom.current();
 	private boolean sortedResult = false;
 	private boolean ignoreCase = true;
-	private boolean reuseSeed = false;
 	private boolean statisticalPick = true;
 	private int recycleSeedNumber = 1;	
-	private int recycleSeedCount = 1;	// pick a new seed every recycleSeedNumber iterations
+	private int recycleSeedCount = 0;	// pick a new seed every recycleSeedNumber iterations
 	private int minimumLength = 2;	// doesn't save Sentences with fewer words than this
 	private int count = 0;
 
@@ -56,19 +55,14 @@ public class SentenceProducer  implements IProducer<MarkovChain<Word, Sentence>,
 				log.debug("adding: '" + sentence + "'");
 				generatedSentences.add(sentence);
 			}
-			if(reuseSeed) {
-				if(++recycleSeedCount <= recycleSeedNumber) {
-					nextSeed = seed;
-				}
-				else {
-					seed =  markovChain.pickSeed();
-					nextSeed = seed;
-					recycleSeedCount = 0;
-				}
+			if(++recycleSeedCount < recycleSeedNumber) {
+				// reuse the current seed
+				nextSeed = seed;
 			}
 			else {
-				seed = markovChain.pickSeed();	// need a new seed for next iteration
+				seed = markovChain.pickSeed();
 				nextSeed = seed;
+				recycleSeedCount = 0;
 			}
 		}
 		return generatedSentences;
@@ -201,15 +195,6 @@ public class SentenceProducer  implements IProducer<MarkovChain<Word, Sentence>,
 	public void setNextSeed(Sentence nextSeed) {
 		this.nextSeed = nextSeed;
 	}
-	
-	public boolean isReuseSeed() {
-		return reuseSeed;
-	}
-
-	public void setReuseSeed(boolean reuseSeed) {
-		this.reuseSeed = reuseSeed;
-	}
-
 
 	public int getNumberToGenerate() {
 		return numberToGenerate;
@@ -249,10 +234,9 @@ public class SentenceProducer  implements IProducer<MarkovChain<Word, Sentence>,
 		String text = null;
 		boolean ignoreCase = false;
 		boolean sort = false;
-		boolean reuse = false;
 		boolean statistical = true;
-		int recycleSeedNumber = 10;
-		boolean debug = false;
+		int recycleSeedNumber = 1;		// how often to pick a new seed.
+		boolean trace = false;
 		int keylen = 2;
 		String textType = null;
 		WordCollector collector = null;
@@ -263,8 +247,8 @@ public class SentenceProducer  implements IProducer<MarkovChain<Word, Sentence>,
 			if(args[i].equalsIgnoreCase("-file")) {
 				filename = args[++i];
 			}
-			else if(args[i].equalsIgnoreCase("-debug")) {
-				debug = true;
+			else if(args[i].equalsIgnoreCase("-trace")) {
+				trace = true;
 			}
 			else if(args[i].equalsIgnoreCase("-ignoreCase")) {
 				ignoreCase = true;
@@ -293,9 +277,6 @@ public class SentenceProducer  implements IProducer<MarkovChain<Word, Sentence>,
 			else if(args[i].startsWith("-statis")) {
 				statistical = args[++i].equalsIgnoreCase("Y");
 			}
-			else if(args[i].equalsIgnoreCase("-reuse")) {
-				reuse = true;
-			}
 			else if(args[i].equalsIgnoreCase("-type")) {
 				textType = args[++i];
 			}
@@ -312,7 +293,7 @@ public class SentenceProducer  implements IProducer<MarkovChain<Word, Sentence>,
 		}
 		collector.collect();
 		MarkovChain<Word, Sentence> markovChain = collector.getMarkovChain();
-		if(debug) {
+		if(trace) {
 			markovChain.display();
 			markovChain.displaySummaryMap();
 		}
@@ -325,7 +306,6 @@ public class SentenceProducer  implements IProducer<MarkovChain<Word, Sentence>,
 			SentenceProducer producer = SentenceProducer.getSentenceProducer(keylen, markovChain, seed);
 			producer.setSortedResult(sort);
 			producer.setNumberToGenerate(num);
-			producer.setReuseSeed(reuse);
 			producer.setRecycleSeedNumber(recycleSeedNumber);
 			producer.setStatisticalPick(statistical);
 			producer.setMinimumLength(minLength);

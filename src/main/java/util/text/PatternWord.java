@@ -10,7 +10,7 @@ import java.util.Random;
  * For example, "NN", "NNN", "NNNN", and "NNNNN" are all instances of N{2,5}
  * Inline (not-interpreted) text can also be included in patterns
  * For example. "[F|M](and)[F|M]"
- * @author dbacon
+ * @author don_bacon
  *
  */
 public class PatternWord {

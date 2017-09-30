@@ -28,6 +28,8 @@ public class CollectorStatsMap<K, T extends List<K>> extends TreeMap<T, Collecto
 
 	private static final long serialVersionUID = 4801227327750662977L;
 	private Map<T, Integer> summaryMap = null;
+	protected boolean trace = false;
+
 	protected static final Logger log = LogManager.getLogger(CollectorStatsMap.class);
 
 	/**
@@ -38,6 +40,14 @@ public class CollectorStatsMap<K, T extends List<K>> extends TreeMap<T, Collecto
 		super(comparator);
 	}
 	
+	public boolean isTrace() {
+		return trace;
+	}
+
+	public void setTrace(boolean trace) {
+		this.trace = trace;
+	}
+
 	/**
 	 * @return T seed
 	 */
@@ -48,7 +58,7 @@ public class CollectorStatsMap<K, T extends List<K>> extends TreeMap<T, Collecto
 			seed = pickCandidateSeed();
 			cstats = get(seed);
 		} while(cstats.isTerminal());
-		log.debug("picked seed: '" + seed + "'");
+		logMessage("picked seed: '" + seed + "'");
 		return seed;
 	}
 	
@@ -100,6 +110,13 @@ public class CollectorStatsMap<K, T extends List<K>> extends TreeMap<T, Collecto
 		for(T key : summaryMap.keySet()) {
 			Integer count = summaryMap.get(key);
 			System.out.println("'" + key + "'\t" + count);
+		}
+	}
+	
+	private void logMessage(String text) {
+		log.debug(text);
+		if(trace) {
+			System.out.println(text);
 		}
 	}
 }

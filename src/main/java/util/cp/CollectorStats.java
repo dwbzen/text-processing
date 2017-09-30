@@ -8,7 +8,7 @@ import java.util.TreeMap;
 
 /**
  * 
- * @author Don_Bacon
+ * @author don_Bacon
  *
  */
 public class CollectorStats<K, T extends List<K>> {

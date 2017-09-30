@@ -8,7 +8,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * Various utilities to generate sequences of random numbers
  * with or without replacement.
  * 
- * @author dbacon
+ * @author don_bacon
  *
  */
 public class RandomGenerator {
