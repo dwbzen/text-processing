@@ -6,5 +6,4 @@ Generates random text, using
 	* words
 	* sentences
 
-Jackson integration for JSON.
 
