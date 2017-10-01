@@ -25,7 +25,7 @@ import util.text.Book;
  * A Word consist of one or more word characters, 0 or more dashes, 0 or more single quotes.
  * i.e. Pattern [a-zA-Z_0-9-']
  *
- * @author bacond6
+ * @author don_bacon
  *
  */
 public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sentence>, Book> {

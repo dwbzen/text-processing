@@ -12,7 +12,7 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * Utilities for parts of speech files
- * @author dbacon
+ * @author don_bacon
  *
  */
 public class PartsOfSpeechHelper {

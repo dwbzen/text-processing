@@ -8,7 +8,7 @@ import java.util.Locale;
  * A BreakIterator for poetry/verse which may not follow the standard
  * sentence structure.
  * 
- * @author bacond6
+ * @author don_bacon
  *
  */
 public class VerseBreakIterator extends java.text.BreakIterator {

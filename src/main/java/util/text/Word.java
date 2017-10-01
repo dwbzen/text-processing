@@ -7,7 +7,7 @@ import java.util.function.IntConsumer;
 import util.cp.ICollectable;
 
 /**
- * A Word is really a String that has an underlying structure of List<Character>.
+ * A Word is a String that has an underlying structure of List<Character>.
  * 
  * @author don_bacon
  *
@@ -16,10 +16,11 @@ public class Word extends ArrayList<Character> implements Comparable<Word>, List
 
 	private static final long serialVersionUID = 7157404340284643268L;
 	private StringBuffer wordString = new StringBuffer();
+	
 	public static Character DELIM_CHARACTER = new Character(' ');
 	public static String DELIM_STRING = String.valueOf(DELIM_CHARACTER);
 	
-	/** 0xB6 Used to represent a Terminal state in a Markov Chain */
+	/** 0xB6 Used to represent a Terminal character */
 	public static Character TERMINAL = new Character('¶');
 	
 	/** 0xA7 Used to represent a NULL key in a Map - since it can't really be a null */

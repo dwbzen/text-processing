@@ -43,7 +43,7 @@ public class Book implements Supplier<Sentence>, Serializable {
 	
 	/**
 	 * the Book Type determines how Sentences are processed
-	 * @author bacond6
+	 * @author don_bacon
 	 *
 	 */
 	public static enum TYPE  {PROSE, VERSE, TECHNICAL };

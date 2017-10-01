@@ -35,7 +35,7 @@ import java.util.Set;
  * is also legal: (x){m,n}   (x){n} [(x)|(y)] etc.
  * A TextPattern has a Vocabulary of single characters.
  * 
- * @author dbacon
+ * @author don_bacon
  *
  */
 public abstract class TextPattern implements java.util.Iterator<PatternWord> {
