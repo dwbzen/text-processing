@@ -23,7 +23,7 @@ import util.text.Word;
  *  -file <filename>	Text file containing source Words, used to create the MarkovChain for generation.
  *  					If not provided, source is taken from the command line
  *  -num n				Number of Words to produce
- *  -min n				Minimum work length, default is 4 characters
+ *  -min n				Minimum word length, default is 4 characters
  *  -recycle n			How often to pick a new seed, default is after each produced word
  *  -ignoreCase			Ignores case (converts input to lower)
  *  -repeat n			#times to run the producer - each run produces <num> Words

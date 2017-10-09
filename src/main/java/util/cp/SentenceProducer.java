@@ -15,6 +15,23 @@ import util.text.Book.TYPE;
 import util.text.Sentence;
 import util.text.Word;
 
+/**
+ * Produces Sentences based on the MarkovChain result from a WordCollector.
+ * Command Line Arguments:
+ * 	-seed <text>		Initial seed to use
+ *  -keylen	n			Length of the seed, used when picking a seed from the Markov Chain.
+ *  					This is set from -seed if one is provided
+ *  -file <filename>	Text file containing source Words, used to create the MarkovChain for generation.
+ *  					If not provided, source is taken from the command line
+ *  -num n				Number of Sentences to produce
+ *  -minLength n		Minimum Sentence length, default is 2 Words
+ *  -recycle n			How often to pick a new seed, default is after each produced Sentence
+ *  -ignoreCase			Ignores case (converts input to lower)
+ *  -repeat n			#times to run the producer - each run produces <num> Sentences
+ *  -sort				sort the Sentences on output
+ *  -type				verse | prose | technical  - default is prose
+ *  -trace				Follow the action on seed picking. Sets trace mode on CharacterCollector
+ */
 public class SentenceProducer  implements IProducer<MarkovChain<Word, Sentence>, Sentence > {
 	
 	protected static final Logger log = LogManager.getLogger(SentenceProducer.class);
@@ -241,7 +258,8 @@ public class SentenceProducer  implements IProducer<MarkovChain<Word, Sentence>,
 		String textType = null;
 		WordCollector collector = null;
 		int repeats = 1;
-		int minLength = 2;
+		int minLength = 3;
+		boolean pretty = false;
 		
 		for(int i=0; i<args.length; i++) {
 			if(args[i].equalsIgnoreCase("-file")) {
@@ -280,13 +298,16 @@ public class SentenceProducer  implements IProducer<MarkovChain<Word, Sentence>,
 			else if(args[i].equalsIgnoreCase("-type")) {
 				textType = args[++i];
 			}
+			else if(args[i].equalsIgnoreCase("-pretty")) {
+				pretty = true;
+			}
 			else {
 				text = args[i];
 			}
 		}
 
 		Book.TYPE type = (textType != null && textType.equalsIgnoreCase("verse")) ? TYPE.VERSE : TYPE.PROSE;
-		// Run the CharacterCollector first
+		// Run the WordCollector first
 		collector = WordCollector.getWordCollector(keylen, filename, ignoreCase, type);
 		if(filename == null) {
 			collector.setText(text);
