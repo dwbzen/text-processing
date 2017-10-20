@@ -12,6 +12,10 @@ import java.util.concurrent.ThreadLocalRandom;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import mathlib.cp.CollectorStats;
+import mathlib.cp.CollectorStatsMap;
+import mathlib.cp.MarkovChain;
+import mathlib.cp.OccurrenceProbability;
 import util.text.Word;
 
 /**

@@ -7,6 +7,8 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import mathlib.cp.CollectorStats;
+import mathlib.cp.MarkovChain;
 import util.TextFileReader;
 import util.text.Sentence;
 import util.text.Word;
