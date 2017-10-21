@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.IntConsumer;
 
-import util.cp.ICollectable;
+import mathlib.cp.ICollectable;
 
 /**
  * A Word is a String that has an underlying structure of List<Character>.

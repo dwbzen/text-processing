@@ -14,6 +14,7 @@ import org.apache.logging.log4j.Logger;
 
 import mathlib.cp.CollectorStats;
 import mathlib.cp.CollectorStatsMap;
+import mathlib.cp.IProducer;
 import mathlib.cp.MarkovChain;
 import mathlib.cp.OccurrenceProbability;
 import util.text.Word;

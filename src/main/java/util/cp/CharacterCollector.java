@@ -9,6 +9,7 @@ import org.apache.logging.log4j.Logger;
 
 import mathlib.cp.CollectorStats;
 import mathlib.cp.MarkovChain;
+import mathlib.cp.ICollector;
 import util.TextFileReader;
 import util.text.Sentence;
 import util.text.Word;

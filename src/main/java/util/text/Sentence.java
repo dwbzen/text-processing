@@ -10,7 +10,7 @@ import java.util.function.Supplier;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import util.cp.ICollectable;
+import mathlib.cp.ICollectable;
 
 /**
  * A Sentence is a collection of Words separated by white space.
