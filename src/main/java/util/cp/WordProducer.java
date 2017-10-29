@@ -288,6 +288,7 @@ public class WordProducer implements IProducer<MarkovChain<Character, Word>, Wor
 			}
 			else if(args[i].equalsIgnoreCase("-seed")){
 				seed = new Word(args[++i]);
+				keylen = seed.size();
 			}
 			else if(args[i].equalsIgnoreCase("-sort")) {
 				sort = true;
@@ -317,7 +318,10 @@ public class WordProducer implements IProducer<MarkovChain<Character, Word>, Wor
 		if(seed == null) {
 			seed = markovChain.pickSeed();
 		}
-		
+		if(trace) {
+			markovChain.display();
+			markovChain.displaySummaryMap();
+		}
 		// Run the WordProducer on the results
 		for(int nr=1; nr<=repeats; nr++) {
 			WordProducer producer = WordProducer.getWordProducer(keylen, markovChain, seed);

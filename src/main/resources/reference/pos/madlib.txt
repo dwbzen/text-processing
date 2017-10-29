@@ -2,5 +2,8 @@
 // a pattern can be spread across multiple lines
 // lines ending with '+' indicate this
 //
-!(!)[(he)|(she)]x (as I) t (my) A{1,2}[b|B](.)+
-(That's no )[d|B](,) (that's my) A{1,2}[d|B](!)
+//!(!)[(he)|(she)]x (as I) t (my) A{1,2}[b|B](.)+
+//(That's no )[d|B](,) (that's my) A{1,2}[d|B](!)
+//
+!(!)[(he)|(she)]x (as I) t (my) A{1,2}[N|p](.)+
+(That's no )N(,) (that's my) A{1,2}[N|p](!)

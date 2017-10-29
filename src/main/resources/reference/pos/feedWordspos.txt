@@ -18,3 +18,11 @@ Nixon	LN
 Regan	LN
 Bush	LN
 Trump	LN
+Clinton	LN
+Bannon	LN
+Huckabee-Sanders	LN
+Russian	A
+American	A
+fascist	Np
+fake news	N
+
