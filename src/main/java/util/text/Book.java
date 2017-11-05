@@ -24,6 +24,7 @@ import util.TextFileReader;
  * Markup is <PROPERTY>:.... :
  * 
  * Everything else is book text. If no mark-up is used, all the text is treated equally.
+ * TODO: does not handle markup correctly - as written, workingText contains markup. Need to iterate over lines, not sections.
  * 
  * @author don_bacon
  *

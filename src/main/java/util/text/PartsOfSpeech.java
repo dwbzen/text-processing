@@ -29,6 +29,7 @@ import util.Configuration;
 	N	Noun
 	L   Proper noun (not tagged) - N and first letter upper case
 	l   Improper noun (not tagged) - N, p and first letter lower case
+	H	Place name (proper noun)
 	M   Male person first name
 	F   Female person first name
 	S   Surname (last names)
@@ -206,6 +207,7 @@ public class PartsOfSpeech {
 		partsOfSpeech.put("N", "Noun");
 		partsOfSpeech.put("L", "Proper Noun");
 		partsOfSpeech.put("M", "Male first name");
+		partsOfSpeech.put("H", "Place names");
 		partsOfSpeech.put("F", "Female first name");
 		partsOfSpeech.put("S", "Surname");
 		partsOfSpeech.put("l", "Improper Noun");
@@ -331,6 +333,7 @@ public class PartsOfSpeech {
 			case 'L':
 			case 'l':
 			case 'M':
+			case 'H':
 			case 'F':
 			case 'S':
 			case 'A':

@@ -23,7 +23,7 @@ import util.text.Word;
  * Produces made-up Words based on the MarkovChain result from a CharacterCollector.
  * Command Line Arguments:
  * 	-seed <text>		Initial seed to use
- *  -keylen	n			Length of the seed, used when picking a seed from the Markov Chain.
+ *  -order	n			Length of the seed, used when picking a seed from the Markov Chain.
  *  					This is set from -seed if one is provided
  *  -file <filename>	Text file containing source Words, used to create the MarkovChain for generation.
  *  					If not provided, source is taken from the command line
@@ -40,7 +40,7 @@ import util.text.Word;
  * If you wanted to use the same seed, for example " KA" for womens names, specify -recycle number
  * to be > number of words to produce (-num) times #repeats (-repeat):
  * 
- * -file "build\resources\main\reference\femaleFirstNames.txt" -num 50 -keylen 3  -list -seed " KA" -recycle 50
+ * -file "build\resources\main\reference\femaleFirstNames.txt" -num 50 -order 3  -list -seed " KA" -recycle 50
  *  
  * @author don_bacon
  *
@@ -52,7 +52,7 @@ public class WordProducer implements IProducer<MarkovChain<Character, Word>, Wor
 	private Word seed = null;
 	private Word originalSeed = null;
 	private Word nextSeed = null;
-	private int keylen;
+	private int order;
 	private MarkovChain<Character, Word> markovChain = null;
 	private ThreadLocalRandom random = ThreadLocalRandom.current();
 	private boolean sortedResult = false;
@@ -64,15 +64,15 @@ public class WordProducer implements IProducer<MarkovChain<Character, Word>, Wor
 	private int count = 0;
 	private Collection<Word> wordListChain = new ArrayList<Word>();	// in order generated
 	
-	public static WordProducer getWordProducer(int keylen, MarkovChain<Character, Word> cstatsMap, Word seed ) {
-		WordProducer producer = new WordProducer(keylen, cstatsMap);
+	public static WordProducer getWordProducer(int order, MarkovChain<Character, Word> cstatsMap, Word seed ) {
+		WordProducer producer = new WordProducer(order, cstatsMap);
 		producer.setSeed(seed);
 		producer.setOriginalSeed(seed);
 		return producer;
 	}
 	
-	protected WordProducer(int keylen, MarkovChain<Character, Word> cstatsMap ) {
-		this.keylen = keylen;
+	protected WordProducer(int order, MarkovChain<Character, Word> cstatsMap ) {
+		this.order = order;
 		this.markovChain = cstatsMap;
 	}
 	
@@ -169,12 +169,12 @@ public class WordProducer implements IProducer<MarkovChain<Character, Word>, Wor
 		this.seed = seed;
 	}
 
-	public int getKeylen() {
-		return keylen;
+	public int getOrder() {
+		return order;
 	}
 
-	public void setKeylen(int keylen) {
-		this.keylen = keylen;
+	public void setOrder(int order) {
+		this.order = order;
 	}
 
 	public boolean isSortedResult() {
@@ -257,7 +257,7 @@ public class WordProducer implements IProducer<MarkovChain<Character, Word>, Wor
 		boolean sort = false;
 		boolean statistical = true;
 		int recycleSeedNumber = 1;		// how often to pick a new seed.
-		int keylen = 2;
+		int order = 2;
 		int repeats = 1;	// number of times to run WordProducer
 		int minLength = 4;
 		boolean showOrderGenerated = false;
@@ -271,8 +271,8 @@ public class WordProducer implements IProducer<MarkovChain<Character, Word>, Wor
 			else if(args[i].equalsIgnoreCase("-ignoreCase")) {
 				ignoreCase = true;
 			}
-			else if(args[i].equalsIgnoreCase("-keylen")) {
-				keylen = Integer.parseInt(args[++i]);
+			else if(args[i].equalsIgnoreCase("-order")) {
+				order = Integer.parseInt(args[++i]);
 			}
 			else if(args[i].equalsIgnoreCase("-num")) {
 				num = Integer.parseInt(args[++i]);
@@ -288,7 +288,7 @@ public class WordProducer implements IProducer<MarkovChain<Character, Word>, Wor
 			}
 			else if(args[i].equalsIgnoreCase("-seed")){
 				seed = new Word(args[++i]);
-				keylen = seed.size();
+				order = seed.size();
 			}
 			else if(args[i].equalsIgnoreCase("-sort")) {
 				sort = true;
@@ -308,7 +308,7 @@ public class WordProducer implements IProducer<MarkovChain<Character, Word>, Wor
 		}
 
 		// Run the CharacterCollector first
-		collector = CharacterCollector.getCharacterCollector(keylen, filename, ignoreCase);
+		collector = CharacterCollector.getCharacterCollector(order, filename, ignoreCase);
 		if(filename == null) {
 			collector.setText(text);
 		}
@@ -324,7 +324,7 @@ public class WordProducer implements IProducer<MarkovChain<Character, Word>, Wor
 		}
 		// Run the WordProducer on the results
 		for(int nr=1; nr<=repeats; nr++) {
-			WordProducer producer = WordProducer.getWordProducer(keylen, markovChain, seed);
+			WordProducer producer = WordProducer.getWordProducer(order, markovChain, seed);
 			producer.setSortedResult(sort);
 			producer.setNumberOfWords(num);
 			producer.setRecycleSeedNumber(recycleSeedNumber);

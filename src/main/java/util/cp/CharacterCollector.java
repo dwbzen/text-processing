@@ -49,22 +49,23 @@ import util.text.Word;
 public class CharacterCollector implements ICollector<Word, MarkovChain<Character, Word>, Sentence> {
 	protected static final Logger log = LogManager.getLogger(CharacterCollector.class);
 	private boolean ignoreCase = true; 
-	private int keylen; 
+	private int order; 
 	private String fileName = null;
 	private String text = null;
 	private boolean trace = false;
-	private MarkovChain<Character, Word> markovChain = new MarkovChain<Character, Word>(null);
+	private MarkovChain<Character, Word> markovChain;
 	private static TextFileReader reader = null;
 	
 	/**
 	 * Factory method.
-	 * @param keylen length of the key in #of characters, usually 2 or 3
+	 * @param order length of the key in #of characters, usually 2 or 3
 	 * @param inputFile full path to the input file. Use null for STDIN
 	 * @param ignorecaseflag set to true to ignore case. This converts all input to lower case.
 	 * @return CharacterCollector instance
 	 */
-	public static CharacterCollector getCharacterCollector(int keylen, String inputFile, boolean ignorecaseflag) throws IOException {
-		CharacterCollector collector = new CharacterCollector(keylen, inputFile, ignorecaseflag);
+	public static CharacterCollector getCharacterCollector(int order, String inputFile, boolean ignorecaseflag) throws IOException {
+		CharacterCollector collector = new CharacterCollector(order, inputFile, ignorecaseflag);
+		collector.setMarkovChain(new MarkovChain<Character, Word>(order));
 		if(inputFile != null) {
 			reader = TextFileReader.getInstance(inputFile);
 			collector.setText( (ignorecaseflag?  
@@ -76,14 +77,14 @@ public class CharacterCollector implements ICollector<Word, MarkovChain<Characte
 	
 	/**
 	 * 
-	 * @param keylen length of the key in #of characters, usually 2 or 3
+	 * @param order length of the key in #of characters, usually 2 or 3
 	 * @param filename full path to the input file. Use null for STDIN
 	 * @param ignorecaseflag set to true to ignore case. This converts all input to lower case.
 	 * 
 	 * @throws FileNotFoundException
 	 */
-	protected CharacterCollector(int keylen, String filename, boolean ignorecaseflag) {
-		this.keylen = keylen;
+	protected CharacterCollector(int order, String filename, boolean ignorecaseflag) {
+		this.order = order;
 		this.fileName = filename;
 		this.ignoreCase = ignorecaseflag;
 	}
@@ -110,12 +111,12 @@ public class CharacterCollector implements ICollector<Word, MarkovChain<Characte
 		Character nextChar = null;
 		logMessage("apply(word): '" + word + "'");
 		int numberOfTokens = word.size();
-		int lim = numberOfTokens - keylen + 1;
+		int lim = numberOfTokens - order + 1;
 		for(int i=0; i< lim; i++) {
-			int index = i+keylen;
+			int index = i+order;
 			if(index <= numberOfTokens) {		// don't run off the end of the List
 				subset = word.subset(i, index);
-				nextChar = (index == numberOfTokens) ? Word.TERMINAL : word.get(i+keylen);
+				nextChar = (index == numberOfTokens) ? Word.TERMINAL : word.get(i+order);
 				logMessage("  subset: '" + subset + "' next char: '" + nextChar + "'");
 				addOccurrence(subset, nextChar);
 			}
@@ -151,6 +152,10 @@ public class CharacterCollector implements ICollector<Word, MarkovChain<Characte
 	public MarkovChain<Character, Word> getMarkovChain() {
 		return markovChain;
 	}
+	
+	void setMarkovChain( MarkovChain<Character, Word> markovChain) {
+		this.markovChain = markovChain;
+	}
 
 	public String getText() {
 		return text;
@@ -164,8 +169,8 @@ public class CharacterCollector implements ICollector<Word, MarkovChain<Characte
 		return ignoreCase;
 	}
 
-	public int getKeylen() {
-		return keylen;
+	public int getOrder() {
+		return order;
 	}
 
 	public String getFileName() {
@@ -191,7 +196,7 @@ public class CharacterCollector implements ICollector<Word, MarkovChain<Characte
 	public static void main(String...args) throws IOException {
 		String filename = null;
 		String text = null;
-		int keylen = 2;
+		int order = 2;
 		boolean ignoreCase = false;
 		boolean trace = false;
 		
@@ -202,8 +207,8 @@ public class CharacterCollector implements ICollector<Word, MarkovChain<Characte
 			else if(args[i].equalsIgnoreCase("-ignoreCase")) {
 				ignoreCase = true;
 			}
-			else if(args[i].equalsIgnoreCase("-keylen")) {
-				keylen = Integer.parseInt(args[++i]);
+			else if(args[i].equalsIgnoreCase("-order")) {
+				order = Integer.parseInt(args[++i]);
 			}
 			else if(args[i].equalsIgnoreCase("-trace")) {
 				trace = true;
@@ -212,7 +217,7 @@ public class CharacterCollector implements ICollector<Word, MarkovChain<Characte
 				text = args[i];
 			}
 		}
-		CharacterCollector collector = CharacterCollector.getCharacterCollector(keylen, filename, ignoreCase);
+		CharacterCollector collector = CharacterCollector.getCharacterCollector(order, filename, ignoreCase);
 		if(filename == null) {
 			collector.setText(text);
 		}

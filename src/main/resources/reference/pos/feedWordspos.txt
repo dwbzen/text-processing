@@ -1,28 +1,57 @@
-CIA	N
-FBI	N
 Afganistan	N
+American	A
+Bagdahd	HL
+Bannon	LN
+Barcelona	HL
+Bush	LN
+CIA	N
+Clinton	LN
+CNN	L
+Cuba	HL
+Democrat	LN
+FBI	N
+Fox News	L
+Havana	HL
+Hollywood	NL
+Huckabee-Sanders	LN
+ISIS	LN
 Iran	N
 Iraq	N
+LBGTQ	LN
+Madrid	HL
+Moscow	HL
+Navy SEAL	L
+Nixon	LN
 Obama	LN
-terrorist	N
-islamist	N
+POTUS	NL
+Putin	LN
+Regan	LN
+Republican	LN
+Rome	HL
+Russian	A
 Shiit	N
 Suni	N
-United States	NL
+Tokyo	HL
+Donald Trump	LN
 USA	NL
-Putin	LN
-Democrat	LN
-Republican	LN
-ISIS	LN
-Nixon	LN
-Regan	LN
-Bush	LN
-Trump	LN
-Clinton	LN
-Bannon	LN
-Huckabee-Sanders	LN
-Russian	A
-American	A
-fascist	Np
+United States	NL
+Washington D.C.	HL
 fake news	N
-
+fascist	Np
+islamist	N
+terrorist	N
+Academy Awards	L
+Congressional	A
+Hillary Clinton	L
+NFL	L
+White House	L
+DOD	L
+Capitol Hill	L
+Puerto Rico	H
+Venezuala	H
+hurricane	N
+Texas	H
+Florida	H
+Google	Lti
+Dan Rather	L
+Trump Campaign	L

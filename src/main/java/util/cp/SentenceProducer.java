@@ -23,7 +23,7 @@ import util.text.Word;
  * Produces Sentences based on the MarkovChain result from a WordCollector.
  * Command Line Arguments:
  * 	-seed <text>		Initial seed to use
- *  -keylen	n			Length of the seed, used when picking a seed from the Markov Chain.
+ *  -order	n			Length of the seed, used when picking a seed from the Markov Chain.
  *  					This is set from -seed if one is provided
  *  -file <filename>	Text file containing source Words, used to create the MarkovChain for generation.
  *  					If not provided, source is taken from the command line
@@ -43,7 +43,7 @@ public class SentenceProducer  implements IProducer<MarkovChain<Word, Sentence>,
 	private Sentence seed = null;
 	private Sentence originalSeed = null;
 	private Sentence nextSeed = null;
-	private int keylen;
+	private int order;
 	private MarkovChain<Word, Sentence> markovChain = null;
 	private ThreadLocalRandom random = ThreadLocalRandom.current();
 	private boolean sortedResult = false;
@@ -54,15 +54,15 @@ public class SentenceProducer  implements IProducer<MarkovChain<Word, Sentence>,
 	private int minimumLength = 2;	// doesn't save Sentences with fewer words than this
 	private int count = 0;
 
-	public static SentenceProducer getSentenceProducer(int keylen, MarkovChain<Word, Sentence> cstatsMap, Sentence seed ) {
-		SentenceProducer producer = new SentenceProducer(keylen, cstatsMap);
+	public static SentenceProducer getSentenceProducer(int order, MarkovChain<Word, Sentence> cstatsMap, Sentence seed ) {
+		SentenceProducer producer = new SentenceProducer(order, cstatsMap);
 		producer.setSeed(seed);
 		producer.setOriginalSeed(seed);
 		return producer;
 	}
 	
-	protected SentenceProducer(int keylen, MarkovChain<Word, Sentence> cstatsMap ) {
-		this.keylen = keylen;
+	protected SentenceProducer(int order, MarkovChain<Word, Sentence> cstatsMap ) {
+		this.order = order;
 		this.markovChain = cstatsMap;
 	}
 
@@ -149,12 +149,12 @@ public class SentenceProducer  implements IProducer<MarkovChain<Word, Sentence>,
 		this.seed = seed;
 	}
 
-	public int getKeylen() {
-		return keylen;
+	public int getOrder() {
+		return order;
 	}
 
-	public void setKeylen(int keylen) {
-		this.keylen = keylen;
+	public void setOrder(int order) {
+		this.order = order;
 	}
 
 	public boolean isSortedResult() {
@@ -258,7 +258,7 @@ public class SentenceProducer  implements IProducer<MarkovChain<Word, Sentence>,
 		boolean statistical = true;
 		int recycleSeedNumber = 1;		// how often to pick a new seed.
 		boolean trace = false;
-		int keylen = 2;
+		int order = 2;
 		String textType = null;
 		WordCollector collector = null;
 		int repeats = 1;
@@ -275,8 +275,8 @@ public class SentenceProducer  implements IProducer<MarkovChain<Word, Sentence>,
 			else if(args[i].equalsIgnoreCase("-ignoreCase")) {
 				ignoreCase = true;
 			}
-			else if(args[i].equalsIgnoreCase("-keylen")) {
-				keylen = Integer.parseInt(args[++i]);
+			else if(args[i].equalsIgnoreCase("-order")) {
+				order = Integer.parseInt(args[++i]);
 			}
 			else if(args[i].equalsIgnoreCase("-num")) {
 				num = Integer.parseInt(args[++i]);
@@ -312,7 +312,7 @@ public class SentenceProducer  implements IProducer<MarkovChain<Word, Sentence>,
 
 		Book.TYPE type = (textType != null && textType.equalsIgnoreCase("verse")) ? TYPE.VERSE : TYPE.PROSE;
 		// Run the WordCollector first
-		collector = WordCollector.getWordCollector(keylen, filename, ignoreCase, type);
+		collector = WordCollector.getWordCollector(order, filename, ignoreCase, type);
 		if(filename == null) {
 			collector.setText(text);
 		}
@@ -328,7 +328,7 @@ public class SentenceProducer  implements IProducer<MarkovChain<Word, Sentence>,
 		
 		// run the producer on the results
 		for(int nr=1; nr<=repeats; nr++) {
-			SentenceProducer producer = SentenceProducer.getSentenceProducer(keylen, markovChain, seed);
+			SentenceProducer producer = SentenceProducer.getSentenceProducer(order, markovChain, seed);
 			producer.setSortedResult(sort);
 			producer.setNumberToGenerate(num);
 			producer.setRecycleSeedNumber(recycleSeedNumber);

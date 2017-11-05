@@ -34,32 +34,26 @@ import util.text.Book;
 public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sentence>, Book> {
 	protected static final Logger log = LogManager.getLogger(WordCollector.class);
 	private boolean ignoreCase = false; 
-	private int keylen;
+	private int order;
 	private String text = null;
-	private MarkovChain<Word, Sentence> markovChain = new MarkovChain<Word, Sentence>(null);
+	private MarkovChain<Word, Sentence> markovChain;
 	private Book book = new Book();
 	private Book.TYPE	bookType = TYPE.PROSE;	// default
 	private static TextFileReader reader = null;
 	
 	/**
 	 * Factory method. Uses default Book TYPE of PROSE
-	 * @param keylen length of the key in #of Words, usually 2 or 3
+	 * @param order length of the key in #of Words, usually 2 or 3
 	 * @param inputFile full path to the input file.
 	 * @param ignorecaseflag set to true to ignore case. This converts all input to lower case.
 	 * @return WordCollector instance
 	 */
-	public static WordCollector getWordCollector(int keylen, String inputFile, boolean ignorecaseflag) throws IOException {
-		String sourceText = "";
-		if(inputFile != null) {
-			reader = TextFileReader.getInstance(inputFile);
-			sourceText = reader.getFileText() ;
-		}
-		WordCollector collector = getWordCollector(keylen, sourceText, TYPE.PROSE);
-		collector.setIgnoreCase(ignorecaseflag);
+	public static WordCollector getWordCollector(int order, String inputFile, boolean ignorecaseflag) throws IOException {
+		WordCollector collector = getWordCollector(order, inputFile, ignorecaseflag, TYPE.PROSE);
 		return collector;
 	}
 	
-	public static WordCollector getWordCollector(int keylen, String inputFile, boolean ignorecaseflag, TYPE type) throws IOException {
+	public static WordCollector getWordCollector(int order, String inputFile, boolean ignorecaseflag, TYPE type) throws IOException {
 		String sourceText = "";
 		if(inputFile != null) {
 			reader = (type.equals(TYPE.VERSE)) ? TextFileReader.getInstance(inputFile, "\n") : TextFileReader.getInstance(inputFile);
@@ -68,27 +62,28 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 			}
 			sourceText = reader.getFileText() ;
 		}
-		WordCollector collector = getWordCollector(keylen, sourceText, type);
+		WordCollector collector = getWordCollector(order, sourceText, type);
 		collector.setBookType(type);
 		collector.setIgnoreCase(ignorecaseflag);
 		return collector;
 	}
 	
-	public static WordCollector getWordCollector(int keylen, String text, TYPE type) throws IOException {
+	public static WordCollector getWordCollector(int order, String text, TYPE type) throws IOException {
 		WordCollector collector = new WordCollector();
-		collector.setKeylen(keylen);
-		collector.setText(text);
+		collector.setOrder(order);
+		collector.setText(text);		
 		Book book = new Book(text);
 		book.setType(type);
 		collector.setBook(book);
+		collector.setMarkovChain(new MarkovChain<Word, Sentence>(order));
 		return collector;
 	}
 	
 	protected WordCollector() {
 	}
 	
-	protected WordCollector(int keylen, boolean ignorecaseflag) {
-		this.keylen = keylen;
+	protected WordCollector(int order, boolean ignorecaseflag) {
+		this.order = order;
 		this.ignoreCase = ignorecaseflag;
 	}
 	
@@ -113,12 +108,12 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
     	if(sentence.size() > 0) {	// blank line
 	    	log.debug("apply: '" + sentence + "'");
 	    	int numberOfTokens = sentence.size();
-			int lim = numberOfTokens - keylen + 1;
+			int lim = numberOfTokens - order + 1;
 			for(int i=0; i< lim; i++) {
-				int index = i+keylen;
+				int index = i+order;
 				if(index <= numberOfTokens) {		// don't run off the end of the List
 					subset = sentence.subset(i, index);
-					nextWord = (index == numberOfTokens) ? Sentence.TERMINAL : sentence.get(i+keylen);
+					nextWord = (index == numberOfTokens) ? Sentence.TERMINAL : sentence.get(i+order);
 					log.debug("  subset: '" + subset + "' next word: '" + nextWord + "'");
 					addOccurrence(subset, nextWord);
 				}
@@ -156,18 +151,22 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 		this.ignoreCase = ignoreCase;
 	}
 
-	public int getKeylen() {
-		return keylen;
+	public int getOrder() {
+		return order;
 	}
 
-	public void setKeylen(int keylen) {
-		this.keylen = keylen;
+	public void setOrder(int order) {
+		this.order = order;
 	}
 	
 	public MarkovChain<Word, Sentence> getMarkovChain() {
 		return markovChain;
 	}
 
+	void setMarkovChain(MarkovChain<Word, Sentence> markovChain) {
+		this.markovChain = markovChain;
+	}
+	
 	public Book getBook() {
 		return book;
 	}
@@ -196,7 +195,7 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 		String inputFile = null;
 		String text = null;
 		String textType = null;
-		int keylen = 2;
+		int order = 2;
 		boolean ignoreCase = false;
 		for(int i=0; i<args.length; i++) {
 			if(args[i].equalsIgnoreCase("-file")) {
@@ -205,8 +204,8 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 			else if(args[i].equalsIgnoreCase("-ignoreCase")) {
 				ignoreCase = true;
 			}
-			else if(args[i].equalsIgnoreCase("-keylen")) {
-				keylen = Integer.parseInt(args[++i]);
+			else if(args[i].equalsIgnoreCase("-order")) {
+				order = Integer.parseInt(args[++i]);
 			}
 			else if(args[i].equalsIgnoreCase("-type")) {
 				textType = args[++i];
@@ -217,8 +216,8 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 		}
 		Book.TYPE type = (textType != null && textType.equalsIgnoreCase("verse")) ? TYPE.VERSE : TYPE.PROSE;
 		WordCollector collector = (inputFile != null) ?
-				WordCollector.getWordCollector(keylen, inputFile, ignoreCase, type) :
-				WordCollector.getWordCollector(keylen, text, type);
+				WordCollector.getWordCollector(order, inputFile, ignoreCase, type) :
+				WordCollector.getWordCollector(order, text, type);
 		collector.collect();
 		MarkovChain<Word, Sentence> markovChain = collector.getMarkovChain();
 		markovChain.display();
