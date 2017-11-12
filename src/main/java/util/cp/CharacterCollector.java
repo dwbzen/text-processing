@@ -226,7 +226,7 @@ public class CharacterCollector implements ICollector<Word, MarkovChain<Characte
 		MarkovChain<Character, Word> markovChain = collector.getMarkovChain();
 		markovChain.display();
 		markovChain.displaySummaryMap();
-		System.out.println(markovChain.toJSON());
+		System.out.println(markovChain.toJson());
 		
 	}
 

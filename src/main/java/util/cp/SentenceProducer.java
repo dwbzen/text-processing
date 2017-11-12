@@ -243,6 +243,7 @@ public class SentenceProducer  implements IProducer<MarkovChain<Word, Sentence>,
 
 	/**
 	 * Produces Strings using the results of StringCollector.
+	 * TODO: implement "pretty" printing
 	 * 
 	 * @param args
 	 * @throws IOException 

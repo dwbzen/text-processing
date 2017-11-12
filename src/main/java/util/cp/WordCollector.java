@@ -222,7 +222,7 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 		MarkovChain<Word, Sentence> markovChain = collector.getMarkovChain();
 		markovChain.display();
 		markovChain.displaySummaryMap();
-		System.out.println(markovChain.toJSON());
+		System.out.println(markovChain.toJson());
 	}
 	
 }

@@ -24,7 +24,7 @@ import org.apache.logging.log4j.Logger;
  * 	-pattern <text> : inline pattern to use
  * 	-lib <filename>	: path to text file containing patterns to select from
  *  -n <number>		: number of strings to generate
- *  -format			: output format processing:
+ *  -format			: output format(s) processing:
  *  					UC = convert to UPPER CASE, 
  *						LC = lower case,
  *						TC = Title Case, 
@@ -62,6 +62,8 @@ public class TextGenerator implements ITextGenerator {
 	private boolean titleCase = false;
 	private boolean lowerCase = false;
 	private boolean jsonOutput = false;
+	private boolean csvOutput = false;
+	private boolean tabSeparatedOutput = false;
 	private String jsonFieldname = null;
 	private String delimiter = null;
 	private ThreadLocalRandom random = ThreadLocalRandom.current();
@@ -79,7 +81,7 @@ public class TextGenerator implements ITextGenerator {
 		List<String> patternList = new ArrayList<String>();
 		List<String>postProcessing = new ArrayList<String>();
 		String patternLib = null;
-		String delim = ",";	// for JSON output - field separator
+		String delim = ",";	// for CSV output - field separator
 		
 		for(int i=0; i<args.length; i++) {
 			if(args[i].equalsIgnoreCase("-n")) {
@@ -279,8 +281,10 @@ public class TextGenerator implements ITextGenerator {
 			formatJSON(sb, generatedList);
 		}
 		else {
+			String outputDelim = csvOutput ? "," : (tabSeparatedOutput? "\t" : SPACE);
 			int len = generatedList.size();
 			boolean startOfSentence = true;
+			
 			for(int i=0; i<len; i++){
 				String s = generatedList.get(i);
 				log.debug("'" + s + "'");
@@ -290,20 +294,16 @@ public class TextGenerator implements ITextGenerator {
 				}
 				else {
 					if(upperCase) {
-						sb.append(SPACE);
 						sb.append( s.toUpperCase());
 					}
 					else if(lowerCase) {
-						sb.append(SPACE);
 						sb.append(s.toLowerCase());
 					}
 					else if(titleCase) {
-						sb.append(SPACE);
 						sb.append(s.substring(0, 1).toUpperCase());
 						sb.append(s.substring(1));
 					}
 					else if(sentenceCase) {
-						sb.append(SPACE);
 						if(startOfSentence) {
 							sb.append(s.substring(0, 1).toUpperCase());
 							sb.append(s.substring(1));
@@ -314,10 +314,13 @@ public class TextGenerator implements ITextGenerator {
 						}
 					}
 					else { // no conversion
-						sb.append( SPACE + s);
+						sb.append(s);
 					}
 				}
 				startOfSentence = (s.endsWith(".") || s.endsWith("?") || s.endsWith("!"));
+				if(i <len-1) {
+					sb.append(outputDelim);
+				}
 			}
 		}
 		return sb.toString();
@@ -456,6 +459,12 @@ public class TextGenerator implements ITextGenerator {
 			}
 			else if(pp.equalsIgnoreCase("LC")) {
 				lowerCase = true;
+			}
+			else if(pp.equalsIgnoreCase("CSV")) {
+				csvOutput = true;
+			}
+			else if(pp.equalsIgnoreCase("TAB")) {
+				tabSeparatedOutput = true;
 			}
 			else if(pp.startsWith("JSON")) {
 				jsonOutput = true;
