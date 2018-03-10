@@ -168,7 +168,9 @@ Mylotarg
 Myrbetriq
 Nadolol
 Namenda
+Namzaric
 Neomycin
+Neudexta
 Neulasta
 Niacin
 Nifedipine
@@ -261,6 +263,7 @@ Viagra
 Viberzi
 Victoza
 Viibryd
+Virectin
 Vitorin
 Vosevi
 Vytorin

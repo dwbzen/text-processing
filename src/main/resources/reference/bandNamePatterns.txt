@@ -1,0 +1,10 @@
+A{1,2}[N|h|p]
+[M|F|N](and)(the)A?p
+NV(and)G
+[M|F](and)(the)p
+A?Gp
+(The)A?p
+(A)N[(in)|(with)|(around)|(without)]A?p
+A?Gp
+N{1,2}p
+[N|p]G[N|p]

@@ -1,0 +1,16 @@
+// comments - (\n) is an embedded '\n'
+// a pattern can be spread across multiple lines
+// lines ending with '+' indicate this
+//
+(I am)G(into the)AN(\n)+
+FXv(\n)+
+C(,)Mxv(\n)+
+(We are)G(the)AA[p|h](\n)+
+(My)NvV(\n)+
+Ft(my)AN(while)FXv(\n)+
+ANX(me-)ApXF(\n)+
+!(!)[(Where)|(Is)|(Why)|(What)]ANvx(?)(\n)+
+Dhtv(,)Dhtv(!)
+// the next one is stand alone
+hiv+
+!(!)[(Will)|(Is)|(How)|(What)]ANrvtp(?)

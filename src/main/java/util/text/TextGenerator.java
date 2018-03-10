@@ -39,7 +39,8 @@ import org.apache.logging.log4j.Logger;
  *  	!(where did you get that)A{1,3}[b|B](?) - insult
  *  	hiv+
  *  	!(!)[(Will)|(Is)|(How)|(What)]ANrvtp(?) -  poetry
- *		ANp - simple example 	
+ *		ANp - simple example
+ *
  * @author Don_Bacon
  * @see util.text.PartsOfSpeach for valid parts of speach
  * @see util.text.PartOfSpeachPattern for valid patterns.

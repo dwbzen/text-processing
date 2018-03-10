@@ -15,23 +15,23 @@ import util.text.Sentence;
 import util.text.Word;
 
 /**
- * Collects statistics on Characters within Words
- * The corresponding producer is WordProducer.
- * CharacterCollector implements the following functional interfaces through ICollector:
- * 	Function<Word, MarkovChain<Character, Word>> : apply(Word w) takes Word input, produces MarkovChain result
- * 	Consumer<Sentence>  : accept(Sentence s) consumes Sentence(s) to create the MarkovChain
+ * Collects statistics on Characters within Words. The corresponding producer is WordProducer. </p>
+ * CharacterCollector implements the following functional interfaces through ICollector:</p>
+ * 	Function<Word, MarkovChain<Character, Word>> : apply(Word w) takes Word input, produces MarkovChain result</p>
+ * 	Consumer<Sentence>  : accept(Sentence s) consumes Sentence(s) to create the MarkovChain</p>
  * 
  * The resulting MarkovChain (CollectorStatsMap) uses 2 special characters to indicate terminal and null values.
- * For example the testWordSample.txt has 5 Sentences (in this example each Sentence is a single Word)
+ * For example the testWordSample.txt has 5 Sentences (in this example each Sentence is a single Word)</p>
  	DON
 	DONALD
 	DONNA
 	ALDO
 	NEDA
- * The resulting MarkovChain includes the following which can be verified by inspecting the data.
+ * The MarkovChain returned running with -order 3 includes the following which can be verified by inspecting the data.
  * 		'ALD'	2
  * 		'O'	1	1,1		0.5
  * 		'¶'	1	2,2		0.5
+ * 
  * The key "ALD" occurs twice (DONALD and ALDO)
  * it is followed by an 'O' once (in ALDO), and by a logical end of word (the TERMINAL '¶') in DONALD
  * 
@@ -40,6 +40,7 @@ import util.text.Word;
  * The key 'DA¶' occurs once in NEDA (it ends in "DA")
  * As is evident from the data, there is no Word where DA is followed by a Character.
  * This is indicated by the stand-in Character value for null '§'
+ * Start of a Word is indicated by space as in " DO" 
  * Running the CharacterCollector on the sample in trace mode shows how the data is processed.
  * 
  * 

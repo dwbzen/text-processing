@@ -40,7 +40,9 @@ import util.text.Word;
  * If you wanted to use the same seed, for example " KA" for womens names, specify -recycle number
  * to be > number of words to produce (-num) times #repeats (-repeat):
  * 
- * -file "build\resources\main\reference\femaleFirstNames.txt" -num 50 -order 3  -list -seed " KA" -recycle 50
+ * -file "build\resources\main\reference\femaleFirstNames.txt" -num 50 -order 3  -list -recycle 2
+ * 
+ * -file "build/resources/main/reference/drugNames.txt" -num 50  -order 3 -list
  *  
  * @author don_bacon
  *
