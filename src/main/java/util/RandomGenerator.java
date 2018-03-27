@@ -73,8 +73,7 @@ public class RandomGenerator {
 
 		int nadded = 0;
 		do {
-			int rint = randomInt(low, hi);
-			Integer id = new Integer(rint);
+			Integer id = randomInt(low, hi);
 			if(withReplacement) {		// don't care if it's already there
 				destList.add(id);
 				nadded++;

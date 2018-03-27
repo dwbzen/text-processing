@@ -35,6 +35,8 @@ import util.text.Word;
  *  -sort				sort the Sentences on output
  *  -type				verse | prose | technical  - default is prose
  *  -trace				Follow the action on seed picking. Sets trace mode on CharacterCollector
+ *  
+ *   @author don_bacon
  */
 public class SentenceProducer  implements IProducer<MarkovChain<Word, Sentence>, Sentence > {
 	

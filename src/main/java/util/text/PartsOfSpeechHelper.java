@@ -39,7 +39,6 @@ public class PartsOfSpeechHelper {
 		}
 	}
 	
-	private String inputFileName = null;
 	private String outputFileName = null;
 	private BufferedReader inputFileReader;
 	private PrintWriter outputFileWriter;
@@ -50,7 +49,6 @@ public class PartsOfSpeechHelper {
 	}
 	
 	public void createPartsOfSpeechFile(String inputFile, String outputFile)  throws IOException {
-		this.inputFileName = inputFile;
 		this.outputFileName = outputFile;
 		inputFileReader = new BufferedReader(new FileReader(inputFile));
 		if(outputFileName == null) {	// write to stdout
