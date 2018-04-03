@@ -10,8 +10,10 @@
 }
 
 apply plugin: 'java-library'
+apply plugin: 'java-library-distribution'
 apply plugin: 'java'
 apply plugin: 'eclipse'
+apply plugin: 'maven'
 
 sourceCompatibility = 1.9
 targetCompatibility = 1.9
