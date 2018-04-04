@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import util.RandomGenerator;
 
 /**
@@ -18,6 +21,7 @@ import util.RandomGenerator;
  */
 public class ListPicker {
 	
+	protected static final Logger log = LogManager.getLogger(ListPicker.class);
 	private String filename;
 	private int numToPick = 1;
 	private RandomGenerator rand = null;
@@ -49,8 +53,8 @@ public class ListPicker {
 	}
 
 	private void readfile(File f) {
-		try {
-			BufferedReader reader = new BufferedReader(new FileReader(f));
+		try(BufferedReader reader = new BufferedReader(new FileReader(f))) {
+			//BufferedReader reader = new BufferedReader(new FileReader(f));
 			String line = null;
 			while((line = reader.readLine()) != null) {
 				if(line != null && line.length() > 1) {
@@ -63,10 +67,9 @@ public class ListPicker {
 					}
 				}
 			}
-			reader.close();
 
 		} catch (IOException e) {
-			System.err.println("Cannot find/read file: " + e.toString());
+			log.error("Cannot find/read file: " + e.toString());
 		}
 	}
 
