@@ -40,7 +40,7 @@ import util.text.Word;
  * The key 'DA¶' occurs once in NEDA (it ends in "DA")
  * As is evident from the data, there is no Word where DA is followed by a Character.
  * This is indicated by the stand-in Character value for null '§'
- * Start of a Word is indicated by space as in " DO" 
+ * Start of a Word is indicated by a leading space as in " DO" 
  * Running the CharacterCollector on the sample in trace mode shows how the data is processed.
  * 
  * 
@@ -54,7 +54,7 @@ public class CharacterCollector implements ICollector<Word, MarkovChain<Characte
 	private String fileName = null;
 	private String text = null;
 	private boolean trace = false;
-	private MarkovChain<Character, Word> markovChain;
+	private MarkovChain<Character, Word> markovChain = null;
 	private static TextFileReader reader = null;
 	
 	/**
@@ -66,7 +66,7 @@ public class CharacterCollector implements ICollector<Word, MarkovChain<Characte
 	 */
 	public static CharacterCollector getCharacterCollector(int order, String inputFile, boolean ignorecaseflag) throws IOException {
 		CharacterCollector collector = new CharacterCollector(order, inputFile, ignorecaseflag);
-		collector.setMarkovChain(new MarkovChain<Character, Word>(order));
+		collector.markovChain = new MarkovChain<Character, Word>(order);
 		if(inputFile != null) {
 			reader = TextFileReader.getInstance(inputFile);
 			collector.setText( (ignorecaseflag?  
@@ -84,10 +84,10 @@ public class CharacterCollector implements ICollector<Word, MarkovChain<Characte
 	 * 
 	 * @throws FileNotFoundException
 	 */
-	protected CharacterCollector(int order, String filename, boolean ignorecaseflag) {
+	protected CharacterCollector(int order, String fileName, boolean ignoreCase) {
 		this.order = order;
-		this.fileName = filename;
-		this.ignoreCase = ignorecaseflag;
+		this.fileName = fileName;
+		this.ignoreCase = ignoreCase;
 	}
 	
 	@Override
@@ -152,10 +152,6 @@ public class CharacterCollector implements ICollector<Word, MarkovChain<Characte
 	
 	public MarkovChain<Character, Word> getMarkovChain() {
 		return markovChain;
-	}
-	
-	void setMarkovChain( MarkovChain<Character, Word> markovChain) {
-		this.markovChain = markovChain;
 	}
 
 	public String getText() {
