@@ -58,29 +58,6 @@ public class TextFileReader {
 		return sb.toString();
 	}
 	
-	private void readFileLines() throws FileNotFoundException, IOException {
-		StringBuilder sb = null;
-		BufferedReader inputFileReader = null;
-		Reader in = (fileName != null) ? new FileReader(fileName) : new InputStreamReader(System.in);
-		try {
-			inputFileReader = new BufferedReader(in);
-			String line;
-			while((line = inputFileReader.readLine()) != null) {
-				if(line.length()>0) { 
-					sb = new StringBuilder(line.trim());
-					sb.append(delimiter);
-					if(endOfLine != null) {
-						sb.append(endOfLine);
-					}
-					lines.add(sb.toString()); 
-				}
-			}
-		}
-		finally {
-			inputFileReader.close();
-		}
-	}
-	
 	/**
 	 * Gets the contents of a file as a List<String>  where each List element is a physical line in the file.
 	 * Appends the set delim Character and eolString (if not null) after trimming the line.
@@ -93,6 +70,24 @@ public class TextFileReader {
 			readFileLines();
 		}
 		return lines;
+	}
+	
+	private void readFileLines() throws FileNotFoundException, IOException {
+		StringBuilder sb = null;
+		Reader in = (fileName != null) ? new FileReader(fileName) : new InputStreamReader(System.in);
+		try(BufferedReader inputFileReader = new BufferedReader(in)) {
+			String line;
+			while((line = inputFileReader.readLine()) != null) {
+				if(line.length()>0) { 
+					sb = new StringBuilder(line.trim());
+					sb.append(delimiter);
+					if(endOfLine != null) {
+						sb.append(endOfLine);
+					}
+					lines.add(sb.toString()); 
+				}
+			}
+		}
 	}
 	
 	public static void main(String... args) throws IOException {

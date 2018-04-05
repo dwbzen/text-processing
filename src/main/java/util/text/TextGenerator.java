@@ -36,7 +36,7 @@ import org.apache.logging.log4j.Logger;
  * config.properties specifies the names and locations of POS files.
  * Sample patterns:
  *  	[M|F|N](and)(the)A?p  - band name
- *  	!(where did you get that)A{1,3}[b|B](?) - insult
+ *  	!(where did you get that)A{1,3}[b|B](?) - puerile insults
  *  	hiv+
  *  	!(!)[(Will)|(Is)|(How)|(What)]ANrvtp(?) -  poetry
  *		ANp - simple example
