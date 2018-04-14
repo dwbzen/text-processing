@@ -14,11 +14,16 @@ apply plugin: 'java-library-distribution'
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'maven'
+apply plugin: "jacoco"
 
-sourceCompatibility = 1.9
-targetCompatibility = 1.9
-
+sourceCompatibility = 9
+targetCompatibility = 9
 version = '1.0'
+group = 'text-processing'
+version = '0.0.1-SNAPSHOT'
+description = "Text Processing Framework"
+project.tasks["sonarqube"].dependsOn "jacocoTestReport"
+
 jar {
     manifest {
         attributes 'Implementation-Title': 'text-processing',
@@ -26,10 +31,19 @@ jar {
     }
 }
 
-group = 'text-processing'
-version = '0.0.1-SNAPSHOT'
 
-description = "Text Processing Framework"
+jacoco {
+    toolVersion = "0.8.0"
+    reportsDir = file("${buildDir}/customJacocoReportDir")
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+        csv.enabled false
+        html.destination file("${buildDir}/jacocoHtml")
+    }
+}
 
 repositories {
     // Use jcenter for resolving your dependencies.

@@ -12,23 +12,18 @@ public class WordTest extends TestCase {
 	public WordTest() {
 		super();
 	}
-
-	/**
-	 * @param args
-	 */
-	public static void main(String... args) {
-	}
 	
 	@Test
 	public void testWord1() {
 		word = new Word(testString1);
-		showCharacters(testString1 + ":");
+		String wordChars = showCharacters(testString1 + ":");
+		assertTrue(wordChars.equals("'N' 'o' 'w' ' ' 'i' 's' ' ' 't' 'h' 'e' ' ' 't' 'i' 'm' 'e' ' ' 'f' 'o' 'r' ' ' '1' ',' '2' ',' '3' '.' "));
 	}
 	
 	@Test
 	public void testNullWord() {
 		word = new Word("");
-		showCharacters("empty string: ");
+		assertTrue(word != null & word.size()==0);
 	}
 	
 	@Test
@@ -47,12 +42,12 @@ public class WordTest extends TestCase {
 		assertTrue(word.getWordString().equals("gentyx"));
 	}
 
-	public void showCharacters(String s) {
-		System.out.print(s);
+	public String showCharacters(String s) {
+		StringBuilder sb = new StringBuilder();
 		for(Character c : word) {
-			System.out.print("'" + c + "' ");
+			sb.append("'" + c + "' ");
 		}
-		System.out.println("");
+		return sb.toString();
 	}
 	
 }
