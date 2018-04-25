@@ -96,6 +96,7 @@ Entyvio
 Epiduo
 Escitalopram
 Estradiol
+Eucrisa
 Exforge
 Famciclovir
 Farxiga
@@ -241,6 +242,7 @@ Torsemide
 Toujeo
 Tracleer
 Trazodone
+Tremfya
 Trelegy Ellipta
 Tresiba
 Tretinoin
@@ -259,6 +261,7 @@ Vascepa
 Vectical
 Venlafaxine
 Verapamil
+Verzenio
 Viagra
 Viberzi
 Victoza
@@ -266,6 +269,7 @@ Viibryd
 Virectin
 Vitorin
 Vosevi
+Vraylar
 Vytorin
 Vyvanse
 Vyxeos
