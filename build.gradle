@@ -14,7 +14,8 @@ apply plugin: 'java-library-distribution'
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'maven'
-apply plugin: "jacoco"
+apply plugin: 'jacoco'
+apply plugin: 'war'
 
 sourceCompatibility = 9
 targetCompatibility = 9
