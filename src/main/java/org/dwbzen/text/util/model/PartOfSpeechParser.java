@@ -3,31 +3,29 @@ package org.dwbzen.text.util.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import mathlib.util.IJson;
+
 /**
  * TODO: migrate to JavaCC
  * @author Don_Bacon
  *
  */
-public class PartOfSpeechParser implements IPatternParser {
+public class PartOfSpeechParser implements IPatternParser, IJson {
+
+	private static final long serialVersionUID = 1L;
 
 	public PartOfSpeechParser() { }
 	
-	private List<String> words = new ArrayList<String>();		// Sentence parsed into Words
-	private List<PatternWord> patternWords = new ArrayList<PatternWord>();
+	@JsonProperty("words")	private List<String> words = new ArrayList<String>();		// Sentence parsed into Words
+	@JsonProperty("valid")	private boolean valid = true;
+	@JsonProperty("error")	private String error = "";
+	@JsonIgnore				private List<PatternWord> patternWords = new ArrayList<PatternWord>();
 
 	public static void main(String[] args) {
-		PartOfSpeechParser parser = new PartOfSpeechParser();
-		//String def = "$1=Ft$2=M(while)($2)t($1)"; 	//$1=xV[M|F]{1,3}($1)(repeat){2,5}";
-		String def = "(Why don't you just come over here and)[V|t](my)A{1,2}[b|B]";
-		
-		String textToParse = (args.length > 0) ? args[0] : def;
-		System.out.println("pattern: " + textToParse);
-		parser.parse(textToParse);
-		List<PatternWord> patternWords = parser.getPatternWords();
-		for(PatternWord pw : patternWords) {
-			String pwinstance = pw.createInstance();
-			System.out.println(" " + pw + " instance: " + pwinstance);
-		}
+
 	}
 	
 	/**
@@ -40,11 +38,13 @@ public class PartOfSpeechParser implements IPatternParser {
 	 *  	   next generated word in $1, x  - a valid part of speech (V, t, N etc)
 	 *  
 	 * ($1) parses to ($1) to signal in-line text
+	 * @return true if pattern is valid, false otherwise
 	 * TODO: move to JavaCC grammar
 	 */
-	public void parse(String sentence) {
+	public boolean parse(String sentence) {
 
 		int parsePosition = 0;
+		valid = true;
 		int rangeDelim = -1;
 		int parenDelim = -1;
 		int length = (sentence != null) ? sentence.length() : 0;
@@ -159,6 +159,11 @@ public class PartOfSpeechParser implements IPatternParser {
 				//isChoice = false;
 			}
 			else if(c == ')') {	// end of inline text
+				if(parenDelim <0 || parenDelim > parsePosition-1) {
+					valid = false;
+					error = "parser error";
+					return valid;	// invalid pattern
+				}
 				inlineText = sentence.substring(parenDelim, parsePosition-1);
 				text = inlineText.equals("\\n") ? "\n" : inlineText;	// end of line - continuation
 				if(isChoice) {
@@ -219,6 +224,7 @@ public class PartOfSpeechParser implements IPatternParser {
 				}
 			}
 		}
+		return valid;
 	}
 
 	public List<String> getWords() {
@@ -227,6 +233,14 @@ public class PartOfSpeechParser implements IPatternParser {
 
 	public List<PatternWord> getPatternWords() {
 		return patternWords;
+	}
+
+	public boolean isValid() {
+		return valid;
+	}
+
+	public String getError() {
+		return error;
 	}
 
 }

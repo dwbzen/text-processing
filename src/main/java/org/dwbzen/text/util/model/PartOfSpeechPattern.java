@@ -4,6 +4,9 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.function.Consumer;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  *  (\n) is an embedded '\n'
  *  A pattern can be spread across multiple lines, lines ending with '+' indicate this
@@ -29,12 +32,18 @@ import java.util.function.Consumer;
  */
 public class PartOfSpeechPattern extends TextPattern {
 
-	private String sentence;
-	private String currentWord = null;
-	private int currentIndex = 0;
-	private List<String> words;		// Sentence parsed into Words
-	private List<PatternWord> patternWords;
-	private IPatternParser parser = null;
+	private static final long serialVersionUID = -30711369720096758L;
+	
+	@JsonProperty("rawPattern")	private String sentence;
+	@JsonIgnore					private String currentWord = null;
+	@JsonIgnore					private int currentIndex = 0;
+	@JsonIgnore					private List<String> words;		// Sentence parsed into Words
+	@JsonProperty("patternWords")	private List<PatternWord> patternWords;
+	@JsonProperty("valid")		private boolean valid;
+	@JsonProperty("error")	private String error = "";
+	@JsonIgnore				private IPatternParser parser = null;
+	
+	public final static String errorMessage = "ERROR: invalid Part of Speech Pattern";
 	
 	public PartOfSpeechPattern(String sentence) {
 		setVocabulary(PartsOfSpeech.getLoadedPartsOfSpeech());
@@ -77,22 +86,34 @@ public class PartOfSpeechPattern extends TextPattern {
 		this.vocabulary = vocabulary;
 	}
 
-	private void parse() {
+	private boolean parse() {
 		parser = getPatternParser();
-		parser.parse(sentence);
-		words = parser.getWords();
-		patternWords = parser.getPatternWords();
+		valid = parser.parse(sentence);
+		if(valid) {
+			words = parser.getWords();
+			patternWords = parser.getPatternWords();
+		}
+		else {
+			error = errorMessage + ": " + parser.getError();
+		}
+		return valid;
 	}
 		
 	public static void main(String[] args) {
 		for(int i=0; i<args.length; i++) {
 			PartOfSpeechPattern p = new PartOfSpeechPattern(args[i]);
-			System.out.println("PartOfSpeechPattern: " + p.toString());
-			System.out.println("           instance: " + p.createInstance());
-			int n = 0;
-			while(p.hasNext()) {
-				PatternWord pw = p.next();
-				System.out.println((++n) + "  " + pw.toString() + " : " + pw.createInstance());
+			if(p.isValid()) {
+				System.out.println("PartOfSpeechPattern: " + p.toString());
+				System.out.println("           instance: " + p.createInstance());
+				System.out.println(p.toJson(true));
+				int n = 0;
+				while(p.hasNext()) {
+					PatternWord pw = p.next();
+					System.out.println((++n) + "  " + pw.toString() + " : " + pw.getInstance());
+				}
+			}
+			else {
+				System.err.println(args[i] + " is an invalid pattern");
 			}
 		}
 	}
@@ -105,10 +126,20 @@ public class PartOfSpeechPattern extends TextPattern {
 		return sb.toString();
 	}
 	
+	/**
+	 * Creates an instance of this pattern (with choices resolved)
+	 * @return the String instance or if pattern is not valid, the String "ERROR: invalid pattern"
+	 */
 	public String createInstance() {
 		StringBuffer sb = new StringBuffer();
-		for(int i=0; i<patternWords.size(); i++) {
-			sb.append(patternWords.get(i).createInstance());
+		if(valid) {
+			for(int i=0; i<patternWords.size(); i++) {
+				sb.append(patternWords.get(i).getInstance());
+			}
+		}
+		else {
+			error = errorMessage;
+			sb.append(error);
 		}
 		return sb.toString();		
 	}
@@ -127,6 +158,14 @@ public class PartOfSpeechPattern extends TextPattern {
 
 	public void setSentence(String sentence) {
 		this.sentence = sentence;
+	}
+
+	public boolean isValid() {
+		return valid;
+	}
+
+	public String getError() {
+		return error;
 	}
 
 

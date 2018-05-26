@@ -188,9 +188,20 @@ public class TextGenerator implements ITextGenerator {
 	 */
 	public void generate(int numberToGenerate) {
 		int len = partOfSpeechPatterns.size();
+		String text = null;
 		for(int i=0; i< numberToGenerate; i++) {
 			int patInd = random.nextInt(len);
-			generatedText.add(generateText(partOfSpeechPatterns.get(patInd)));
+			PartOfSpeechPattern posPattern = partOfSpeechPatterns.get(patInd);
+			if(!posPattern.isValid()) {
+				text = posPattern.getError();
+			}
+			else {
+				text = generateText(posPattern);
+			}
+			generatedText.add(text);
+			if(text.startsWith("ERROR")) {
+				break;
+			}
 		}
 		return;
 	}
@@ -206,15 +217,15 @@ public class TextGenerator implements ITextGenerator {
 	}
 	
 	public List<String> generateText(int numberToGenerate) {
-		List<String> tlist = new ArrayList<String>();
-		for(int i=0; i<numberToGenerate; i++) {
-			int patInd = random.nextInt(partOfSpeechPatterns.size());
-			tlist.add(generateText(partOfSpeechPatterns.get(patInd)));
-		}
-		return tlist;
+		generate(numberToGenerate);
+		return generatedText;
 	}
 	
-	private String generateText(PartOfSpeechPattern posPattern) {
+	/**
+	 * Generates a text String from a given PartOfSpeechPattern
+	 * @return a String that starts with "ERROR" if any errors encountered.
+	 */
+	public String generateText(PartOfSpeechPattern posPattern) {
 		StringBuffer sb = new StringBuffer();
 		String pattern = posPattern.createInstance();
 		int nwords = pattern.length();
@@ -256,14 +267,19 @@ public class TextGenerator implements ITextGenerator {
 				sb.append(c);
 			}
 			else {
-				int n = posCount.get(c);
-				if(n > 0) {
-					String word = wordMap.get(c).get(random.nextInt(n));
-					if(setVariable) {
-						variables.put(variable, word);
-						setVariable = false;
+				if(posCount.containsKey(c)) {
+					int n = posCount.get(c);
+					if(n > 0) {
+						String word = wordMap.get(c).get(random.nextInt(n));
+						if(setVariable) {
+							variables.put(variable, word);
+							setVariable = false;
+						}
+						generatedList.add(word);
 					}
-					generatedList.add(word);
+				}
+				else {	// invalid POS key used
+					return "ERROR: Invalid part of speech: " + c;
 				}
 			}
 		}

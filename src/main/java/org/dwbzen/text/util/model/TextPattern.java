@@ -2,6 +2,10 @@ package org.dwbzen.text.util.model;
 
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import mathlib.util.IJson;
+
 /**
  * A Pattern combines the following ideas:
  * 0. Atom - the universe of all objects of a particular class
@@ -38,9 +42,10 @@ import java.util.Set;
  * @author don_bacon
  *
  */
-public abstract class TextPattern implements java.util.Iterator<PatternWord> {
+public abstract class TextPattern implements java.util.Iterator<PatternWord>, IJson {
 
-	protected Set<String> vocabulary;
+	private static final long serialVersionUID = 1L;
+	@JsonIgnore	protected Set<String> vocabulary;
 	
 	public Set<String> getVocabulary() {
 		return vocabulary;
