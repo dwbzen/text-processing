@@ -83,4 +83,5 @@ dependencies {
     compile group:  'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.5'
     compile group:  'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-yaml', version: '2.9.5'
     compile group: 'math-lib', name: 'mathlib-gradle', version: '1.0'
+    compile group: 'javax.ws.rs', name: 'javax.ws.rs-api', version: '2.1'
 }

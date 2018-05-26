@@ -1,10 +1,9 @@
 package org.dwbzen.text.util.model;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -100,7 +100,7 @@ public class PartsOfSpeech {
 	private boolean ignoreAllNumbers=false;
 	private boolean ignoreCompoundWords = false;
 	
-	private List<File> posFiles = new ArrayList<File>();
+	private List<String> posFiles = new ArrayList<String>();
 	private List<String> posFileNames = new ArrayList<String>();
 	private BufferedReader posFileReader;
 	private Properties configProperties = null;
@@ -251,29 +251,38 @@ public class PartsOfSpeech {
 	}
 	
 	protected void loadAllWords()  throws IOException {
-		for(Iterator<File> fit=posFiles.iterator(); fit.hasNext();) {
+		for(Iterator<String> fit=posFiles.iterator(); fit.hasNext();) {
 			loadWords(fit.next());
 		}
 	}
 	
-	protected void loadWords(File aPosFile) throws IOException {
+	protected void loadWords(String aPosFile) throws IOException {
 		int nwords = 0;
 		int lwords = 0;
 		if(aPosFile == null) {
-			posFileReader = new BufferedReader(new InputStreamReader(System.in));	
+			posFileReader = new BufferedReader(new InputStreamReader(System.in));
+			String line = null;
+			while((line = posFileReader.readLine()) != null) {
+				analyzeAndSaveWord(line, lwords);
+				nwords++;
+			}
+			posFileReader.close();
 		}
 		else {
-			posFileReader = new BufferedReader(new FileReader(aPosFile));
+			InputStream is = this.getClass().getResourceAsStream(aPosFile);
+			if(is != null) {
+				try(Stream<String> stream = new BufferedReader(new InputStreamReader(is)).lines()) {
+					stream.forEach(s -> analyzeAndSaveWord(s, lwords));
+					nwords++;
+				}
+			}
+			else {
+				logger.error("Unable to open " + aPosFile);
+			}
 		}
-		String line = null;
-		while((line = posFileReader.readLine()) != null) {
-			lwords += analyzeAndSaveWord(line);
-			nwords++;
-		}
-		posFileReader.close();
 		
-		logger.debug(nwords + " words analyzed " + aPosFile.getName());
-		logger.debug(lwords + " loaded " + aPosFile.getName());
+		logger.debug(nwords + " words analyzed " + aPosFile);
+		logger.debug(lwords + " loaded " + aPosFile);
 		if(properWordsSkipped > 0)
 			logger.debug(properWordsSkipped + " proper words skipped");
 		if(upperWordsSkipped > 0)
@@ -284,18 +293,18 @@ public class PartsOfSpeech {
 			logger.debug(compoundWordsSkipped + " compound words skipped");
 	}
 
-	private int analyzeAndSaveWord(String line) {
+	private void analyzeAndSaveWord(String line, int count) {
 		int tab = line.indexOf('\t');
-		if(tab <= 0) return 0;
+		if(tab <= 0) return;
 		String word = line.substring(0,tab);
 		String pos = line.substring(tab+1);
-		if(word.length() <= 1) return 0;
-		if(ignoreUpperCaseWords &&  word.matches(ALL_UPPER)) {upperWordsSkipped++ ; return 0; }
-		if(ignoreProperWords && word.matches(PROPER_WORD)) {properWordsSkipped++; return 0; }
-		if(ignoreAllNumbers && word.matches(ALL_NUMERIC)) { numericWordsSkipped++; return 0; }
+		if(word.length() <= 1) return;
+		if(ignoreUpperCaseWords &&  word.matches(ALL_UPPER)) {upperWordsSkipped++ ; return; }
+		if(ignoreProperWords && word.matches(PROPER_WORD)) {properWordsSkipped++; return; }
+		if(ignoreAllNumbers && word.matches(ALL_NUMERIC)) { numericWordsSkipped++; return; }
 		if(ignoreCompoundWords && word.matches(COMPOUND_WORDS )) { 
 			compoundWordsSkipped++;
-			return 0; 
+			return; 
 		}
 		boolean isproper = word.matches(PROPER_WORD);
 		int nind = pos.indexOf('N');
@@ -310,7 +319,7 @@ public class PartsOfSpeech {
 		else {
 			saveWord(word, pos);
 		}
-		return 1;
+		count++;
 	}
 
 	private void saveWord(String word, String pos) {
@@ -430,7 +439,7 @@ public class PartsOfSpeech {
 		return posMap.get(word);
 	}
 	
-	public List<File> getPosFiles() {
+	public List<String> getPosFiles() {
 		return this.posFiles;
 	}
 	
@@ -438,11 +447,10 @@ public class PartsOfSpeech {
 		loadWords(addPosFileName(posFileName));
 	}
 	
-	private File addPosFileName(String posFileName) {
+	private String addPosFileName(String posFileName) {
 		posFileNames.add(posFileName);
-		File f = new File(posFileName);
-		posFiles.add(f);
-		return f;
+		posFiles.add(posFileName);
+		return posFileName;
 	}
 	
 	public boolean isIgnoreUpperCaseWords() {
