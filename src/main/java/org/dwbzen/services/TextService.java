@@ -3,7 +3,9 @@ package org.dwbzen.services;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -33,6 +35,19 @@ public class TextService {
 			// generate insults
 			generatedText = generateInsults(num);
 		}
+		return generatedText;
+	}
+	
+	@POST
+	@Path("/pattern/{number}")
+	@Consumes(MediaType.TEXT_PLAIN)
+	public List<String> generateText(@PathParam("number") int num, String message) {
+		List<String> generatedText = null;
+		TextGenerator generator = TextGenerator.newInstance();
+		List<String> patternList = new ArrayList<>();
+		patternList.add(message);
+		generator.setPatternList(patternList);
+		generatedText = generator.generateText(num);
 		return generatedText;
 	}
 	

@@ -113,7 +113,7 @@ public class PartOfSpeechPattern extends TextPattern {
 				}
 			}
 			else {
-				System.err.println(args[i] + " is an invalid pattern");
+				System.err.println(p.getError());
 			}
 		}
 	}

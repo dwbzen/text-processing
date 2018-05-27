@@ -2,6 +2,7 @@ package org.dwbzen.text.util.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -23,6 +24,7 @@ public class PartOfSpeechParser implements IPatternParser, IJson {
 	@JsonProperty("valid")	private boolean valid = true;
 	@JsonProperty("error")	private String error = "";
 	@JsonIgnore				private List<PatternWord> patternWords = new ArrayList<PatternWord>();
+	@JsonProperty			private  Set<String> partsOfSpeechSet = PartsOfSpeech.getLoadedPartsOfSpeech();
 
 	public static void main(String[] args) {
 
@@ -217,9 +219,16 @@ public class PartOfSpeechParser implements IPatternParser, IJson {
 						inlineText = null;
 					}
 					if(parsePosition > lastCharPosition || !(sentence.charAt(parsePosition) == '{' || sentence.charAt(parsePosition) == '?') ) {
-						words.add(word);
-						patternWord = new PatternWord(word);
-						patternWords.add(patternWord);
+						if(partsOfSpeechSet.contains(word)) {
+							words.add(word);
+							patternWord = new PatternWord(word);
+							patternWords.add(patternWord);
+						}
+						else {
+							valid = false;
+							error = "invalid part of speech: " + word;
+							return valid;	// invalid pattern
+						}
 					}
 				}
 			}
@@ -241,6 +250,10 @@ public class PartOfSpeechParser implements IPatternParser, IJson {
 
 	public String getError() {
 		return error;
+	}
+
+	public Set<String> getPartsOfSpeechSet() {
+		return partsOfSpeechSet;
 	}
 
 }
