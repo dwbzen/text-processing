@@ -69,6 +69,7 @@ public class TextService {
 
 	private List<String> generateDrugNames(int num) {
 		List<String> generatedText = new ArrayList<>();
+		
 		generatedText.add("ingenzomin");
 		
 		return generatedText;

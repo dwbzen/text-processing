@@ -2,6 +2,7 @@ package org.dwbzen.text.util.cp;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
@@ -64,7 +65,7 @@ public class CharacterCollector implements ICollector<Word, MarkovChain<Characte
 	 * @param ignorecaseflag set to true to ignore case. This converts all input to lower case.
 	 * @return CharacterCollector instance
 	 */
-	public static CharacterCollector getCharacterCollector(int order, String inputFile, boolean ignorecaseflag) throws IOException {
+	public static CharacterCollector instance(int order, String inputFile, boolean ignorecaseflag) throws IOException {
 		CharacterCollector collector = new CharacterCollector(order, inputFile, ignorecaseflag);
 		collector.markovChain = new MarkovChain<Character, Word>(order);
 		if(inputFile != null) {
@@ -94,6 +95,11 @@ public class CharacterCollector implements ICollector<Word, MarkovChain<Characte
 	public void collect() {
 		Sentence sentence = new Sentence(text, true);
 		accept(sentence);
+	}
+	
+	@Override
+	public void collect(List<Word> words) {
+		words.stream().forEach(w -> apply(w));
 	}
 
 	@Override
@@ -214,7 +220,7 @@ public class CharacterCollector implements ICollector<Word, MarkovChain<Characte
 				text = args[i];
 			}
 		}
-		CharacterCollector collector = CharacterCollector.getCharacterCollector(order, filename, ignoreCase);
+		CharacterCollector collector = CharacterCollector.instance(order, filename, ignoreCase);
 		if(filename == null) {
 			collector.setText(text);
 		}

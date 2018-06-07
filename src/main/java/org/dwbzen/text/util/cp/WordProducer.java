@@ -1,13 +1,18 @@
 package org.dwbzen.text.util.cp;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Stream;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -49,7 +54,7 @@ import mathlib.cp.OccurrenceProbability;
  */
 public class WordProducer implements IProducer<MarkovChain<Character, Word>, Word > { 
 	
-	protected static final Logger log = LogManager.getLogger(WordProducer.class);
+	protected static final Logger logger = LogManager.getLogger(WordProducer.class);
 	private int numberToGenerate;		// #words to generate
 	private Word seed = null;
 	private Word originalSeed = null;
@@ -66,11 +71,40 @@ public class WordProducer implements IProducer<MarkovChain<Character, Word>, Wor
 	private int count = 0;
 	private Collection<Word> wordListChain = new ArrayList<Word>();	// in order generated
 	
-	public static WordProducer getWordProducer(int order, MarkovChain<Character, Word> cstatsMap, Word seed ) {
+	public static WordProducer instance(int order, MarkovChain<Character, Word> cstatsMap, Word seed ) {
 		WordProducer producer = new WordProducer(order, cstatsMap);
 		producer.setSeed(seed);
 		producer.setOriginalSeed(seed);
 		return producer;
+	}
+	
+	/**
+	 * /reference/drugNames.txt" -num 50  -order 3 -list
+	 * @param order
+	 * @param seed
+	 * @param resource
+	 * @return
+	 */
+	public static WordProducer instance(int order, Word seed, String resource) {
+		WordProducer producer = null;
+
+		return producer;
+	}
+	
+	protected boolean loadResource(String resource) {
+		boolean result = false;
+		InputStream is = this.getClass().getResourceAsStream(resource);
+		List<Word> wordList = new ArrayList<>();
+		if(is != null) {
+			try(Stream<String> stream = new BufferedReader(new InputStreamReader(is)).lines()) {
+				stream.forEach(s -> wordList.add(new Word(s)));
+				result = true;
+			}
+		}
+		else {
+			logger.error("Unable to open " + resource);
+		}
+		return result;
 	}
 	
 	protected WordProducer(int order, MarkovChain<Character, Word> cstatsMap ) {
@@ -85,7 +119,7 @@ public class WordProducer implements IProducer<MarkovChain<Character, Word>, Wor
 		for(count=0; count<numberToGenerate; count++) {
 			Word word = apply(markovChain);
 			if(word != null && word.toString().length() >= minimumLength) {
-				log.debug("adding: '" + word + "'");
+				logger.debug("adding: '" + word + "'");
 				generatedWords.add(word);
 				wordListChain.add(word);
 			}
@@ -108,7 +142,7 @@ public class WordProducer implements IProducer<MarkovChain<Character, Word>, Wor
 		Character nextChar = null;
 		do {
 			nextChar = getNextCharacter();
-			log.debug("next char: '" + nextChar + "'");
+			logger.debug("next char: '" + nextChar + "'");
 			if(!nextChar.equals(Word.TERMINAL)) {
 				generatedWord.append(nextChar);
 			}
@@ -124,7 +158,7 @@ public class WordProducer implements IProducer<MarkovChain<Character, Word>, Wor
 		 * This would indicate some kind of internal error so return a TERMINAL character and log an error
 		 */
 		if(cstats == null) {
-			log.error("No CollectorStats value for '" + nextSeed + "' returning TERMINAL");
+			logger.error("No CollectorStats value for '" + nextSeed + "' returning TERMINAL");
 			return Word.TERMINAL;
 		}
 
@@ -310,7 +344,7 @@ public class WordProducer implements IProducer<MarkovChain<Character, Word>, Wor
 		}
 
 		// Run the CharacterCollector first
-		collector = CharacterCollector.getCharacterCollector(order, filename, ignoreCase);
+		collector = CharacterCollector.instance(order, filename, ignoreCase);
 		if(filename == null) {
 			collector.setText(text);
 		}
@@ -326,7 +360,7 @@ public class WordProducer implements IProducer<MarkovChain<Character, Word>, Wor
 		}
 		// Run the WordProducer on the results
 		for(int nr=1; nr<=repeats; nr++) {
-			WordProducer producer = WordProducer.getWordProducer(order, markovChain, seed);
+			WordProducer producer = WordProducer.instance(order, markovChain, seed);
 			producer.setSortedResult(sort);
 			producer.setNumberOfWords(num);
 			producer.setRecycleSeedNumber(recycleSeedNumber);
