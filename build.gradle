@@ -17,8 +17,8 @@ apply plugin: 'maven'
 apply plugin: 'jacoco'
 apply plugin: 'war'
 
-sourceCompatibility = 9
-targetCompatibility = 9
+sourceCompatibility = 10
+targetCompatibility = 10
 version = '1.0'
 group = 'text-processing'
 version = '0.0.1-SNAPSHOT'
@@ -34,7 +34,7 @@ jar {
 
 
 jacoco {
-    toolVersion = "0.8.0"
+    toolVersion = "0.8.1"
     reportsDir = file("${buildDir}/customJacocoReportDir")
 }
 
