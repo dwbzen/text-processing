@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -40,6 +41,7 @@ import mathlib.cp.OccurrenceProbability;
  *  -sort				Sort the output.
  *  -list				Display produce Words in order produced
  *  -trace				Follow the action on seed picking. Sets trace mode on CharacterCollector
+ *  -format				post-processing: TC = title case, UC = upper case, LC = lower case
  *  
  *  
  * If you wanted to use the same seed, for example " KA" for womens names, specify -recycle number
@@ -55,6 +57,8 @@ import mathlib.cp.OccurrenceProbability;
 public class WordProducer implements IProducer<MarkovChain<Character, Word>, Word > { 
 	
 	protected static final Logger logger = LogManager.getLogger(WordProducer.class);
+	static String postProcessing = "NC";	// no conversion
+
 	private int numberToGenerate;		// #words to generate
 	private Word seed = null;
 	private Word originalSeed = null;
@@ -338,6 +342,10 @@ public class WordProducer implements IProducer<MarkovChain<Character, Word>, Wor
 			else if(args[i].startsWith("-list")) {
 				showOrderGenerated = true;
 			}
+			else if(args[i].equalsIgnoreCase("-format")) {
+				// format processing
+				postProcessing = args[++i];
+			}
 			else {
 				text = args[i];
 			}
@@ -369,10 +377,33 @@ public class WordProducer implements IProducer<MarkovChain<Character, Word>, Wor
 			Set<Word> words = producer.produce();
 			Collection<Word> wordCollection = showOrderGenerated ?  producer.getWordListChain() : words;
 			
-			for(Word word : wordCollection) {
-				System.out.println(word.toString().trim());
-			}
+			PrintStream stream = System.out;
+			wordCollection.stream().forEach(word -> outputWord(stream, word));
+
 		}
+	}
+	
+	public static void outputWord(PrintStream stream, Word word) {
+		String wordString = null;
+		if(postProcessing.equalsIgnoreCase("NC")) {
+			wordString = word.toString().trim();
+		}
+		else if(postProcessing.equalsIgnoreCase("UC")) {
+			wordString = word.toString().toUpperCase();
+		}
+		else if(postProcessing.equalsIgnoreCase("LC")) {
+			wordString = word.toString().toLowerCase();
+		}
+		else if(postProcessing.equalsIgnoreCase("TC")) {
+			wordString = word.toString().toLowerCase().trim();
+			StringBuilder sb = new StringBuilder(wordString.substring(0, 1).toUpperCase());
+			sb.append(wordString.substring(1));
+			wordString = sb.toString();
+		}
+		else {
+			wordString = word.toString();
+		}
+		stream.println(wordString);
 	}
 
 }
