@@ -17,7 +17,7 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * Generates random text (words) from POS (part-of-speach) patterns.
- * Usage: util.text.TextGenerator [options] [pattern1 pattern2...]
+ * Usage: TextGenerator [options] [pattern1 pattern2...]
  * Where: 
  * 	pattern1, pattern2...  :  POS pattern to use for text generation. 
  * Options:
