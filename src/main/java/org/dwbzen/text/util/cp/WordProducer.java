@@ -291,7 +291,7 @@ public class WordProducer implements IProducer<MarkovChain<Character, Word>, Wor
 		
 		Word seed = null;
 		int num = 10;
-		String filename = null;
+		String[] filenames = {};
 		String text = null;
 		boolean ignoreCase = false;
 		boolean sort = false;
@@ -306,7 +306,7 @@ public class WordProducer implements IProducer<MarkovChain<Character, Word>, Wor
 		
 		for(int i=0; i<args.length; i++) {
 			if(args[i].equalsIgnoreCase("-file")) {
-				filename = args[++i];
+				filenames =  args[++i].split(",");
 			}
 			else if(args[i].equalsIgnoreCase("-ignoreCase")) {
 				ignoreCase = true;
@@ -352,8 +352,8 @@ public class WordProducer implements IProducer<MarkovChain<Character, Word>, Wor
 		}
 
 		// Run the CharacterCollector first
-		collector = CharacterCollector.instance(order, filename, ignoreCase);
-		if(filename == null) {
+		collector = CharacterCollector.instance(order, filenames, ignoreCase);
+		if(filenames.length == 0) {
 			collector.setText(text);
 		}
 		collector.setTrace(trace);

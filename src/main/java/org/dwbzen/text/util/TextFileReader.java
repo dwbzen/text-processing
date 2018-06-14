@@ -20,6 +20,8 @@ public class TextFileReader {
 	private Character delimiter = null;
 	private String endOfLine = null;
 	private String fileName = null;
+	private int minimumLength = 3;
+	private int maximumLength = 20;
 	
 	static Character delim = ' ';
 	static String eolString = "";
@@ -78,7 +80,7 @@ public class TextFileReader {
 		try(BufferedReader inputFileReader = new BufferedReader(in)) {
 			String line;
 			while((line = inputFileReader.readLine()) != null) {
-				if(line.length()>0) { 
+				if(line.length() >= minimumLength) { 
 					sb = new StringBuilder(line.trim());
 					sb.append(delimiter);
 					if(endOfLine != null) {
@@ -133,6 +135,22 @@ public class TextFileReader {
 
 	public String getFileName() {
 		return fileName;
+	}
+
+	public int getMinimumLength() {
+		return minimumLength;
+	}
+
+	public void setMinimumLength(int minimumLength) {
+		this.minimumLength = minimumLength;
+	}
+
+	public int getMaximumLength() {
+		return maximumLength;
+	}
+
+	public void setMaximumLength(int maximumLength) {
+		this.maximumLength = maximumLength;
 	}
 
 	public int size() {

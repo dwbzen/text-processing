@@ -52,8 +52,8 @@ public class CharacterCollector implements ICollector<Word, MarkovChain<Characte
 	protected static final Logger log = LogManager.getLogger(CharacterCollector.class);
 	private boolean ignoreCase = true; 
 	private int order; 
-	private String fileName = null;
-	private String text = null;
+	private String[] fileNames = {};
+	private StringBuilder text = new StringBuilder();
 	private boolean trace = false;
 	private MarkovChain<Character, Word> markovChain = null;
 	private static TextFileReader reader = null;
@@ -65,14 +65,17 @@ public class CharacterCollector implements ICollector<Word, MarkovChain<Characte
 	 * @param ignorecaseflag set to true to ignore case. This converts all input to lower case.
 	 * @return CharacterCollector instance
 	 */
-	public static CharacterCollector instance(int order, String inputFile, boolean ignorecaseflag) throws IOException {
-		CharacterCollector collector = new CharacterCollector(order, inputFile, ignorecaseflag);
+	public static CharacterCollector instance(int order, String[] inputFiles, boolean ignorecaseflag) throws IOException {
+		CharacterCollector collector = new CharacterCollector(order, inputFiles, ignorecaseflag);
 		collector.markovChain = new MarkovChain<Character, Word>(order);
-		if(inputFile != null) {
-			reader = TextFileReader.getInstance(inputFile);
-			collector.setText( (ignorecaseflag?  
+		if(inputFiles.length != 0) {
+			for(String inputFile : inputFiles) {
+				reader = TextFileReader.getInstance(inputFile);
+				reader.setMinimumLength(order);
+				collector.setText( (ignorecaseflag?  
 							reader.getFileText().toLowerCase() :
 							reader.getFileText()) );
+			}
 		}	// else use setText() method
 		return collector;
 	}
@@ -85,15 +88,15 @@ public class CharacterCollector implements ICollector<Word, MarkovChain<Characte
 	 * 
 	 * @throws FileNotFoundException
 	 */
-	protected CharacterCollector(int order, String fileName, boolean ignoreCase) {
+	protected CharacterCollector(int order, String[] fileNames, boolean ignoreCase) {
 		this.order = order;
-		this.fileName = fileName;
+		this.fileNames = fileNames;
 		this.ignoreCase = ignoreCase;
 	}
 	
 	@Override
 	public void collect() {
-		Sentence sentence = new Sentence(text, true);
+		Sentence sentence = new Sentence(text.toString(), true);
 		accept(sentence);
 	}
 	
@@ -161,11 +164,11 @@ public class CharacterCollector implements ICollector<Word, MarkovChain<Characte
 	}
 
 	public String getText() {
-		return text;
+		return text.toString();
 	}
 
-	public void setText(String text) {
-		this.text = text;
+	public void setText(String str) {
+		this.text.append(str);
 	}
 
 	public boolean isIgnoreCase() {
@@ -176,8 +179,8 @@ public class CharacterCollector implements ICollector<Word, MarkovChain<Characte
 		return order;
 	}
 
-	public String getFileName() {
-		return fileName;
+	public String[] getFileNames() {
+		return fileNames;
 	}
 	
 	public boolean isTrace() {
@@ -197,15 +200,15 @@ public class CharacterCollector implements ICollector<Word, MarkovChain<Characte
 	}
 
 	public static void main(String...args) throws IOException {
-		String filename = null;
+		String[] filenames = {};
 		String text = null;
 		int order = 2;
 		boolean ignoreCase = false;
 		boolean trace = false;
 		
 		for(int i=0; i<args.length; i++) {
-			if(args[i].equalsIgnoreCase("-file")) {
-				filename = args[++i];
+			if(args[i].startsWith("-file")) {
+				filenames = args[++i].split(",");
 			}
 			else if(args[i].equalsIgnoreCase("-ignoreCase")) {
 				ignoreCase = true;
@@ -220,8 +223,8 @@ public class CharacterCollector implements ICollector<Word, MarkovChain<Characte
 				text = args[i];
 			}
 		}
-		CharacterCollector collector = CharacterCollector.instance(order, filename, ignoreCase);
-		if(filename == null) {
+		CharacterCollector collector = CharacterCollector.instance(order, filenames, ignoreCase);
+		if(filenames.length == 0) {
 			collector.setText(text);
 		}
 		collector.setTrace(trace);
