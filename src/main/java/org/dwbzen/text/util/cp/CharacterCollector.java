@@ -55,6 +55,7 @@ public class CharacterCollector implements ICollector<Word, MarkovChain<Characte
 	private String[] fileNames = {};
 	private StringBuilder text = new StringBuilder();
 	private boolean trace = false;
+	private Character[] filters = {'-', '.'};	// filters words not to include if they contain these characters
 	private MarkovChain<Character, Word> markovChain = null;
 	private static TextFileReader reader = null;
 	
@@ -122,20 +123,22 @@ public class CharacterCollector implements ICollector<Word, MarkovChain<Characte
 		logMessage("apply(word): '" + word + "'");
 		int numberOfTokens = word.size();
 		int lim = numberOfTokens - order + 1;
-		for(int i=0; i< lim; i++) {
-			int index = i+order;
-			if(index <= numberOfTokens) {		// don't run off the end of the List
-				subset = word.subset(i, index);
-				nextChar = (index == numberOfTokens) ? Word.TERMINAL : word.get(i+order);
-				logMessage("  subset: '" + subset + "' next char: '" + nextChar + "'");
-				addOccurrence(subset, nextChar);
+		if(!shouldFilter(word)) {
+			for(int i=0; i< lim; i++) {
+				int index = i+order;
+				if(index <= numberOfTokens) {		// don't run off the end of the List
+					subset = word.subset(i, index);
+					nextChar = (index == numberOfTokens) ? Word.TERMINAL : word.get(i+order);
+					logMessage("  subset: '" + subset + "' next char: '" + nextChar + "'");
+					addOccurrence(subset, nextChar);
+				}
 			}
+			// add terminal state
+			subset = word.subset(lim);
+			subset.append(Word.TERMINAL);
+			log.debug("  terminal state, subset: '" + subset + "'");
+			addOccurrence(subset, Word.NULL_VALUE);
 		}
-		// add terminal state
-		subset = word.subset(lim);
-		subset.append(Word.TERMINAL);
-		log.debug("  terminal state, subset: '" + subset + "'");
-		addOccurrence(subset, Word.NULL_VALUE);
 		return markovChain;
 	}
 	
@@ -190,6 +193,22 @@ public class CharacterCollector implements ICollector<Word, MarkovChain<Characte
 	public void setTrace(boolean trace) {
 		this.trace = trace;
 		markovChain.setTrace(trace);
+	}
+	
+	public Character[] getFilters() {
+		return filters;
+	}
+
+	public void setFilters(Character[] filters) {
+		this.filters = filters;
+	}
+
+	public boolean shouldFilter(Word word) {
+		boolean result = false;
+		for(Character s : filters) {
+			result = word.contains(s);
+		}
+		return result;
 	}
 	
 	private void logMessage(String text) {
