@@ -53,6 +53,7 @@ public class CharacterCollector implements ICollector<Word, MarkovChain<Characte
 	private boolean ignoreCase = true; 
 	private int order; 
 	private String[] fileNames = {};
+	private String partsOfSpeach = null;	// only applies to parts of speech files
 	private StringBuilder text = new StringBuilder();
 	private boolean trace = false;
 	private Character[] filters = {'-', '.'};	// filters words not to include if they contain these characters
@@ -69,16 +70,51 @@ public class CharacterCollector implements ICollector<Word, MarkovChain<Characte
 	public static CharacterCollector instance(int order, String[] inputFiles, boolean ignorecaseflag) throws IOException {
 		CharacterCollector collector = new CharacterCollector(order, inputFiles, ignorecaseflag);
 		collector.markovChain = new MarkovChain<Character, Word>(order);
-		if(inputFiles.length != 0) {
-			for(String inputFile : inputFiles) {
-				reader = TextFileReader.getInstance(inputFile);
-				reader.setMinimumLength(order);
-				collector.setText( (ignorecaseflag?  
-							reader.getFileText().toLowerCase() :
-							reader.getFileText()) );
-			}
-		}	// else use setText() method
+		for(String inputFile : inputFiles) {
+			reader = TextFileReader.getInstance(inputFile);
+			reader.setMinimumLength(order);
+			collector.setText( (ignorecaseflag? 
+						reader.getFileText().toLowerCase() :
+						reader.getFileText()) );
+		}
 		return collector;
+	}
+	
+	public static CharacterCollector instance(int order, String[] inputFiles, boolean ignorecaseflag, String pos) throws IOException {
+		CharacterCollector collector = new CharacterCollector(order, inputFiles, ignorecaseflag, pos);
+		collector.markovChain = new MarkovChain<Character, Word>(order);
+		for(String inputFile : inputFiles) {
+			reader = TextFileReader.getInstance(inputFile);
+			reader.setMinimumLength(order);
+			List<String> fileText = reader.getFileLines();
+			for(String s : fileText) {
+				String[] splits = s.split("\t");
+				if(splits.length > 1) {
+					if(containsAny(splits[1], pos)) {
+						collector.setText( (ignorecaseflag ? splits[0].toLowerCase() : splits[0]) + " ");
+					}
+				}
+				else {	// no POS specified
+					collector.setText( (ignorecaseflag ? splits[0].toLowerCase() : splits[0]) + " ");
+				}
+			}
+		}
+		return collector;
+	}
+	
+	/**
+	 * Returns true if ANY of the compareString characters are in sourceString, false otherwise.</p>
+	 * Comparisons are case-sensitive.
+	 * For example containsAny("iNv", "LN") == true</p>
+	 * containsAny("iNv", "V") == false.
+	 * @param sourceString
+	 * @param compareString
+	 * @return
+	 */
+	static boolean containsAny(String sourceString, String compareString) {
+		boolean contains = false;
+		contains |= compareString.chars().anyMatch(c -> sourceString.indexOf(c) >= 0);
+		return contains;
 	}
 	
 	/**
@@ -93,6 +129,11 @@ public class CharacterCollector implements ICollector<Word, MarkovChain<Characte
 		this.order = order;
 		this.fileNames = fileNames;
 		this.ignoreCase = ignoreCase;
+	}
+	
+	protected CharacterCollector(int order, String[] fileNames, boolean ignoreCase, String pos) {
+		this(order, fileNames, ignoreCase);
+		partsOfSpeach = pos;
 	}
 	
 	@Override
@@ -206,11 +247,19 @@ public class CharacterCollector implements ICollector<Word, MarkovChain<Characte
 	public boolean shouldFilter(Word word) {
 		boolean result = false;
 		for(Character s : filters) {
-			result = word.contains(s);
+			result |= word.contains(s);
 		}
 		return result;
 	}
 	
+	public String getPartsOfSpeach() {
+		return partsOfSpeach;
+	}
+
+	public void setPartsOfSpeach(String partsOfSpeach) {
+		this.partsOfSpeach = partsOfSpeach;
+	}
+
 	private void logMessage(String text) {
 		log.debug(text);
 		if(trace) {

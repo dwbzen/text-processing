@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.ThreadLocalRandom;
@@ -122,7 +123,7 @@ public class WordProducer implements IProducer<MarkovChain<Character, Word>, Wor
 		nextSeed = seed;
 		for(count=0; count<numberToGenerate; count++) {
 			Word word = apply(markovChain);
-			if(word != null && word.toString().length() >= minimumLength) {
+			if(word != null && word.size() >= minimumLength) {
 				logger.debug("adding: '" + word + "'");
 				generatedWords.add(word);
 				wordListChain.add(word);
@@ -292,6 +293,7 @@ public class WordProducer implements IProducer<MarkovChain<Character, Word>, Wor
 		Word seed = null;
 		int num = 10;
 		String[] filenames = {};
+		Optional<String> posOption = Optional.empty();
 		String text = null;
 		boolean ignoreCase = false;
 		boolean sort = false;
@@ -346,13 +348,18 @@ public class WordProducer implements IProducer<MarkovChain<Character, Word>, Wor
 				// format processing
 				postProcessing = args[++i];
 			}
+			else if(args[i].equalsIgnoreCase("-pos")) {
+				// file is a part of speech file
+				posOption = Optional.of(args[++i]);
+			}
 			else {
 				text = args[i];
 			}
 		}
 
 		// Run the CharacterCollector first
-		collector = CharacterCollector.instance(order, filenames, ignoreCase);
+		collector = posOption.isPresent() ? CharacterCollector.instance(order, filenames, ignoreCase, posOption.get()) :
+			CharacterCollector.instance(order, filenames, ignoreCase);
 		if(filenames.length == 0) {
 			collector.setText(text);
 		}
