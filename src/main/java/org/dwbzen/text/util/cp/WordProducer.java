@@ -39,10 +39,11 @@ import mathlib.cp.OccurrenceProbability;
  *  -recycle n			How often to pick a new seed, default is after each produced word
  *  -ignoreCase			Ignores case (converts input to lower)
  *  -repeat n			#times to run the producer - each run produces <num> Words
- *  -sort				Sort the output.
+ *  -sort  				Sort the output.
  *  -list				Display produce Words in order produced
  *  -trace				Follow the action on seed picking. Sets trace mode on CharacterCollector
  *  -format				post-processing: TC = title case, UC = upper case, LC = lower case
+ *  -init				choose inital seed only (start of word)
  *  
  *  
  * If you wanted to use the same seed, for example " KA" for womens names, specify -recycle number
@@ -305,6 +306,7 @@ public class WordProducer implements IProducer<MarkovChain<Character, Word>, Wor
 		boolean showOrderGenerated = false;
 		CharacterCollector collector = null;
 		boolean trace = false;
+		boolean pickInitialSeed = false;
 		
 		for(int i=0; i<args.length; i++) {
 			if(args[i].equalsIgnoreCase("-file")) {
@@ -348,6 +350,10 @@ public class WordProducer implements IProducer<MarkovChain<Character, Word>, Wor
 				// format processing
 				postProcessing = args[++i];
 			}
+			else if(args[i].equalsIgnoreCase("-init")) {
+				// pick initial seeds - that start words
+				pickInitialSeed = true;
+			}
 			else if(args[i].equalsIgnoreCase("-pos")) {
 				// file is a part of speech file
 				posOption = Optional.of(args[++i]);
@@ -366,6 +372,7 @@ public class WordProducer implements IProducer<MarkovChain<Character, Word>, Wor
 		collector.setTrace(trace);
 		collector.collect();
 		MarkovChain<Character, Word> markovChain = collector.getMarkovChain();
+		markovChain.setPickInitialSeed(pickInitialSeed);
 		if(seed == null) {
 			seed = markovChain.pickSeed();
 		}

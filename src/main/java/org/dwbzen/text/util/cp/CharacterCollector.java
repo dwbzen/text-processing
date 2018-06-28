@@ -164,37 +164,42 @@ public class CharacterCollector implements ICollector<Word, MarkovChain<Characte
 		logMessage("apply(word): '" + word + "'");
 		int numberOfTokens = word.size();
 		int lim = numberOfTokens - order + 1;
-		if(!shouldFilter(word)) {
-			for(int i=0; i< lim; i++) {
-				int index = i+order;
-				if(index <= numberOfTokens) {		// don't run off the end of the List
-					subset = word.subset(i, index);
-					nextChar = (index == numberOfTokens) ? Word.TERMINAL : word.get(i+order);
-					logMessage("  subset: '" + subset + "' next char: '" + nextChar + "'");
-					addOccurrence(subset, nextChar);
+		if(lim >= 0) {
+			if(!shouldFilter(word)) {
+				for(int i=0; i< lim; i++) {
+					int index = i+order;
+					if(index <= numberOfTokens) {		// don't run off the end of the List
+						subset = word.subset(i, index);
+						nextChar = (index == numberOfTokens) ? Word.TERMINAL : word.get(i+order);
+						logMessage("  subset: '" + subset + "' next char: '" + nextChar + "'");
+						boolean initial = (i==0);	// start of a Word?
+						addOccurrence(subset, nextChar, initial);
+					}
 				}
+				// add terminal state
+				subset = word.subset(lim);
+				subset.append(Word.TERMINAL);
+				log.debug("  terminal state, subset: '" + subset + "'");
+				addOccurrence(subset, Word.NULL_VALUE, false);
 			}
-			// add terminal state
-			subset = word.subset(lim);
-			subset.append(Word.TERMINAL);
-			log.debug("  terminal state, subset: '" + subset + "'");
-			addOccurrence(subset, Word.NULL_VALUE);
 		}
 		return markovChain;
 	}
 	
-	private void addOccurrence(Word theWord, Character theChar) {
+	private void addOccurrence(Word theWord, Character theChar, boolean initial) {
 		boolean terminal = theChar.equals(Word.NULL_VALUE);
 		if(markovChain.containsKey(theWord)) {
 			CollectorStats<Character, Word> collectorStats = markovChain.get(theWord);
 			collectorStats.addOccurrence(theChar);
 			collectorStats.setTerminal(terminal);
+			collectorStats.setInitial(initial);
 		}
 		else {
 			CollectorStats<Character, Word> collectorStats = new CollectorStats<Character, Word>();
 			collectorStats.setSubset(theWord);
 			collectorStats.addOccurrence(theChar);
 			collectorStats.setTerminal(terminal);
+			collectorStats.setInitial(initial);
 			markovChain.put(theWord, collectorStats);
 		}
 	}
