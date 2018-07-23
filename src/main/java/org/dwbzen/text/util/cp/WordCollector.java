@@ -57,7 +57,7 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 		if(inputFile != null) {
 			reader = (type.equals(TYPE.VERSE)) ? TextFileReader.getInstance(inputFile, "\n") : TextFileReader.getInstance(inputFile);
 			if(type.equals(TYPE.VERSE)) {
-				
+				// TODO
 			}
 			sourceText = reader.getFileText() ;
 		}

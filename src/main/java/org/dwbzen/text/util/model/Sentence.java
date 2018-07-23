@@ -34,7 +34,8 @@ import mathlib.cp.ICollectable;
  * for quotations and normal straight quote for contractions.
  * 
  * For certain kinds of text, such as poetry or verse, it is appropriate to
- * treat the end of line characters (\r, \n) as a terminator. 
+ * treat the end of line characters (\r, \n) as a terminator.
+ * 
  * 
  * @see java.text.BreakIterator
  * @see java.util.regex.Pattern
@@ -207,8 +208,9 @@ public class Sentence extends ArrayList<Word> implements Comparable<Sentence>, L
 		return w;
 	}
 	
+	
 	public void append(Word w) {
-		add(w);
+		this.add(w);
 	}
 	
 	public static Word getDelimiter() {
