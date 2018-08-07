@@ -113,6 +113,7 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 				if(index <= numberOfTokens) {		// don't run off the end of the List
 					subset = sentence.subset(i, index);
 					nextWord = (index == numberOfTokens) ? Sentence.TERMINAL : sentence.get(i+order);
+					// TODO - check for WORDS_TO_IGNORE
 					log.debug("  subset: '" + subset + "' next word: '" + nextWord + "'");
 					addOccurrence(subset, nextWord);
 				}
