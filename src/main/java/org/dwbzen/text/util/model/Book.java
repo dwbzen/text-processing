@@ -98,6 +98,7 @@ public class Book implements Supplier<Sentence>, Collection<Word>, Serializable 
 		}
 		else {
 			sentence = new Sentence(source.substring(start, end), true);
+			log.trace(sentence);
 			start = end;
 		}
 		return sentence;

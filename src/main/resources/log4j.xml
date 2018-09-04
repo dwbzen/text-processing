@@ -18,27 +18,17 @@
 </Appenders>
 <Loggers>
     <Logger name="util" additivity="false">
-		<level value="INFO"/>
+		<level value="DEBUG"/>
 		<appender-ref ref="STDOUT"/>
 		<appender-ref ref="FILE"/>
 	</Logger>
 
-    <Logger name="math" additivity="false">
-		<level value="INFO"/>
-		<appender-ref ref="STDOUT"/>
-	</Logger>
-
-	<Logger name="util.cp" additivity="false">
+	<Logger name="org.*" additivity="false">
 		<level value="DEBUG"/>
 		<appender-ref ref="STDOUT"/>
 	</Logger>
 
-	<Logger name="com" additivity="false">
-		<level value="INFO"/>
-		<appender-ref ref="STDOUT"/>
-	</Logger>
-	
-    <Root level="debug">
+    <Root level="DEBUG">
       <AppenderRef ref="STDOUT"/>
     </Root>
 </Loggers>

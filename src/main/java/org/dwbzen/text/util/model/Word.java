@@ -148,6 +148,10 @@ public class Word extends ArrayList<Character> implements Comparable<Word>, List
 		add(c);
 		wordString.append(c);
 	}
+	
+	public String lower() {
+		return wordString.toString().toLowerCase();
+	}
 
 	@Override
 	public void accept(int value) {
