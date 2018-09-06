@@ -275,10 +275,13 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 			if(args[i].equalsIgnoreCase("-file")) {
 				inputFile = args[++i];
 			}
-			else if(args[i].equalsIgnoreCase("-displayMarkovChain")) {
+			else if(args[i].startsWith("-displayMarkov")) {
 				displayMarkovChain = true;
 			}
-			else if(args[i].equalsIgnoreCase("-displaySummaryMap")) {
+			else if(args[i].startsWith("-displaySummary")) {
+				displaySummaryMap = true;
+			}
+			else if(args[i].startsWith("-displayInverted")) {
 				displaySummaryMap = true;
 			}
 			else if(args[i].equalsIgnoreCase("-displayJson")) {
@@ -324,9 +327,12 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 		if(orderList.size() == 1) {
 			Integer ord = orderList.get(0);
 			MarkovChain<Word, Sentence> markovChain = markovChains.get(ord);
-			if(displaySummaryMap) { markovChain.displaySummaryMap(); }
 			if(displayMarkovChain) { markovChain.display(); }
 			if(displayJson) { System.out.println(markovChain.toJson()); }
+			if(displaySummaryMap) { 
+				markovChain.displaySummaryMap();
+				markovChain.displayInvertedSummaryMap();
+			}
 		}
 		else {
 			displayMultichains(markovChains);
