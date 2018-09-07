@@ -78,14 +78,14 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 			}
 			sourceText = reader.getFileText() ;
 		}
-		WordCollector collector = getWordCollector(order, sourceText, type);
+		WordCollector collector = getWordCollector(order, sourceText, type, ignorecaseflag);
 		collector.setBookType(type);
-		collector.setIgnoreCase(ignorecaseflag);
 		return collector;
 	}
 	
-	public static WordCollector getWordCollector(int order, String text, TYPE type) throws IOException {
+	public static WordCollector getWordCollector(int order, String text, TYPE type, boolean ignorecaseflag) throws IOException {
 		WordCollector collector = new WordCollector();
+		collector.setIgnoreCase(ignorecaseflag);
 		collector.setOrder(order);
 		collector.setText(text);	// also filters unwanted words
 		Book book = new Book(collector.getText());
@@ -214,17 +214,19 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 
 	/**
 	 * Sets the text string after filtering out words to ignore in filterWords
+	 * If ignoreCase is set, text is converted to lower case.
 	 * @param text
 	 */
 	public void setText(String text) {
+		String convertedText = ignoreCase ? text.toLowerCase() : text;
 		if(isFilteringInputText && filterWords.size() > 0) {
 			StringBuilder sb = new StringBuilder();
 			BreakIterator boundry = BreakIterator.getWordInstance(Locale.US);
-			boundry.setText(text);
+			boundry.setText(convertedText);
 			int start = 0;
 			int end = 0;
 			while((end=boundry.next()) != BreakIterator.DONE) {
-				String temp = text.substring(start, end).trim();
+				String temp = convertedText.substring(start, end).trim();
 				if(temp.length() > 0 && !filterWords.contains(temp)) {
 					sb.append(temp + " ");
 				}
@@ -233,7 +235,7 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 			this.text = sb.toString();
 		}
 		else {
-			this.text = text;
+			this.text = convertedText;
 		}
 	}
 
@@ -267,6 +269,7 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 		String textType = "prose";
 		boolean displayMarkovChain = false;
 		boolean displaySummaryMap = false;
+		boolean displayInvertedSummary = false;
 		boolean displayJson = false;
 		boolean ignoreCase = false;
 		String orderstring = null;
@@ -282,7 +285,7 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 				displaySummaryMap = true;
 			}
 			else if(args[i].startsWith("-displayInverted")) {
-				displaySummaryMap = true;
+				displayInvertedSummary = true;
 			}
 			else if(args[i].equalsIgnoreCase("-displayJson")) {
 				displayJson = true;
@@ -319,7 +322,7 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 		for(Integer order : orderList) {
 			WordCollector collector = (inputFile != null) ?
 					WordCollector.getWordCollector(order, inputFile, ignoreCase, type) :
-					WordCollector.getWordCollector(order, text, type);
+					WordCollector.getWordCollector(order, text, type, ignoreCase);
 			collector.collect();
 			MarkovChain<Word, Sentence> markovChain = collector.getMarkovChain();
 			markovChains.put(order, markovChain);
@@ -327,11 +330,13 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 		if(orderList.size() == 1) {
 			Integer ord = orderList.get(0);
 			MarkovChain<Word, Sentence> markovChain = markovChains.get(ord);
-			if(displayMarkovChain) { markovChain.display(); }
+			if(displayMarkovChain) { System.out.println(markovChain.getMarkovChainDisplayText()); }
 			if(displayJson) { System.out.println(markovChain.toJson()); }
 			if(displaySummaryMap) { 
-				markovChain.displaySummaryMap();
-				markovChain.displayInvertedSummaryMap();
+				System.out.println(markovChain.getSummaryMapText()); 
+			}
+			if(displayInvertedSummary) { 
+				System.out.println(markovChain.getInvertedSummaryMapText());
 			}
 		}
 		else {

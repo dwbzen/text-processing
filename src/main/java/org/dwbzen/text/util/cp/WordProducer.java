@@ -377,8 +377,8 @@ public class WordProducer implements IProducer<MarkovChain<Character, Word>, Wor
 			seed = markovChain.pickSeed();
 		}
 		if(trace) {
-			markovChain.display();
-			markovChain.displaySummaryMap();
+			System.out.print(markovChain.getMarkovChainDisplayText()); 
+			System.out.print(markovChain.getSummaryMapText());
 		}
 		// Run the WordProducer on the results
 		for(int nr=1; nr<=repeats; nr++) {
