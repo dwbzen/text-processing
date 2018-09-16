@@ -12,6 +12,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dwbzen.text.util.Configuration;
 import org.dwbzen.text.util.TextFileReader;
+import org.dwbzen.text.util.WordListUtils;
 import org.dwbzen.text.util.model.Book;
 import org.dwbzen.text.util.model.Book.TYPE;
 import org.dwbzen.text.util.model.Sentence;
@@ -43,7 +44,6 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 	public static final String CONFIG_FILENAME = "/config.properties";
 	public static final String[] punctuation = {".", "?", "!", ",", ":", "&", "+" };
 
-	private boolean ignoreCase = false; 
 	private int order;
 	private String text = null;
 	private MarkovChain<Word, Sentence> markovChain;
@@ -53,9 +53,11 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 	private List<String> filterWords = new ArrayList<String>();
 	private Properties configProperties = null;
 	private Configuration configuration = null;
+	private boolean ignoreCase = false; 
 	private boolean isFilteringInputText = false;
 	private boolean isFilteringPunctuation = false;
-
+	private boolean substituteWordVariants = false;
+	private Map<String, String> variantMap = null;
 
 	/**
 	 * Factory method. Uses default Book TYPE of PROSE
@@ -78,14 +80,14 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 			}
 			sourceText = reader.getFileText() ;
 		}
-		WordCollector collector = getWordCollector(order, sourceText, type);
+		WordCollector collector = getWordCollector(order, sourceText, type, ignorecaseflag);
 		collector.setBookType(type);
-		collector.setIgnoreCase(ignorecaseflag);
 		return collector;
 	}
 	
-	public static WordCollector getWordCollector(int order, String text, TYPE type) throws IOException {
+	public static WordCollector getWordCollector(int order, String text, TYPE type, boolean ignorecaseflag) throws IOException {
 		WordCollector collector = new WordCollector();
+		collector.setIgnoreCase(ignorecaseflag);
 		collector.setOrder(order);
 		collector.setText(text);	// also filters unwanted words
 		Book book = new Book(collector.getText());
@@ -106,19 +108,34 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 		configure();
 	}
 	
-	private void configure()  {
-		this.configuration = Configuration.getInstance(CONFIG_FILENAME);
-		this.configProperties = configuration.getProperties();
-		isFilteringInputText = configProperties.getProperty("filterWordsToIgnore", "false").equalsIgnoreCase("true");
-		isFilteringPunctuation  = configProperties.getProperty("filterPunctuation", "false").equalsIgnoreCase("true");
-		if(isFilteringInputText && configProperties.containsKey("WORDS_TO_IGNORE")) {
-			String ignoreThese = configProperties.getProperty("WORDS_TO_IGNORE");
-			String[] wordsToIgnore = ignoreThese.split(",");
-			for(String word : wordsToIgnore) { filterWords.add(word); }
+	private boolean configure()  {
+		boolean okay = true;
+		try {
+			configuration = Configuration.getInstance(CONFIG_FILENAME);
+			configProperties = configuration.getProperties();
+			isFilteringInputText = configProperties.getProperty("filterWordsToIgnore", "false").equalsIgnoreCase("true");
+			isFilteringPunctuation  = configProperties.getProperty("filterPunctuation", "false").equalsIgnoreCase("true");
+			substituteWordVariants = configProperties.getProperty("substituteWordVariants", "false").equalsIgnoreCase("true");
+			if(isFilteringInputText && configProperties.containsKey("WORDS_TO_IGNORE")) {
+				String ignoreThese = configProperties.getProperty("WORDS_TO_IGNORE");
+				String[] wordsToIgnore = ignoreThese.split(",");
+				for(String word : wordsToIgnore) { filterWords.add(word); }
+			}
+			if(isFilteringPunctuation) {
+				for(String p : punctuation) { filterWords.add(p); }
+			}
+			if(substituteWordVariants) {
+				String inputFileName = configProperties.getProperty("VARIANTS_FILENAME");
+				WordListUtils wordListUtils = new WordListUtils(inputFileName, null);
+				wordListUtils.createWordVariantMap();
+				variantMap = wordListUtils.getVariantMap();
+			}
+		} catch(Exception e) {
+			System.err.println("Configuration error: " + e.getMessage());
+			e.printStackTrace(System.err);
+			okay = false;
 		}
-		if(isFilteringPunctuation) {
-			for(String p : punctuation) { filterWords.add(p); }
-		}
+		return okay;
 	}
 	
 	@Override
@@ -214,6 +231,7 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 
 	/**
 	 * Sets the text string after filtering out words to ignore in filterWords
+	 * and substituting word variants if so configured.
 	 * @param text
 	 */
 	public void setText(String text) {
@@ -225,8 +243,11 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 			int end = 0;
 			while((end=boundry.next()) != BreakIterator.DONE) {
 				String temp = text.substring(start, end).trim();
-				if(temp.length() > 0 && !filterWords.contains(temp)) {
-					sb.append(temp + " ");
+				temp = ignoreCase ? temp.toLowerCase() : temp;
+				String variant = (substituteWordVariants && variantMap.containsKey(temp)) ?
+						variantMap.get(temp) : temp;
+				if(variant.length() > 0 && !filterWords.contains(variant)) {
+					sb.append(variant + " ");
 				}
 				start = end;
 			}
@@ -261,6 +282,14 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 		this.isFilteringPunctuation = isFilteringPunctuation;
 	}
 	
+	public boolean isSubstituteWordVariants() {
+		return substituteWordVariants;
+	}
+
+	public void setSubstituteWordVariants(boolean substituteWordVariants) {
+		this.substituteWordVariants = substituteWordVariants;
+	}
+
 	public static void main(String...args) throws IOException {
 		String inputFile = null;
 		String text = null;
@@ -316,7 +345,7 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 		for(Integer order : orderList) {
 			WordCollector collector = (inputFile != null) ?
 					WordCollector.getWordCollector(order, inputFile, ignoreCase, type) :
-					WordCollector.getWordCollector(order, text, type);
+					WordCollector.getWordCollector(order, text, type, ignoreCase);
 			collector.collect();
 			MarkovChain<Word, Sentence> markovChain = collector.getMarkovChain();
 			markovChains.put(order, markovChain);
