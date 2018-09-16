@@ -303,8 +303,8 @@ public class CharacterCollector implements ICollector<Word, MarkovChain<Characte
 		collector.setTrace(trace);
 		collector.collect();
 		MarkovChain<Character, Word> markovChain = collector.getMarkovChain();
-		markovChain.display();
-		markovChain.displaySummaryMap();
+		System.out.print(markovChain.getMarkovChainDisplayText()); 
+		System.out.print(markovChain.getSummaryMapText());
 		System.out.println(markovChain.toJson());
 		
 	}

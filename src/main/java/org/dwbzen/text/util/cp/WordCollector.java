@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
-import java.util.TreeMap;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -232,18 +231,20 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 	/**
 	 * Sets the text string after filtering out words to ignore in filterWords
 	 * and substituting word variants if so configured.
+	 * If ignoreCase is set, text is converted to lower case.
 	 * @param text
 	 */
 	public void setText(String text) {
+		String convertedText = ignoreCase ? text.toLowerCase() : text;
 		if(isFilteringInputText && filterWords.size() > 0) {
 			StringBuilder sb = new StringBuilder();
 			BreakIterator boundry = BreakIterator.getWordInstance(Locale.US);
-			boundry.setText(text);
+			boundry.setText(convertedText);
 			int start = 0;
 			int end = 0;
 			while((end=boundry.next()) != BreakIterator.DONE) {
-				String temp = text.substring(start, end).trim();
-				temp = ignoreCase ? temp.toLowerCase() : temp;
+
+				String temp = convertedText.substring(start, end).trim();
 				String variant = (substituteWordVariants && variantMap.containsKey(temp)) ?
 						variantMap.get(temp) : temp;
 				if(variant.length() > 0 && !filterWords.contains(variant)) {
@@ -254,7 +255,7 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 			this.text = sb.toString();
 		}
 		else {
-			this.text = text;
+			this.text = convertedText;
 		}
 	}
 
@@ -290,81 +291,4 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 		this.substituteWordVariants = substituteWordVariants;
 	}
 
-	public static void main(String...args) throws IOException {
-		String inputFile = null;
-		String text = null;
-		String textType = "prose";
-		boolean displayMarkovChain = false;
-		boolean displaySummaryMap = false;
-		boolean displayJson = false;
-		boolean ignoreCase = false;
-		String orderstring = null;
-		List<Integer> orderList = new ArrayList<Integer>();
-		for(int i=0; i<args.length; i++) {
-			if(args[i].equalsIgnoreCase("-file")) {
-				inputFile = args[++i];
-			}
-			else if(args[i].equalsIgnoreCase("-displayMarkovChain")) {
-				displayMarkovChain = true;
-			}
-			else if(args[i].equalsIgnoreCase("-displaySummaryMap")) {
-				displaySummaryMap = true;
-			}
-			else if(args[i].equalsIgnoreCase("-displayJson")) {
-				displayJson = true;
-			}
-			else if(args[i].equalsIgnoreCase("-ignoreCase")) {
-				ignoreCase = true;
-			}			
-			else if(args[i].equalsIgnoreCase("-order")) {	// can be a list
-				orderstring = args[++i];
-			}
-			else if(args[i].equalsIgnoreCase("-type")) {
-				textType = args[++i];
-			}
-			else {
-				text = args[i];
-			}
-		}
-		Book.TYPE type = TYPE.PROSE;
-		if(textType.equalsIgnoreCase("verse")) {
-			type = TYPE.VERSE;
-		}
-		else if(textType.equalsIgnoreCase("technical")) {
-			type = TYPE.TECHNICAL;
-		}
-		if(orderstring == null) {
-			orderList.add(2);	// default order is 2 if not specified
-		}
-		else {
-			for(String order : orderstring.split(",")) {
-				orderList.add(Integer.parseInt(order));
-			}
-		}
-		Map<Integer, MarkovChain<Word,Sentence>> markovChains = new TreeMap<Integer, MarkovChain<Word,Sentence>>();
-		for(Integer order : orderList) {
-			WordCollector collector = (inputFile != null) ?
-					WordCollector.getWordCollector(order, inputFile, ignoreCase, type) :
-					WordCollector.getWordCollector(order, text, type, ignoreCase);
-			collector.collect();
-			MarkovChain<Word, Sentence> markovChain = collector.getMarkovChain();
-			markovChains.put(order, markovChain);
-		}
-		if(orderList.size() == 1) {
-			Integer ord = orderList.get(0);
-			MarkovChain<Word, Sentence> markovChain = markovChains.get(ord);
-			if(displaySummaryMap) { markovChain.displaySummaryMap(); }
-			if(displayMarkovChain) { markovChain.display(); }
-			if(displayJson) { System.out.println(markovChain.toJson()); }
-		}
-		else {
-			displayMultichains(markovChains);
-		}
-
-	}
-
-	private static void displayMultichains(Map<Integer, MarkovChain<Word, Sentence>> markovChains) {
-		
-	}
-	
 }

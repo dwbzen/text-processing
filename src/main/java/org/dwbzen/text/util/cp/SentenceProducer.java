@@ -322,8 +322,8 @@ public class SentenceProducer  implements IProducer<MarkovChain<Word, Sentence>,
 		collector.collect();
 		MarkovChain<Word, Sentence> markovChain = collector.getMarkovChain();
 		if(trace) {
-			markovChain.display();
-			markovChain.displaySummaryMap();
+			System.out.print(markovChain.getMarkovChainDisplayText());
+			System.out.print(markovChain.getSummaryMapText());
 		}
 		if(seed == null) {
 			seed = markovChain.pickSeed();
