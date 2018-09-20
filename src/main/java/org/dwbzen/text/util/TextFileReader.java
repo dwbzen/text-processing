@@ -76,7 +76,8 @@ public class TextFileReader {
 	
 	private void readFileLines() throws FileNotFoundException, IOException {
 		StringBuilder sb = null;
-		Reader in = (fileName != null) ? new FileReader(fileName) : new InputStreamReader(System.in);
+		Reader in = (fileName == null || fileName.equalsIgnoreCase("System.in") || fileName.equalsIgnoreCase("stdin")) 
+				?  new InputStreamReader(System.in) : new FileReader(fileName);
 		try(BufferedReader inputFileReader = new BufferedReader(in)) {
 			String line;
 			while((line = inputFileReader.readLine()) != null) {

@@ -1,5 +1,4 @@
 package org.dwbzen.text.util.cp;
-import java.io.IOException;
 import java.text.BreakIterator;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,8 +9,11 @@ import java.util.Properties;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dwbzen.text.util.Configuration;
-import org.dwbzen.text.util.TextFileReader;
+import org.dwbzen.text.util.DataSourceDescription;
+import org.dwbzen.text.util.DataSourceType;
+import org.dwbzen.text.util.TextFileDataSource;
 import org.dwbzen.text.util.WordListUtils;
+import org.dwbzen.text.util.exception.InvalidDataSourceException;
 import org.dwbzen.text.util.model.Book;
 import org.dwbzen.text.util.model.Book.TYPE;
 import org.dwbzen.text.util.model.Sentence;
@@ -41,6 +43,7 @@ import mathlib.cp.MarkovChain;
 public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sentence>, Book> {
 	protected static final Logger log = LogManager.getLogger(WordCollector.class);
 	public static final String CONFIG_FILENAME = "/config.properties";
+	public final static String[] CONFIG_FILES = {"/config.properties"};
 	public static final String[] punctuation = {".", "?", "!", ",", ":", "&", "+" };
 
 	private int order;
@@ -48,7 +51,6 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 	private MarkovChain<Word, Sentence> markovChain;
 	private Book book = new Book();
 	private Book.TYPE	bookType = TYPE.PROSE;	// default
-	private static TextFileReader reader = null;
 	private List<String> filterWords = new ArrayList<String>();
 	private Properties configProperties = null;
 	private Configuration configuration = null;
@@ -61,39 +63,47 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 	/**
 	 * Factory method. Uses default Book TYPE of PROSE
 	 * @param order length of the key in #of Words, usually 2 or 3
-	 * @param inputFile full path to the input file.
 	 * @param ignorecaseflag set to true to ignore case. This converts all input to lower case.
+	 * @param Type VERSE, TECHNICAL or PROSE
+	 * @param args - file:filename or just text
 	 * @return WordCollector instance
 	 */
-	public static WordCollector getWordCollector(int order, String inputFile, boolean ignorecaseflag) throws IOException {
-		WordCollector collector = getWordCollector(order, inputFile, ignorecaseflag, TYPE.PROSE);
-		return collector;
-	}
-	
-	public static WordCollector getWordCollector(int order, String inputFile, boolean ignorecaseflag, TYPE type) throws IOException {
-		String sourceText = "";
-		if(inputFile != null) {
-			reader = (type.equals(TYPE.VERSE)) ? TextFileReader.getInstance(inputFile, "\n") : TextFileReader.getInstance(inputFile);
-			if(type.equals(TYPE.TECHNICAL)) {
-				// TODO
+	public static WordCollector getWordCollector(int order, boolean ignorecaseflag, TYPE type, String... args)  {
+		String sourceText = null;
+		String inputFile = null;
+		DataSourceDescription dataSourceDescription = null;
+		TextFileDataSource dataSource = null;
+		for(int i=0; i<args.length; i++) {
+			if(args[i].startsWith("file:")) {
+				inputFile = args[i].substring(5);
 			}
-			sourceText = reader.getFileText() ;
+			else {
+				dataSourceDescription = new DataSourceDescription(DataSourceType.Text);
+				sourceText = args[i];
+			}
 		}
-		WordCollector collector = getWordCollector(order, sourceText, type, ignorecaseflag);
-		collector.setBookType(type);
-		return collector;
-	}
-	
-	public static WordCollector getWordCollector(int order, String text, TYPE type, boolean ignorecaseflag) throws IOException {
+		if(inputFile != null) {
+			dataSourceDescription = new DataSourceDescription(DataSourceType.TextFile);
+			dataSourceDescription.getProperties().setProperty("filename", inputFile);
+			dataSourceDescription.getProperties().setProperty("eol", (type.equals(TYPE.VERSE)) ? "\n" : "");
+			dataSource = new TextFileDataSource(dataSourceDescription);
+			try {
+				sourceText = dataSource.getData();
+			} catch(InvalidDataSourceException e) {
+				System.err.println(e.getMessage());
+				log.error(e.getMessage());
+				System.exit(1);
+			}
+		}
 		WordCollector collector = new WordCollector();
 		collector.setIgnoreCase(ignorecaseflag);
+		collector.configure();
 		collector.setOrder(order);
-		collector.setText(text);	// also filters unwanted words
+		collector.setText(sourceText);	// also filters unwanted words
 		Book book = new Book(collector.getText());
 		book.setType(type);
 		collector.setBook(book);
 		collector.setMarkovChain(new MarkovChain<Word, Sentence>(order));
-		
 		return collector;
 	}
 	
@@ -110,7 +120,7 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 	private boolean configure()  {
 		boolean okay = true;
 		try {
-			configuration = Configuration.getInstance(CONFIG_FILENAME);
+			configuration = Configuration.getInstance(CONFIG_FILES);
 			configProperties = configuration.getProperties();
 			isFilteringInputText = configProperties.getProperty("filterWordsToIgnore", "false").equalsIgnoreCase("true");
 			isFilteringPunctuation  = configProperties.getProperty("filterPunctuation", "false").equalsIgnoreCase("true");

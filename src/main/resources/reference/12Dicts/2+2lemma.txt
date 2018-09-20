@@ -10282,7 +10282,7 @@ confidentiality
 confider
     confiders
 configuration
-    configurations
+    configurations, config
 configure
     configured, configures, configuring
 confine

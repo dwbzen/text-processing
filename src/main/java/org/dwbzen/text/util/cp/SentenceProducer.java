@@ -254,7 +254,7 @@ public class SentenceProducer  implements IProducer<MarkovChain<Word, Sentence>,
 		
 		Sentence seed = null;
 		int num = 10;
-		String filename = null;
+		String inputFile = null;
 		String text = null;
 		boolean ignoreCase = false;
 		boolean sort = false;
@@ -270,7 +270,7 @@ public class SentenceProducer  implements IProducer<MarkovChain<Word, Sentence>,
 		
 		for(int i=0; i<args.length; i++) {
 			if(args[i].equalsIgnoreCase("-file")) {
-				filename = args[++i];
+				inputFile = args[++i];
 			}
 			else if(args[i].equalsIgnoreCase("-trace")) {
 				trace = true;
@@ -315,10 +315,9 @@ public class SentenceProducer  implements IProducer<MarkovChain<Word, Sentence>,
 
 		Book.TYPE type = (textType != null && textType.equalsIgnoreCase("verse")) ? TYPE.VERSE : TYPE.PROSE;
 		// Run the WordCollector first
-		collector = WordCollector.getWordCollector(order, filename, ignoreCase, type);
-		if(filename == null) {
-			collector.setText(text);
-		}
+		String[] collectorArg = new String[1];
+		collectorArg[0] = (inputFile != null) ? "file:" + inputFile : text;
+		collector = WordCollector.getWordCollector(order, ignoreCase, type, collectorArg);
 		collector.collect();
 		MarkovChain<Word, Sentence> markovChain = collector.getMarkovChain();
 		if(trace) {

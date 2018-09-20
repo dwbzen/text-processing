@@ -19,23 +19,26 @@ import org.apache.logging.log4j.Logger;
 public class Configuration {
 
 	protected static final Logger log = LogManager.getLogger(Configuration.class);
-	private static Configuration configuration = null;
-	private Properties properties = null;
-	private static String configurationFilename = null;
+	private Properties properties = new Properties();
+	private String configurationFilename = null;
 	
 	private Configuration() {}
 	private Configuration(String configFilename) {
-		properties = new Properties();
+		configurationFilename = configFilename;
 	}
 	
-	public static Configuration getInstance(String configFile) {
-		synchronized(Configuration.class){
-			if(configuration == null) {
-				configuration = new Configuration(configFile);
-				configurationFilename = configFile;
-				configuration.loadProperties();
+	public static Configuration getInstance(String... filename) {
+		Configuration configuration = null;
+		if(filename.length > 0) {
+			synchronized(Configuration.class){
+					configuration = new Configuration(filename[0]);
+					configuration.loadProperties();
 			}
 		}
+		else {
+			configuration = new Configuration();
+		}
+
 		return configuration;
 	}
 	

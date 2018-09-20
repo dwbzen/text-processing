@@ -23,17 +23,17 @@ import mathlib.cp.MarkovChain;
  *
  */
 public class WordCollectorRunner {
+	static boolean displayMarkovChain = false;
+	static boolean displaySummaryMap = false;
+	static boolean displayInvertedSummary = false;
+	static boolean displayJson = false;
+	static boolean prettyJson = false;
 	
 	public static void main(String...args) throws IOException {
 		String inputFile = null;
 		String text = null;
 		String textType = "prose";
-		boolean displayMarkovChain = false;
-		boolean displaySummaryMap = false;
-		boolean displayInvertedSummary = false;
-		boolean displayJson = false;
 		boolean ignoreCase = false;
-		boolean prettyJson = false;
 		String orderstring = null;
 		List<Integer> orderList = new ArrayList<Integer>();
 		for(int i=0; i<args.length; i++) {
@@ -81,10 +81,10 @@ public class WordCollectorRunner {
 			}
 		}
 		Map<Integer, MarkovChain<Word,Sentence>> markovChains = new TreeMap<Integer, MarkovChain<Word,Sentence>>();
+		String[] collectorArg = new String[1];
+		collectorArg[0] = (inputFile != null) ? "file:" + inputFile : text;
 		for(Integer order : orderList) {
-			WordCollector collector = (inputFile != null) ?
-					WordCollector.getWordCollector(order, inputFile, ignoreCase, type) :
-					WordCollector.getWordCollector(order, text, type, ignoreCase);
+			WordCollector collector = WordCollector.getWordCollector(order, ignoreCase, type, collectorArg);
 			collector.collect();
 			MarkovChain<Word, Sentence> markovChain = collector.getMarkovChain();
 			markovChains.put(order, markovChain);
@@ -109,7 +109,18 @@ public class WordCollectorRunner {
 	}
 
 	private static void displayMultichains(Map<Integer, MarkovChain<Word, Sentence>> markovChains) {
-		
+		for(Integer ord : markovChains.keySet()) {
+			MarkovChain<Word, Sentence> markovChain = markovChains.get(ord);
+			if(displayMarkovChain) { 
+				System.out.println( displayJson ? markovChain.toJson() :  markovChain.getMarkovChainDisplayText()); 
+			}
+			if(displaySummaryMap) { 
+				System.out.println(markovChain.getSummaryMapText()); 
+			}
+			if(displayInvertedSummary) { 
+				System.out.println(markovChain.getInvertedSummaryMapText(displayJson, prettyJson));
+			}
+		}
 	}
 	
 }
