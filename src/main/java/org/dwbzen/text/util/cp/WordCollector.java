@@ -11,6 +11,7 @@ import org.apache.logging.log4j.Logger;
 import org.dwbzen.text.util.Configuration;
 import org.dwbzen.text.util.DataSourceDescription;
 import org.dwbzen.text.util.DataSourceType;
+import org.dwbzen.text.util.IDataFormatter;
 import org.dwbzen.text.util.TextFileDataSource;
 import org.dwbzen.text.util.WordListUtils;
 import org.dwbzen.text.util.exception.InvalidDataSourceException;
@@ -26,11 +27,11 @@ import mathlib.cp.MarkovChain;
 /**
  * Analyzes word collections (Strings delimited by white space and/or punctuation) 
  * and collects statistics in the form of a MarkovChain that
- * can be used by a Producer class.
+ * can be used by a Producer class.</p>
  * For a given string (inline or from a file/stream), this examines all the word collections
  * of a given length 1 to n (n <= 5), and records the #instances of each word that
  * follows that word collection. Sentences formed left to right advancing  1 Word each iteration.
- * 
+ * </p>
  * Definitions:
  * A Word is a non-empty String (length >0) treated as a unit.
  * A Sentence consists of Word(s) delimited by white space (matches Pattern \s+, [ \t\n\x0B\f\r] )
@@ -58,6 +59,8 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 	private boolean isFilteringInputText = false;
 	private boolean isFilteringPunctuation = false;
 	private boolean substituteWordVariants = false;
+	private String dataFormatterClassName = null;
+	private IDataFormatter<String> dataFormatter = null;
 	private Map<String, String> variantMap = null;
 
 	/**
@@ -117,6 +120,7 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 		configure();
 	}
 	
+	@SuppressWarnings("unchecked")
 	private boolean configure()  {
 		boolean okay = true;
 		try {
@@ -125,6 +129,18 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 			isFilteringInputText = configProperties.getProperty("filterWordsToIgnore", "false").equalsIgnoreCase("true");
 			isFilteringPunctuation  = configProperties.getProperty("filterPunctuation", "false").equalsIgnoreCase("true");
 			substituteWordVariants = configProperties.getProperty("substituteWordVariants", "false").equalsIgnoreCase("true");
+			dataFormatterClassName = configProperties.getProperty("dataFormatterClass");
+			if(dataFormatterClassName != null) {
+				try {
+					Class<IDataFormatter<String>> formatterClass = (Class<IDataFormatter<String>>)Class.forName(dataFormatterClassName);
+					dataFormatter = formatterClass.getDeclaredConstructor().newInstance();
+				}
+				catch(Exception e) {
+	    			String errorMessage = "Could not create DataFormatter " + dataFormatterClassName;
+	    			log.error(errorMessage);
+	    			log.error(e.toString() );
+				}
+			}
 			if(isFilteringInputText && configProperties.containsKey("WORDS_TO_IGNORE")) {
 				String ignoreThese = configProperties.getProperty("WORDS_TO_IGNORE");
 				String[] wordsToIgnore = ignoreThese.split(",");

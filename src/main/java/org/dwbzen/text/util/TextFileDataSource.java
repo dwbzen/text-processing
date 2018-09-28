@@ -10,11 +10,11 @@ import org.dwbzen.text.util.exception.InvalidDataSourceException;
 /**
  * The DatSourceDescription for a TextFileDataSource must include the properties:<br>
  * filename: full path OR "System.in" or "stdin" to read from stdin (DataSourceType set to Text). Cannot be missing.
- * 
- * Optional properties:
- * cacheContent:true (the default) or false
- * wordDelimiter: specify if other than a space
- * eol: specify if other than an empty String ""
+ * </p>
+ * Optional properties:<br>
+ * cacheContent:true (the default) or false<br>
+ * wordDelimiter: specify if other than a space<br>
+ * eol: specify if other than an empty String ""<br>
  * 
  * @author DBacon
  *
