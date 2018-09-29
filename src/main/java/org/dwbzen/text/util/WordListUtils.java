@@ -35,6 +35,32 @@ public class WordListUtils {
 	}
 
 	/**
+	 * Gets a variant file previously created and returns the contents as a Map<String, String>
+	 * @param filename a word list file in the same format as 2+2lemma.txt
+	 * @return Map<String, String>
+	 * @throws IOException
+	 */
+	public static Map<String, String> getVariantMap(String filename) throws IOException {
+		 Map<String, String> variantMap = new TreeMap<String, String>();
+		 String line = null;
+		 try {
+			 FileReader reader = new FileReader(new File(filename));
+			 BufferedReader inputFileReader = new BufferedReader(reader);
+			 while((line = inputFileReader.readLine()) != null) {
+				 String[] tokens = line.split(",");
+				 if(tokens.length == 2) {
+					 variantMap.put(tokens[0], tokens[1]);
+				 }
+			 }
+			 reader.close();
+		 }
+		 catch(Exception e) {
+				throw new IOException(filename + " does not exist or is unreadable");
+		 }
+		 return variantMap;
+	}
+	
+	/**
 	 * This reads through the "2+2lemma.txt" word list and creates
 	 * a word map with the variant as the key and the primary word the value.<br>
 	 * Variant includes inflections, variant spellings, and words formed with certain suffixes.

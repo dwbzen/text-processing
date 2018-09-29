@@ -1,4 +1,4 @@
-package org.dwbzen.text.util.model;
+package org.dwbzen.text.pos;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -14,6 +14,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.dwbzen.text.util.ITextGenerator;
 
 /**
  * Generates random text (words) from POS (part-of-speach) patterns.

@@ -2,7 +2,7 @@ package org.dwbzen.text.junit;
 
 import java.util.List;
 
-import org.dwbzen.text.util.model.TextGenerator;
+import org.dwbzen.text.pos.TextGenerator;
 import org.junit.Test;
 
 import junit.framework.TestCase;

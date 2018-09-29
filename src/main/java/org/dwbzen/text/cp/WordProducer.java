@@ -1,4 +1,4 @@
-package org.dwbzen.text.util.cp;
+package org.dwbzen.text.cp;
 
 import java.io.BufferedReader;
 import java.io.IOException;

@@ -1,4 +1,4 @@
-package org.dwbzen.text.util.cp;
+package org.dwbzen.text.cp;
 import java.text.BreakIterator;
 import java.util.ArrayList;
 import java.util.List;
@@ -150,10 +150,8 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 				for(String p : punctuation) { filterWords.add(p); }
 			}
 			if(substituteWordVariants) {
-				String inputFileName = configProperties.getProperty("VARIANTS_FILENAME");
-				WordListUtils wordListUtils = new WordListUtils(inputFileName, null);
-				wordListUtils.createWordVariantMap();
-				variantMap = wordListUtils.getVariantMap();
+				String inputFileName = configProperties.getProperty("VARIANTS_MAP_FILENAME");
+				variantMap = WordListUtils.getVariantMap(inputFileName);
 			}
 		} catch(Exception e) {
 			System.err.println("Configuration error: " + e.getMessage());

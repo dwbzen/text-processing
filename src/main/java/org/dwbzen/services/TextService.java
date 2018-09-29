@@ -11,7 +11,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import org.dwbzen.text.util.model.TextGenerator;
+import org.dwbzen.text.pos.TextGenerator;
 
 @Path("/TextService") 
 public class TextService {

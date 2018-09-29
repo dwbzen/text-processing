@@ -1,6 +1,7 @@
-package org.dwbzen.text.util.model;
+package org.dwbzen.text.pos;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 import java.util.function.Supplier;
 
 /**
