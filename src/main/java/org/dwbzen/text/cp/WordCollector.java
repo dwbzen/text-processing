@@ -133,7 +133,7 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 			if(dataFormatterClassName != null) {
 				try {
 					Class<IDataFormatter<String>> formatterClass = (Class<IDataFormatter<String>>)Class.forName(dataFormatterClassName);
-					dataFormatter = formatterClass.getDeclaredConstructor().newInstance();
+					this.dataFormatter = formatterClass.getDeclaredConstructor().newInstance();
 				}
 				catch(Exception e) {
 	    			String errorMessage = "Could not create DataFormatter " + dataFormatterClassName;
