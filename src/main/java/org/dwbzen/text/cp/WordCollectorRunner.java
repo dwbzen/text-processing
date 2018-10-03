@@ -88,6 +88,8 @@ public class WordCollectorRunner {
 			collector.collect();
 			MarkovChain<Word, Sentence> markovChain = collector.getMarkovChain();
 			markovChains.put(order, markovChain);
+			Map<?,?> sortedChain = markovChain.sortByValue();
+			System.out.println(sortedChain.toString());
 		}
 		if(orderList.size() == 1) {
 			Integer ord = orderList.get(0);
