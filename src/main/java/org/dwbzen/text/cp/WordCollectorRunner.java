@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.TreeMap;
 
 import org.dwbzen.text.util.model.Book;
@@ -11,6 +13,7 @@ import org.dwbzen.text.util.model.Sentence;
 import org.dwbzen.text.util.model.Word;
 import org.dwbzen.text.util.model.Book.TYPE;
 
+import mathlib.cp.CollectorStats;
 import mathlib.cp.MarkovChain;
 
 /**
@@ -24,6 +27,7 @@ import mathlib.cp.MarkovChain;
  */
 public class WordCollectorRunner {
 	static boolean displayMarkovChain = false;
+	static boolean sorted = false;	// applies to MarkovChain
 	static boolean displaySummaryMap = false;
 	static boolean displayInvertedSummary = false;
 	static boolean displayJson = false;
@@ -50,7 +54,10 @@ public class WordCollectorRunner {
 			}
 			else if(args[i].equalsIgnoreCase("-json")) {
 				displayJson = true;
-				prettyJson = args[++i].equalsIgnoreCase("true") || args[++i].equalsIgnoreCase("yes") ? true : false;
+				prettyJson = args[++i].equalsIgnoreCase("true") || args[i].equalsIgnoreCase("yes") ? true : false;
+			}
+			else if(args[i].equalsIgnoreCase("-sorted")) {
+				sorted = true;
 			}
 			else if(args[i].equalsIgnoreCase("-ignoreCase")) {
 				ignoreCase = true;
@@ -88,14 +95,24 @@ public class WordCollectorRunner {
 			collector.collect();
 			MarkovChain<Word, Sentence> markovChain = collector.getMarkovChain();
 			markovChains.put(order, markovChain);
-			Map<?,?> sortedChain = markovChain.sortByValue();
-			System.out.println(sortedChain.toString());
 		}
 		if(orderList.size() == 1) {
 			Integer ord = orderList.get(0);
 			MarkovChain<Word, Sentence> markovChain = markovChains.get(ord);
-			if(displayMarkovChain) { 
-				System.out.println( displayJson ? markovChain.toJson() :  markovChain.getMarkovChainDisplayText()); 
+			if(displayMarkovChain) {
+				if(sorted) {
+					Set<Entry<Sentence, CollectorStats<Word, Sentence>>> entrySet = markovChain.entrySet();
+					Map<?,?> sortedChain = markovChain.sortByValue();
+					System.out.println(sortedChain.toString());
+					for(Object key : sortedChain.keySet()) {
+						Object val = sortedChain.get(key);
+						System.out.println("val: " + val.getClass().getName());
+						System.out.println("key: " + key.getClass().getName());
+					}
+				}
+				else {
+					System.out.println( displayJson ? markovChain.toJson() :  markovChain.getMarkovChainDisplayText()); 
+				}
 			}
 			if(displaySummaryMap) { 
 				System.out.println(markovChain.getSummaryMapText()); 
