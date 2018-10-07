@@ -4,17 +4,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 import java.util.TreeMap;
 
 import org.dwbzen.text.util.model.Book;
+import org.dwbzen.text.util.model.Book.TYPE;
 import org.dwbzen.text.util.model.Sentence;
 import org.dwbzen.text.util.model.Word;
-import org.dwbzen.text.util.model.Book.TYPE;
 
 import mathlib.cp.CollectorStats;
 import mathlib.cp.MarkovChain;
+import mathlib.cp.OccurrenceProbability;
 
 /**
  * WordCollectorRunner -display <displayFormats> -json <prettyFlag> 
@@ -32,6 +31,8 @@ public class WordCollectorRunner {
 	static boolean displayInvertedSummary = false;
 	static boolean displayJson = false;
 	static boolean prettyJson = false;
+	static boolean textOutput = false;
+	static boolean csvOutput = false;
 	
 	public static void main(String...args) throws IOException {
 		String inputFile = null;
@@ -52,9 +53,15 @@ public class WordCollectorRunner {
 					else if(f.startsWith("inverted")) { displayInvertedSummary = true; }
 				}
 			}
-			else if(args[i].equalsIgnoreCase("-json")) {
-				displayJson = true;
-				prettyJson = args[++i].equalsIgnoreCase("true") || args[i].equalsIgnoreCase("yes") ? true : false;
+			else if(args[i].equalsIgnoreCase("-output")) {
+				String[] outputFormats = args[++i].split(",");
+				// text, csv, json, pretty
+				for(String f : outputFormats) {
+					if(f.equalsIgnoreCase("json")) { displayJson = true; }
+					else if(f.startsWith("pretty")) { prettyJson = true; displayJson = true; }
+					else if(f.equalsIgnoreCase("text")) { textOutput = true; }
+					else if(f.equalsIgnoreCase("csv")) { csvOutput = true; }
+				}
 			}
 			else if(args[i].equalsIgnoreCase("-sorted")) {
 				sorted = true;
@@ -101,13 +108,18 @@ public class WordCollectorRunner {
 			MarkovChain<Word, Sentence> markovChain = markovChains.get(ord);
 			if(displayMarkovChain) {
 				if(sorted) {
-					Set<Entry<Sentence, CollectorStats<Word, Sentence>>> entrySet = markovChain.entrySet();
 					Map<?,?> sortedChain = markovChain.sortByValue();
-					System.out.println(sortedChain.toString());
-					for(Object key : sortedChain.keySet()) {
-						Object val = sortedChain.get(key);
-						System.out.println("val: " + val.getClass().getName());
-						System.out.println("key: " + key.getClass().getName());
+					for(Object obj : sortedChain.keySet()) {
+						Sentence sentence = (Sentence)obj;
+						@SuppressWarnings("unchecked")
+						CollectorStats<Word, Sentence> cstats = (CollectorStats<Word, Sentence>)sortedChain.get(sentence);
+						@SuppressWarnings("unchecked")
+						Map<Word,OccurrenceProbability> sortedStats = (Map<Word,OccurrenceProbability>)cstats.sortByValue();
+						System.out.println(sentence + "\t" + cstats.getTotalOccurrance());
+						for(Word key : sortedStats.keySet()) {
+							OccurrenceProbability op = sortedStats.get(key);
+							System.out.println("\t" + key + "\t" + op.getOccurrence() + "\t" + op.getProbability());
+						}
 					}
 				}
 				else {
