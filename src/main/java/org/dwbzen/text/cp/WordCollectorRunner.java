@@ -29,10 +29,9 @@ public class WordCollectorRunner {
 	static boolean sorted = false;	// applies to MarkovChain
 	static boolean displaySummaryMap = false;
 	static boolean displayInvertedSummary = false;
-	static boolean displayJson = false;
-	static boolean prettyJson = false;
-	static boolean textOutput = false;
-	static boolean csvOutput = false;
+	
+	public enum OutputStyle { JSON, PRETTY_JSON, TEXT, CSV };
+	static OutputStyle outputStyle = OutputStyle.TEXT;
 	
 	public static void main(String...args) throws IOException {
 		String inputFile = null;
@@ -57,10 +56,10 @@ public class WordCollectorRunner {
 				String[] outputFormats = args[++i].split(",");
 				// text, csv, json, pretty
 				for(String f : outputFormats) {
-					if(f.equalsIgnoreCase("json")) { displayJson = true; }
-					else if(f.startsWith("pretty")) { prettyJson = true; displayJson = true; }
-					else if(f.equalsIgnoreCase("text")) { textOutput = true; }
-					else if(f.equalsIgnoreCase("csv")) { csvOutput = true; }
+					if(f.equalsIgnoreCase("json")) { outputStyle = OutputStyle.JSON; }
+					else if(f.startsWith("pretty")) { outputStyle = OutputStyle.PRETTY_JSON; }
+					else if(f.equalsIgnoreCase("text")) { outputStyle = OutputStyle.TEXT; }
+					else if(f.equalsIgnoreCase("csv")) { outputStyle = OutputStyle.CSV; }
 				}
 			}
 			else if(args[i].equalsIgnoreCase("-sorted")) {
@@ -108,40 +107,46 @@ public class WordCollectorRunner {
 			MarkovChain<Word, Sentence> markovChain = markovChains.get(ord);
 			if(displayMarkovChain) {
 				if(sorted) {
-					Map<?,?> sortedChain = markovChain.sortByValue();
-					for(Object obj : sortedChain.keySet()) {
-						Sentence sentence = (Sentence)obj;
-						@SuppressWarnings("unchecked")
-						CollectorStats<Word, Sentence> cstats = (CollectorStats<Word, Sentence>)sortedChain.get(sentence);
-						@SuppressWarnings("unchecked")
-						Map<Word,OccurrenceProbability> sortedStats = (Map<Word,OccurrenceProbability>)cstats.sortByValue();
-						System.out.println(sentence + "\t" + cstats.getTotalOccurrance());
-						for(Word key : sortedStats.keySet()) {
-							OccurrenceProbability op = sortedStats.get(key);
-							System.out.println("\t" + key + "\t" + op.getOccurrence() + "\t" + op.getProbability());
-						}
-					}
+					displaySortedMarkovChainText(markovChain, outputStyle);
 				}
 				else {
-					System.out.println( displayJson ? markovChain.toJson() :  markovChain.getMarkovChainDisplayText()); 
+					System.out.println( outputStyle==OutputStyle.JSON ? markovChain.toJson() :  markovChain.getMarkovChainDisplayText()); 
 				}
 			}
 			if(displaySummaryMap) { 
 				System.out.println(markovChain.getSummaryMapText()); 
 			}
 			if(displayInvertedSummary) { 
-				System.out.println(markovChain.getInvertedSummaryMapText(displayJson, prettyJson));
+				boolean displayJson = outputStyle==OutputStyle.JSON || outputStyle==OutputStyle.PRETTY_JSON;
+				System.out.println(markovChain.getInvertedSummaryMapText(displayJson , outputStyle==OutputStyle.PRETTY_JSON));
 			}
 		}
 		else {
-			displayMultichains(markovChains);
+			displayMultichains(markovChains, outputStyle);
 		}
 
 	}
 
-	private static void displayMultichains(Map<Integer, MarkovChain<Word, Sentence>> markovChains) {
+	public static void displaySortedMarkovChainText(MarkovChain<Word, Sentence> markovChain, OutputStyle outputStyle) {
+		Map<?,?> sortedChain = markovChain.sortByValue();
+		for(Object obj : sortedChain.keySet()) {
+			Sentence sentence = (Sentence)obj;
+			@SuppressWarnings("unchecked")
+			CollectorStats<Word, Sentence> cstats = (CollectorStats<Word, Sentence>)sortedChain.get(sentence);
+			@SuppressWarnings("unchecked")
+			Map<Word,OccurrenceProbability> sortedStats = (Map<Word,OccurrenceProbability>)cstats.sortByValue();
+			System.out.println(sentence + "\t" + cstats.getTotalOccurrance());
+			for(Word key : sortedStats.keySet()) {
+				OccurrenceProbability op = sortedStats.get(key);
+				System.out.println("\t" + key + "\t" + op.getOccurrence() + "\t" + op.getProbability());
+			}
+		}
+	}
+	
+	private static void displayMultichains(Map<Integer, MarkovChain<Word, Sentence>> markovChains, OutputStyle outputStyle) {
 		for(Integer ord : markovChains.keySet()) {
 			MarkovChain<Word, Sentence> markovChain = markovChains.get(ord);
+			boolean displayJson = outputStyle==OutputStyle.JSON || outputStyle==OutputStyle.PRETTY_JSON;
 			if(displayMarkovChain) { 
 				System.out.println( displayJson ? markovChain.toJson() :  markovChain.getMarkovChainDisplayText()); 
 			}
@@ -149,7 +154,7 @@ public class WordCollectorRunner {
 				System.out.println(markovChain.getSummaryMapText()); 
 			}
 			if(displayInvertedSummary) { 
-				System.out.println(markovChain.getInvertedSummaryMapText(displayJson, prettyJson));
+				System.out.println(markovChain.getInvertedSummaryMapText(displayJson,  outputStyle==OutputStyle.PRETTY_JSON));
 			}
 		}
 	}
