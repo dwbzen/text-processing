@@ -10,10 +10,9 @@ import org.dwbzen.text.util.model.Book;
 import org.dwbzen.text.util.model.Book.TYPE;
 import org.dwbzen.text.util.model.Sentence;
 import org.dwbzen.text.util.model.Word;
+import mathlib.cp.*;
 
-import mathlib.cp.CollectorStats;
 import mathlib.cp.MarkovChain;
-import mathlib.cp.OccurrenceProbability;
 
 /**
  * WordCollectorRunner -display <displayFormats> -json <prettyFlag> 
@@ -29,8 +28,7 @@ public class WordCollectorRunner {
 	static boolean sorted = false;	// applies to MarkovChain
 	static boolean displaySummaryMap = false;
 	static boolean displayInvertedSummary = false;
-	
-	public enum OutputStyle { JSON, PRETTY_JSON, TEXT, CSV };
+
 	static OutputStyle outputStyle = OutputStyle.TEXT;
 	
 	public static void main(String...args) throws IOException {
@@ -128,19 +126,8 @@ public class WordCollectorRunner {
 	}
 
 	public static void displaySortedMarkovChainText(MarkovChain<Word, Sentence> markovChain, OutputStyle outputStyle) {
-		Map<?,?> sortedChain = markovChain.sortByValue();
-		for(Object obj : sortedChain.keySet()) {
-			Sentence sentence = (Sentence)obj;
-			@SuppressWarnings("unchecked")
-			CollectorStats<Word, Sentence> cstats = (CollectorStats<Word, Sentence>)sortedChain.get(sentence);
-			@SuppressWarnings("unchecked")
-			Map<Word,OccurrenceProbability> sortedStats = (Map<Word,OccurrenceProbability>)cstats.sortByValue();
-			System.out.println(sentence + "\t" + cstats.getTotalOccurrance());
-			for(Word key : sortedStats.keySet()) {
-				OccurrenceProbability op = sortedStats.get(key);
-				System.out.println("\t" + key + "\t" + op.getOccurrence() + "\t" + op.getProbability());
-			}
-		}
+		String s = markovChain.getSortedDisplayText(outputStyle);
+		System.out.println(s);
 	}
 	
 	private static void displayMultichains(Map<Integer, MarkovChain<Word, Sentence>> markovChains, OutputStyle outputStyle) {

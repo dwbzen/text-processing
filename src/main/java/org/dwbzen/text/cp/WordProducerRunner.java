@@ -9,12 +9,12 @@ import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dwbzen.text.cp.WordCollectorRunner.OutputStyle;
 import org.dwbzen.text.util.model.Word;
 
 import mathlib.cp.CollectorStats;
 import mathlib.cp.MarkovChain;
 import mathlib.cp.OccurrenceProbability;
+import mathlib.cp.OutputStyle;
 
 /**
  * Produces made-up Words based on the MarkovChain result from a CharacterCollector.
@@ -35,6 +35,7 @@ import mathlib.cp.OccurrenceProbability;
  *  -trace				Follow the action on seed picking. Sets trace mode on CharacterCollector
  *  -format				post-processing: TC = title case, UC = upper case, LC = lower case
  *  -init				choose initial seed only (start of word)
+ *  -pos				Specify parts of speech. Assumes file list includes a POS file.
  *  
  *  
  * If you wanted to use the same seed, for example " KA" for womens names, specify -recycle number
@@ -49,6 +50,7 @@ import mathlib.cp.OccurrenceProbability;
  */public class WordProducerRunner {
 	protected static final Logger logger = LogManager.getLogger(WordProducer.class);
 	static String postProcessing = "NC";	// no conversion
+	
 	
 	/**
 	 * Produces Words using the results of CharacterCollector.
@@ -113,11 +115,11 @@ import mathlib.cp.OccurrenceProbability;
 			else if(args[i].startsWith("-list")) {
 				showOrderGenerated = true;
 			}
-			else if(args[i].equalsIgnoreCase("-format")) {
+			else if(args[i].startsWith("-format")) {
 				// format processing
 				postProcessing = args[++i];
 			}
-			else if(args[i].equalsIgnoreCase("-init")) {
+			else if(args[i].startsWith("-init")) {
 				// pick initial seeds - that start words
 				pickInitialSeed = true;
 			}
@@ -131,7 +133,8 @@ import mathlib.cp.OccurrenceProbability;
 		}
 
 		// Run the CharacterCollector first
-		collector = posOption.isPresent() ? CharacterCollector.instance(order, filenames, ignoreCase, posOption.get()) :
+		collector = posOption.isPresent() ? 
+			CharacterCollector.instance(order, filenames, ignoreCase, posOption.get()) :
 			CharacterCollector.instance(order, filenames, ignoreCase);
 		if(filenames.length == 0) {
 			collector.setText(text);
