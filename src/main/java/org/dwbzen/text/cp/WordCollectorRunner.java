@@ -61,7 +61,7 @@ public class WordCollectorRunner {
 				}
 			}
 			else if(args[i].equalsIgnoreCase("-sorted")) {
-				sorted = true;
+				sorted = args[++i].equalsIgnoreCase("true") ? true : false;
 			}
 			else if(args[i].equalsIgnoreCase("-ignoreCase")) {
 				ignoreCase = true;
@@ -105,10 +105,11 @@ public class WordCollectorRunner {
 			MarkovChain<Word, Sentence> markovChain = markovChains.get(ord);
 			if(displayMarkovChain) {
 				if(sorted) {
-					displaySortedMarkovChainText(markovChain, outputStyle);
+					String s = markovChain.getSortedDisplayText(outputStyle);
+					System.out.println(s);
 				}
 				else {
-					System.out.println( outputStyle==OutputStyle.JSON ? markovChain.toJson() :  markovChain.getMarkovChainDisplayText()); 
+					System.out.println( outputStyle==OutputStyle.JSON ? markovChain.toJson(true) :  markovChain.getMarkovChainDisplayText()); 
 				}
 			}
 			if(displaySummaryMap) { 
@@ -123,11 +124,6 @@ public class WordCollectorRunner {
 			displayMultichains(markovChains, outputStyle);
 		}
 
-	}
-
-	public static void displaySortedMarkovChainText(MarkovChain<Word, Sentence> markovChain, OutputStyle outputStyle) {
-		String s = markovChain.getSortedDisplayText(outputStyle);
-		System.out.println(s);
 	}
 	
 	private static void displayMultichains(Map<Integer, MarkovChain<Word, Sentence>> markovChains, OutputStyle outputStyle) {
