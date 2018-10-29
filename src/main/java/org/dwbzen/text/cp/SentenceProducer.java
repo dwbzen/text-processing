@@ -1,6 +1,5 @@
 package org.dwbzen.text.cp;
 
-import java.io.IOException;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
@@ -9,8 +8,6 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dwbzen.text.util.model.Book;
-import org.dwbzen.text.util.model.Book.TYPE;
 import org.dwbzen.text.util.model.Sentence;
 import org.dwbzen.text.util.model.Word;
 
@@ -147,32 +144,36 @@ public class SentenceProducer  implements IProducer<MarkovChain<Word, Sentence>,
 		return seed;
 	}
 
-	public void setSeed(Sentence seed) {
+	public SentenceProducer setSeed(Sentence seed) {
 		this.seed = seed;
+		return this;
 	}
 
 	public int getOrder() {
 		return order;
 	}
 
-	public void setOrder(int order) {
+	public SentenceProducer setOrder(int order) {
 		this.order = order;
+		return this;
 	}
 
 	public boolean isSortedResult() {
 		return sortedResult;
 	}
 
-	public void setSortedResult(boolean sortedResult) {
+	public SentenceProducer setSortedResult(boolean sortedResult) {
 		this.sortedResult = sortedResult;
+		return this;
 	}
 
 	public boolean isIgnoreCase() {
 		return ignoreCase;
 	}
 
-	public void setIgnoreCase(boolean ignoreCase) {
+	public SentenceProducer setIgnoreCase(boolean ignoreCase) {
 		this.ignoreCase = ignoreCase;
+		return this;
 	}
 
 	public MarkovChain<Word, Sentence> getMarkovChain() {
@@ -183,164 +184,73 @@ public class SentenceProducer  implements IProducer<MarkovChain<Word, Sentence>,
 		return minimumLength;
 	}
 
-	public void setMinimumWordLength(int minimumWordLength) {
+	public SentenceProducer setMinimumWordLength(int minimumWordLength) {
 		this.minimumLength = minimumWordLength;
+		return this;
 	}
 
 	public boolean isStatisticalPick() {
 		return statisticalPick;
 	}
 
-	public void setStatisticalPick(boolean statisticalPick) {
+	public SentenceProducer setStatisticalPick(boolean statisticalPick) {
 		this.statisticalPick = statisticalPick;
+		return this;
 	}
 
 	public int getRecycleSeedNumber() {
 		return recycleSeedNumber;
 	}
 
-	public void setRecycleSeedNumber(int recycleSeedNumber) {
+	public SentenceProducer setRecycleSeedNumber(int recycleSeedNumber) {
 		this.recycleSeedNumber = recycleSeedNumber;
+		return this;
 	}
 	
 	public Sentence getOriginalSeed() {
 		return originalSeed;
 	}
 
-	protected void setOriginalSeed(Sentence originalSeed) {
+	protected SentenceProducer setOriginalSeed(Sentence originalSeed) {
 		this.originalSeed = originalSeed;
+		return this;
 	}
 	
 	public Sentence getNextSeed() {
 		return nextSeed;
 	}
 
-	public void setNextSeed(Sentence nextSeed) {
+	public SentenceProducer setNextSeed(Sentence nextSeed) {
 		this.nextSeed = nextSeed;
+		return this;
 	}
 
 	public int getNumberToGenerate() {
 		return numberToGenerate;
 	}
 
-	public void setNumberToGenerate(int numberToGenerate) {
+	public SentenceProducer setNumberToGenerate(int numberToGenerate) {
 		this.numberToGenerate = numberToGenerate;
+		return this;
 	}
 
 	public int getRecycleSeedCount() {
 		return recycleSeedCount;
 	}
 
-	public void setRecycleSeedCount(int recycleSeedCount) {
+	public SentenceProducer setRecycleSeedCount(int recycleSeedCount) {
 		this.recycleSeedCount = recycleSeedCount;
+		return this;
 	}
 
 	public int getMinimumLength() {
 		return minimumLength;
 	}
 
-	public void setMinimumLength(int minimumLength) {
+	public SentenceProducer setMinimumLength(int minimumLength) {
 		this.minimumLength = minimumLength;
+		return this;
 	}
 
-	/**
-	 * Produces Strings using the results of StringCollector.
-	 * TODO: implement "pretty" printing
-	 * 
-	 * @param args
-	 * @throws IOException 
-	 */
-	public static void main(String... args) throws IOException {
-		
-		Sentence seed = null;
-		int num = 10;
-		String inputFile = null;
-		String text = null;
-		boolean ignoreCase = false;
-		boolean sort = false;
-		boolean statistical = true;
-		int recycleSeedNumber = 1;		// how often to pick a new seed.
-		boolean trace = false;
-		int order = 2;
-		String textType = null;
-		WordCollector collector = null;
-		int repeats = 1;
-		int minLength = 3;
-		boolean pretty = false;
-		
-		for(int i=0; i<args.length; i++) {
-			if(args[i].equalsIgnoreCase("-file")) {
-				inputFile = args[++i];
-			}
-			else if(args[i].equalsIgnoreCase("-trace")) {
-				trace = true;
-			}
-			else if(args[i].equalsIgnoreCase("-ignoreCase")) {
-				ignoreCase = true;
-			}
-			else if(args[i].equalsIgnoreCase("-order")) {
-				order = Integer.parseInt(args[++i]);
-			}
-			else if(args[i].equalsIgnoreCase("-num")) {
-				num = Integer.parseInt(args[++i]);
-			}
-			else if(args[i].equalsIgnoreCase("-minLength")) {
-				minLength = Integer.parseInt(args[++i]);
-			}
-			else if(args[i].equalsIgnoreCase("-repeat")) {
-				repeats = Integer.parseInt(args[++i]);
-			}
-			else if(args[i].startsWith("-recycle")) {
-				recycleSeedNumber = Integer.parseInt(args[++i]);
-			}
-			else if(args[i].equalsIgnoreCase("-seed")){
-				seed = new Sentence(args[++i]);
-			}
-			else if(args[i].equalsIgnoreCase("-sort")) {
-				sort = true;
-			}
-			else if(args[i].startsWith("-statis")) {
-				statistical = args[++i].equalsIgnoreCase("Y");
-			}
-			else if(args[i].equalsIgnoreCase("-type")) {
-				textType = args[++i];
-			}
-			else if(args[i].equalsIgnoreCase("-pretty")) {
-				pretty = true;
-			}
-			else {
-				text = args[i];
-			}
-		}
-
-		Book.TYPE type = (textType != null && textType.equalsIgnoreCase("verse")) ? TYPE.VERSE : TYPE.PROSE;
-		// Run the WordCollector first
-		String[] collectorArg = new String[1];
-		collectorArg[0] = (inputFile != null) ? "file:" + inputFile : text;
-		collector = WordCollector.getWordCollector(order, ignoreCase, type, collectorArg);
-		collector.collect();
-		MarkovChain<Word, Sentence> markovChain = collector.getMarkovChain();
-		if(trace) {
-			System.out.print(markovChain.getMarkovChainDisplayText());
-			System.out.print(markovChain.getSummaryMapText());
-		}
-		if(seed == null) {
-			seed = markovChain.pickSeed();
-		}
-		
-		// run the producer on the results
-		for(int nr=1; nr<=repeats; nr++) {
-			SentenceProducer producer = SentenceProducer.getSentenceProducer(order, markovChain, seed);
-			producer.setSortedResult(sort);
-			producer.setNumberToGenerate(num);
-			producer.setRecycleSeedNumber(recycleSeedNumber);
-			producer.setStatisticalPick(statistical);
-			producer.setMinimumLength(minLength);
-			Set<Sentence> sentences = producer.produce();
-			for(Sentence sentence : sentences) {
-				System.out.println(sentence.toString());
-			}
-		}
-	}
 	
 }

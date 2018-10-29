@@ -20,7 +20,7 @@ public class TextFileReader {
 	private Character delimiter = null;
 	private String endOfLine = null;
 	private String fileName = null;
-	private int minimumLength = 3;
+	private int minimumLength = 1;
 	private int maximumLength = 20;
 	
 	static Character delim = ' ';

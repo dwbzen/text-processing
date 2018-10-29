@@ -9,12 +9,8 @@ import java.util.Properties;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dwbzen.text.util.Configuration;
-import org.dwbzen.text.util.DataSourceDescription;
-import org.dwbzen.text.util.DataSourceType;
 import org.dwbzen.text.util.IDataFormatter;
-import org.dwbzen.text.util.TextFileDataSource;
 import org.dwbzen.text.util.WordListUtils;
-import org.dwbzen.text.util.exception.InvalidDataSourceException;
 import org.dwbzen.text.util.model.Book;
 import org.dwbzen.text.util.model.Book.TYPE;
 import org.dwbzen.text.util.model.Sentence;
@@ -32,11 +28,12 @@ import mathlib.cp.MarkovChain;
  * of a given length 1 to n (n <= 5), and records the #instances of each word that
  * follows that word collection. Sentences formed left to right advancing  1 Word each iteration.
  * </p>
- * Definitions:
- * A Word is a non-empty String (length >0) treated as a unit.
- * A Sentence consists of Word(s) delimited by white space (matches Pattern \s+, [ \t\n\x0B\f\r] )
- * A Word consist of one or more word characters, 0 or more dashes, 0 or more single quotes.
- * i.e. Pattern [a-zA-Z_0-9-']
+ * Definitions:<br>
+ * A Word is a non-empty String (length >0) treated as a unit.<br>
+ * A Sentence consists of Word(s) delimited by white space (matches regex \s+, [ \t\n\x0B\f\r] )<br>
+ * A Word consist of one or more word characters, 0 or more dashes, 0 or more single quotes. 
+ * i.e. regex [a-zA-Z_0-9-']</p>
+ * 
  *
  * @author don_bacon
  *
@@ -61,67 +58,23 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 	private boolean substituteWordVariants = false;
 	private String dataFormatterClassName = null;
 	private IDataFormatter<String> dataFormatter = null;
+	private String schema = "text";
 	private Map<String, String> variantMap = null;
 
-	/**
-	 * Factory method. Uses default Book TYPE of PROSE
-	 * @param order length of the key in #of Words, usually 2 or 3
-	 * @param ignorecaseflag set to true to ignore case. This converts all input to lower case.
-	 * @param Type VERSE, TECHNICAL or PROSE
-	 * @param args - file:filename or just text
-	 * @return WordCollector instance
-	 */
-	public static WordCollector getWordCollector(int order, boolean ignorecaseflag, TYPE type, String... args)  {
-		String sourceText = null;
-		String inputFile = null;
-		DataSourceDescription dataSourceDescription = null;
-		TextFileDataSource dataSource = null;
-		for(int i=0; i<args.length; i++) {
-			if(args[i].startsWith("file:")) {
-				inputFile = args[i].substring(5);
-			}
-			else {
-				dataSourceDescription = new DataSourceDescription(DataSourceType.Text);
-				sourceText = args[i];
-			}
-		}
-		if(inputFile != null) {
-			dataSourceDescription = new DataSourceDescription(DataSourceType.TextFile);
-			dataSourceDescription.getProperties().setProperty("filename", inputFile);
-			dataSourceDescription.getProperties().setProperty("eol", (type.equals(TYPE.VERSE)) ? "\n" : "");
-			dataSource = new TextFileDataSource(dataSourceDescription);
-			try {
-				sourceText = dataSource.getData();
-			} catch(InvalidDataSourceException e) {
-				System.err.println(e.getMessage());
-				log.error(e.getMessage());
-				System.exit(1);
-			}
-		}
-		WordCollector collector = new WordCollector();
-		collector.setIgnoreCase(ignorecaseflag);
-		collector.configure();
-		collector.setOrder(order);
-		collector.setText(sourceText);	// also filters unwanted words
-		Book book = new Book(collector.getText());
-		book.setType(type);
-		collector.setBook(book);
-		collector.setMarkovChain(new MarkovChain<Word, Sentence>(order));
-		return collector;
-	}
 	
 	protected WordCollector() {
 		configure();
 	}
 	
-	protected WordCollector(int order, boolean ignorecaseflag) {
+	protected WordCollector(int order, boolean ignorecaseflag, String schema) {
 		this.order = order;
 		this.ignoreCase = ignorecaseflag;
+		this.schema = schema;
 		configure();
 	}
 	
 	@SuppressWarnings("unchecked")
-	private boolean configure()  {
+	public boolean configure()  {
 		boolean okay = true;
 		try {
 			configuration = Configuration.getInstance(CONFIG_FILES);
@@ -129,7 +82,7 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 			isFilteringInputText = configProperties.getProperty("filterWordsToIgnore", "false").equalsIgnoreCase("true");
 			isFilteringPunctuation  = configProperties.getProperty("filterPunctuation", "false").equalsIgnoreCase("true");
 			substituteWordVariants = configProperties.getProperty("substituteWordVariants", "false").equalsIgnoreCase("true");
-			dataFormatterClassName = configProperties.getProperty("dataFormatterClass");
+			dataFormatterClassName = configProperties.getProperty("dataFormatterClass." + schema);
 			if(dataFormatterClassName != null) {
 				try {
 					Class<IDataFormatter<String>> formatterClass = (Class<IDataFormatter<String>>)Class.forName(dataFormatterClassName);
@@ -250,6 +203,14 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 
 	public String getText() {
 		return text;
+	}
+
+	public String getSchema() {
+		return schema;
+	}
+
+	public void setSchema(String schema) {
+		this.schema = schema;
 	}
 
 	/**
