@@ -42,7 +42,7 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 	protected static final Logger log = LogManager.getLogger(WordCollector.class);
 	public static final String CONFIG_FILENAME = "/config.properties";
 	public final static String[] CONFIG_FILES = {"/config.properties"};
-	public static final String[] punctuation = {".", "?", "!", ",", ":", "&", "+" };
+	public static final String[] punctuation = {".", "?", "!", ",", ":", "&", "+", "“", "”" };
 
 	private int order;
 	private String text = null;
@@ -83,7 +83,7 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 			isFilteringPunctuation  = configProperties.getProperty("filterPunctuation", "false").equalsIgnoreCase("true");
 			substituteWordVariants = configProperties.getProperty("substituteWordVariants", "false").equalsIgnoreCase("true");
 			dataFormatterClassName = configProperties.getProperty("dataFormatterClass." + schema);
-			if(dataFormatterClassName != null) {
+			if(dataFormatterClassName != null && !schema.equalsIgnoreCase("none")) {
 				try {
 					Class<IDataFormatter<String>> formatterClass = (Class<IDataFormatter<String>>)Class.forName(dataFormatterClassName);
 					this.dataFormatter = formatterClass.getDeclaredConstructor().newInstance();
@@ -220,6 +220,9 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 	 * @param text
 	 */
 	public void setText(String text) {
+		if(dataFormatter != null) {
+			text = dataFormatter.format(text);
+		}
 		String convertedText = ignoreCase ? text.toLowerCase() : text;
 		if(isFilteringInputText && filterWords.size() > 0) {
 			StringBuilder sb = new StringBuilder();

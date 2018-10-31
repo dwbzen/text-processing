@@ -58,7 +58,7 @@ public class WordCollectorRunner {
 			String schemaName = null;
 			for(int i=0; i<args.length; i++) {
 				if(args[i].startsWith("file:")) {
-					inputFile = args[i];
+					inputFile = args[i].substring(args[i].indexOf(':') + 1);
 				}
 				else {
 					dataSourceDescription = new DataSourceDescription(DataSourceType.Text);

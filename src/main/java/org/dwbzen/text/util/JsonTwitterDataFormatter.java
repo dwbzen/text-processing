@@ -54,21 +54,31 @@ public class JsonTwitterDataFormatter  implements IDataFormatter<String>  {
 		return sb.toString();
 	}
 	
-	public static String cleanText(String text) {
+	public String cleanText(String text) {
 		// deal with special characters 
-		// convert single quote (â€™) to '
-		// convert fancy double quote (â€œ) and (â€?) to a normal "
-		// convert em- (â€”) and en- (â€“) dashes to just a dash
-		// convert elipsis (â€¦) to "..."
-		// convert â€˜ â€œ
+		// convert single quote (Ã¢â‚¬â„¢) to '
+		// convert fancy double quote (Ã¢â‚¬Å“) and (Ã¢â‚¬?) to a normal "
+		// convert em- (Ã¢â‚¬â€�) and en- (Ã¢â‚¬â€œ) dashes to just a dash
+		// convert elipsis (Ã¢â‚¬Â¦) to "..."
+		// convert Ã¢â‚¬Ëœ Ã¢â‚¬Å“
 		// &amp; to &
-		String cleanedText = text.replace("â€™", "'");
-		text = cleanedText.replace("â€œ", "\"");
-		text = text.replace("â€�", "\"");
-		text = text.replace("â€“", "-");
-		text = text.replace("â€”", "-");
-		text = text.replace("â€¦", "...");
+/*		String cleanedText = text.replace("Ã¢â‚¬â„¢", "'");
+		text = cleanedText.replace("Ã¢â‚¬Å“", "\"");
+		text = text.replace("Ã¢â‚¬ï¿½", "\"");
+		text = text.replace("Ã¢â‚¬â€œ", "-");
+		text = text.replace("Ã¢â‚¬â€�", "-");
+		text = text.replace("Ã¢â‚¬Â¦", "...");*/
 		text = text.replace("&amp;", "&");
+		if(removeUrls) {
+			int ind = -1;
+			while((ind = text.indexOf("https:")) >= 0) {
+				int ind2 = text.indexOf(" ", ind);
+				if(ind == 0 && ind2 <0) {
+					return "";
+				}
+				text = (ind2 < 0) ? text.substring(0, ind-1) : text.substring(0, ind-1) + text.substring(ind2);
+			}
+		}
 		return text;
 	}
 
@@ -83,6 +93,5 @@ public class JsonTwitterDataFormatter  implements IDataFormatter<String>  {
 		JsonTwitterDataFormatter formatter = new JsonTwitterDataFormatter();
 		String formattedText = formatter.format(sourceText);
 		System.out.println(formattedText);
-
 	}
 }
