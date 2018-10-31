@@ -27,6 +27,7 @@ public class JsonTwitterDataFormatter  implements IDataFormatter<String>  {
 
 	static ObjectMapper mapper = new ObjectMapper();
 	@JsonProperty	TwitterTweets twitterTweets = null;
+	@JsonProperty	boolean removeUrls = true;	// drop http://... and https://...
 	
 	public JsonTwitterDataFormatter() { }
 	
@@ -44,23 +45,31 @@ public class JsonTwitterDataFormatter  implements IDataFormatter<String>  {
 			for(TwitterTweet twitterTweet : twitterTweets.getTweets()) {
 				String text = twitterTweet.getText();
 				if(text != null && text.length()>0) {
+					text = cleanText(text);
 					// convert embedded returns to space
-					// deal with special characters 
-					// convert single quote (’) to '
-					// convert fancy double quote (“) and (�?) to a normal "
-					// convert em- and en- (–) dashes to just a dash
-					// convert elipsis (…) to "..."
-					// concert ‘ 
-					String cleanedText = text.replaceAll("’", "'");
-					text = cleanedText.replaceAll("“", "\"");
-					text = text.replace("�?", "\"");
-					text = text.replaceAll("–", "-");
-					text = text.replaceAll("…", "...");
 					sb.append(text.replace('\n', ' ')).append("\n");
 				}
 			}
 		}
 		return sb.toString();
+	}
+	
+	public static String cleanText(String text) {
+		// deal with special characters 
+		// convert single quote (â€™) to '
+		// convert fancy double quote (â€œ) and (â€?) to a normal "
+		// convert em- (â€”) and en- (â€“) dashes to just a dash
+		// convert elipsis (â€¦) to "..."
+		// convert â€˜ â€œ
+		// &amp; to &
+		String cleanedText = text.replace("â€™", "'");
+		text = cleanedText.replace("â€œ", "\"");
+		text = text.replace("â€�", "\"");
+		text = text.replace("â€“", "-");
+		text = text.replace("â€”", "-");
+		text = text.replace("â€¦", "...");
+		text = text.replace("&amp;", "&");
+		return text;
 	}
 
 	public static void main(String...args) {
