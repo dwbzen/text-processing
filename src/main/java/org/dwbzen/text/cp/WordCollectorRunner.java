@@ -97,7 +97,7 @@ public class WordCollectorRunner {
 		boolean ignoreCase = false;
 		String orderstring = null;
 		List<Integer> orderList = new ArrayList<Integer>();
-		String schema = null;
+		String schema = "none";
 		for(int i=0; i<args.length; i++) {
 			if(args[i].equalsIgnoreCase("-file")) {
 				inputFile = args[++i];

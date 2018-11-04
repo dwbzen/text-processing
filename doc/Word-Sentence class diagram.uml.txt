@@ -1,0 +1,58 @@
+@startuml
+class Word [[java:org.dwbzen.text.util.model.Word]] {
+	+Word(String string)
+	+int compareTo(Word other)
+	+Word subset(int fromIndex, int toIndex)
+	+Word subset(int fromIndex)
+	+void accept(int value)
+}
+class "ArrayList<Character>" as ArrayList_Character_ {
+}
+ArrayList_Character_ <|-- Word
+interface "Comparable<Word>" as Comparable_Word_ {
+}
+Comparable_Word_ <|.. Word
+interface "List<Character>" as List_Character_ {
+}
+List_Character_ <|.. Word
+interface IntConsumer [[java:java.util.function.IntConsumer]] {
+    +void accept(int)
+}
+IntConsumer <|.. Word
+interface "ICollectable<Character>" as ICollectable_Character_ {
+    +Character getTerminal()
+    +Character getNullValue()
+}
+ICollectable_Character_ <|.. Word
+class Sentence [[java:org.dwbzen.text.util.model.Sentence]] {
+	+Sentence(String string)
+	+Sentence(Word word, Sentence other)
+	+Sentence subset(int fromIndex, int toIndex)
+	+Sentence subset(int startIndex)
+	+String toString()
+	+int compareTo(Sentence o)
+	+Word get()
+	+void append(Word w)
+	+Word getTerminal()
+	+Word getNullValue()
+}
+class "ArrayList<Word>" as ArrayList_Word_ {
+}
+ArrayList_Word_ <|-- Sentence
+interface "Comparable<Sentence>" as Comparable_Sentence_ {
+}
+Comparable_Sentence_ <|.. Sentence
+interface "List<Word>" as List_Word_ {
+}
+List_Word_ <|.. Sentence
+interface "Supplier<Word>" as Supplier_Word_ {
+    +Word get()
+}
+Supplier_Word_ <|.. Sentence
+interface "ICollectable<Word>" as ICollectable_Word_ {
+    +Word getTerminal()
+    +Word getNullValue()
+}
+ICollectable_Word_ <|.. Sentence
+Word <--* Sentence
+@enduml

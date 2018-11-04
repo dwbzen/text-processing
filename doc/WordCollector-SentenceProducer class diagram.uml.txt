@@ -1,0 +1,59 @@
+@startuml
+class Word [[java:org.dwbzen.text.util.model.Word]] {
+	+Word(String string)
+	+int compareTo(Word other)
+	+Word subset(int fromIndex, int toIndex)
+	+Word subset(int fromIndex)
+	+void accept(int value)
+}
+interface "ICollectable<Character>" as ICollectable_Character_ {
+    +Character getTerminal()
+    +Character getNullValue()
+}
+ICollectable_Character_ <|.. Word
+class Sentence [[java:org.dwbzen.text.util.model.Sentence]] {
+	+Sentence(String string)
+	+int compareTo(Sentence o)
+	+Word get()
+	+Word getTerminal()
+	+Word getNullValue()
+}
+interface "Supplier<Word>" as Supplier_Word_ {
+    +Word get()
+}
+Supplier_Word_ <|.. Sentence
+interface "ICollectable<Word>" as ICollectable_Word_ {
+    +Word getTerminal()
+    +Word getNullValue()
+}
+ICollectable_Word_ <|.. Sentence
+Word <--* Sentence : aggregates
+
+interface "ICollector<Sentence, MarkovChain<Word, Sentence>, Book>" as ICollector_T_K_L_ [[java:mathlib.cp.ICollector]] {
+	void collect()
+	void accept(L thing)
+	K apply(T thing)
+}
+class WordCollector [[java:org.dwbzen.text.cp.WordCollector]] {
+	-int order
+	-MarkovChain<Word,Sentence> markovChain
+	-Map<String,String> variantMap
+	+void collect()
+	+void accept(Book sourceBook)
+	+MarkovChain<Word,Sentence> apply(Sentence sentence)
+	+MarkovChain<Word,Sentence> getMarkovChain()
+}
+ICollector_T_K_L_ <|.. WordCollector
+class SentenceProducer [[java:org.dwbzen.text.cp.SentenceProducer]] {
+	-MarkovChain<Word,Sentence> markovChain
+	+Set<Sentence> produce()
+	+Sentence apply(MarkovChain<Word,Sentence> markovChain)
+}
+interface "IProducer<MarkovChain<Word, Sentence>, Sentence>" as IProducer_T_R_ [[java:mathlib.cp.IProducer]] {
+	R apply(T arg)
+	Set<R> produce()
+}
+IProducer_T_R_ <|.. SentenceProducer
+Word <.. WordCollector : Collects
+Sentence <.. SentenceProducer : Produces
+@enduml
