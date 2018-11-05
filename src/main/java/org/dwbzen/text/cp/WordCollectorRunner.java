@@ -173,7 +173,7 @@ public class WordCollectorRunner {
 					System.out.println(s);
 				}
 				else {
-					System.out.println( outputStyle==OutputStyle.JSON ? markovChain.toJson(true) :  markovChain.getMarkovChainDisplayText()); 
+					System.out.println(  markovChain.getMarkovChainDisplayText(outputStyle)); 
 				}
 			}
 			if(displaySummaryMap) { 

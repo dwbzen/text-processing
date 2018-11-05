@@ -196,7 +196,6 @@ import mathlib.cp.OutputStyle;
 			Word word = (Word)obj;
 			@SuppressWarnings("unchecked")
 			CollectorStats<Character, Word> cstats = (CollectorStats<Character, Word>)sortedChain.get(word);
-			@SuppressWarnings("unchecked")
 			Map<Character,OccurrenceProbability> sortedStats = (Map<Character,OccurrenceProbability>)cstats.sortByValue();
 			System.out.println(word + "\t" + cstats.getTotalOccurrance());
 			for(Character key : sortedStats.keySet()) {
