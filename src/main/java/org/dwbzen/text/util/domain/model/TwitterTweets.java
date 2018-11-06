@@ -26,6 +26,10 @@ public class TwitterTweets implements IJson  {
 		return this;
 	}
 	
+	public int size() {
+		return tweets.size();
+	}
+	
 	public static void main(String... args) {
 		TwitterTweets tweets = new TwitterTweets();
 		TwitterTweet tweet1 = new TwitterTweet("Twitter", "What a joke!", "2018-10-19", 2, 2, false, "550547634218614784");
