@@ -71,11 +71,13 @@ import mathlib.cp.OutputStyle;
 		int recycleSeedNumber = 1;		// how often to pick a new seed.
 		int order = 2;
 		int repeats = 1;	// number of times to run WordProducer
-		int minLength = 4;
+		int minLength = 0;
+		int maxLength = 10;
 		boolean showOrderGenerated = false;
 		CharacterCollector collector = null;
 		boolean trace = false;
 		boolean pickInitialSeed = false;
+		boolean enableDisplay = false;	// display results as they are produced
 		
 		for(int i=0; i<args.length; i++) {
 			if(args[i].equalsIgnoreCase("-file")) {
@@ -95,6 +97,9 @@ import mathlib.cp.OutputStyle;
 			}
 			else if(args[i].startsWith("-min")) {
 				minLength = Integer.parseInt(args[++i]);
+			}
+			else if(args[i].startsWith("-max")) {
+				maxLength = Integer.parseInt(args[++i]);
 			}
 			else if(args[i].startsWith("-recycle")) {
 				recycleSeedNumber = Integer.parseInt(args[++i]);
@@ -151,6 +156,7 @@ import mathlib.cp.OutputStyle;
 			System.out.print(markovChain.getSummaryMapText());
 		}
 		// Run the WordProducer on the results
+		minLength = (minLength == 0) ? order + 1 : minLength;
 		for(int nr=1; nr<=repeats; nr++) {
 			WordProducer producer = WordProducer.instance(order, markovChain, seed);
 			producer.setSortedResult(sort);
@@ -158,11 +164,13 @@ import mathlib.cp.OutputStyle;
 			producer.setRecycleSeedNumber(recycleSeedNumber);
 			producer.setStatisticalPick(statistical);
 			producer.setMinimumWordLength(minLength);
+			producer.setMaximumLength(maxLength);
 			Set<Word> words = producer.produce();
 			Collection<Word> wordCollection = showOrderGenerated ?  producer.getWordListChain() : words;
-			
-			PrintStream stream = System.out;
-			wordCollection.stream().forEach(word -> outputWord(stream, word));
+			if(showOrderGenerated || !enableDisplay) {
+				PrintStream stream = System.out;
+				wordCollection.stream().forEach(word -> outputWord(stream, word));
+			}
 
 		}
 	}

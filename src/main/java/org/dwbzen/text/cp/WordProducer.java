@@ -41,6 +41,7 @@ public class WordProducer implements IProducer<MarkovChain<Character, Word>, Wor
 	private int recycleSeedNumber = 1;	
 	private int recycleSeedCount = 0;	// pick a new seed every recycleSeedNumber iterations
 	private int minimumLength = 4;		// doesn't save Words with fewer characters than this
+	private int maximumLength = 12;
 	private int count = 0;
 	private Collection<Word> wordListChain = new ArrayList<Word>();	// in order generated
 	
@@ -86,15 +87,19 @@ public class WordProducer implements IProducer<MarkovChain<Character, Word>, Wor
 	}
 	
 	@Override
-	public Set<Word> produce() {
+	public Set<Word> produce(boolean enableDisplay) {
 		Set<Word> generatedWords = sortedResult ? new TreeSet<Word>() : new HashSet<Word>();
 		nextSeed = seed;
-		for(count=0; count<numberToGenerate; count++) {
+		while(count<numberToGenerate) {
 			Word word = apply(markovChain);
 			if(word != null && word.size() >= minimumLength) {
 				logger.debug("adding: '" + word + "'");
+				if(enableDisplay) {
+					System.out.println(word);
+				}
 				generatedWords.add(word);
 				wordListChain.add(word);
+				count++;
 			}
 			if(++recycleSeedCount < recycleSeedNumber) {
 				// reuse the current seed
@@ -111,15 +116,18 @@ public class WordProducer implements IProducer<MarkovChain<Character, Word>, Wor
 	
 	@Override
 	public Word apply(MarkovChain<Character, Word> cstatsMap) {
+		if(nextSeed.contains(Word.TERMINAL)) {
+			return new Word();
+		}
 		Word generatedWord = new Word(nextSeed);
 		Character nextChar = null;
 		do {
 			nextChar = getNextCharacter();
 			logger.debug("next char: '" + nextChar + "'");
-			if(!nextChar.equals(Word.TERMINAL)) {
+			if(! (nextChar.equals(Word.TERMINAL) || nextChar.equals(Word.NULL_VALUE))) {	// '¶'
 				generatedWord.append(nextChar);
 			}
-		} while(!nextChar.equals(Word.TERMINAL));		// determines when to stop adding Characters
+		} while(!nextChar.equals(Word.TERMINAL) && generatedWord.size() < maximumLength);		// determines when to stop adding Characters
 		return generatedWord;
 	}
 	
@@ -127,7 +135,7 @@ public class WordProducer implements IProducer<MarkovChain<Character, Word>, Wor
 		Character nextChar = null;
 		CollectorStats<Character, Word> cstats = markovChain.get(nextSeed);
 		/*
-		 * it's impossible that nextSeed does not occur in collectorStatsMap
+		 * it's impossible that nextSeed does not occur in the MarkovChain
 		 * This would indicate some kind of internal error so return a TERMINAL character and log an error
 		 */
 		if(cstats == null) {
@@ -158,7 +166,12 @@ public class WordProducer implements IProducer<MarkovChain<Character, Word>, Wor
 				}
 			}
 		// set the nextSeed which is an instance variable
-		nextSeed = new Word(nextSeed.getWordString().substring(1) + nextChar);
+		if(nextChar != Word.NULL_VALUE) {
+			nextSeed = new Word(nextSeed.getWordString().substring(1) + nextChar);
+		}
+		else {
+			nextSeed = markovChain.pickSeed();
+		}
 		return nextChar;
 	}
 	
@@ -248,6 +261,14 @@ public class WordProducer implements IProducer<MarkovChain<Character, Word>, Wor
 	
 	protected void setOriginalSeed(Word originalSeed) {
 		this.originalSeed = originalSeed;
+	}
+
+	public int getMaximumLength() {
+		return maximumLength;
+	}
+
+	public void setMaximumLength(int maximumLength) {
+		this.maximumLength = maximumLength;
 	}
 
 }

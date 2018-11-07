@@ -17,21 +17,23 @@ import mathlib.cp.MarkovChain;
 import mathlib.cp.OccurrenceProbability;
 
 /**
- * Produces Sentences based on the MarkovChain result from a WordCollector.
- * Command Line Arguments:
- * 	-seed <text>		Initial seed to use
- *  -order	n			Length of the seed, used when picking a seed from the Markov Chain.
- *  					This is set from -seed if one is provided
- *  -file <filename>	Text file containing source Words, used to create the MarkovChain for generation.
- *  					If not provided, source is taken from the command line
- *  -num n				Number of Sentences to produce
- *  -minLength n		Minimum Sentence length, default is 2 Words
- *  -recycle n			How often to pick a new seed, default is after each produced Sentence
- *  -ignoreCase			Ignores case (converts input to lower)
- *  -repeat n			#times to run the producer - each run produces <num> Sentences
- *  -sort				sort the Sentences on output
- *  -type				verse | prose | technical  - default is prose
- *  -trace				Follow the action on seed picking. Sets trace mode on CharacterCollector
+ * Produces Sentences based on the MarkovChain result from a WordCollector.</p>
+ * 
+ * Command Line Arguments:<br>
+ * 	-seed <text>		Initial seed to use<br>
+ *  -order	n			Length of the seed, used when picking a seed from the Markov Chain.<br>
+ *  					This is set from -seed if one is provided<br>
+ *  -file <filename>	Text file containing source Words, used to create the MarkovChain for generation.<br>
+ *  					If not provided, source is taken from the command line<br>
+ *  -num n				Number of Sentences to produce<br>
+ *  -minLength n		Minimum Sentence length, default is 3 Words<br>
+ *  -maxLength n		Maximum sentence length, default is 10 words.<br>
+ *  -recycle n			How often to pick a new seed, default is after each produced Sentence<br>
+ *  -ignoreCase			Ignores case (converts input to lower)<br>
+ *  -repeat n			#times to run the producer - each run produces <num> Sentences<br>
+ *  -sort				sort the Sentences on output<br>
+ *  -type				verse | prose | technical  - default is prose<br>
+ *  -trace				Follow the action on seed picking. Sets trace mode on CharacterCollector<br>
  *  
  *   @author don_bacon
  */
@@ -50,7 +52,8 @@ public class SentenceProducer  implements IProducer<MarkovChain<Word, Sentence>,
 	private boolean statisticalPick = true;
 	private int recycleSeedNumber = 1;	
 	private int recycleSeedCount = 0;	// pick a new seed every recycleSeedNumber iterations
-	private int minimumLength = 2;	// doesn't save Sentences with fewer words than this
+	private int minimumLength = 3;	// doesn't save Sentences with fewer words than this
+	private int maximumLength = 10;
 	private int count = 0;
 
 	public static SentenceProducer getSentenceProducer(int order, MarkovChain<Word, Sentence> cstatsMap, Sentence seed ) {
@@ -66,13 +69,16 @@ public class SentenceProducer  implements IProducer<MarkovChain<Word, Sentence>,
 	}
 
 	@Override
-	public Set<Sentence> produce() {
+	public Set<Sentence> produce(boolean enableDisplay) {
 		Set<Sentence> generatedSentences = sortedResult ? new TreeSet<Sentence>() : new LinkedHashSet<Sentence>(numberToGenerate);
 		nextSeed = seed;
 		for(count=0; count<numberToGenerate; count++) {
 			Sentence sentence = apply(markovChain);
 			if(sentence != null && sentence.size() >= minimumLength) {
 				log.debug("adding: '" + sentence + "'");
+				if(enableDisplay) {
+					System.out.println(sentence.toString());
+				}
 				generatedSentences.add(sentence);
 			}
 			if(++recycleSeedCount < recycleSeedNumber) {
@@ -91,12 +97,14 @@ public class SentenceProducer  implements IProducer<MarkovChain<Word, Sentence>,
 	@Override
 	public Sentence apply(MarkovChain<Word, Sentence> cstatsMap) {
 		Sentence generatedSentence = new Sentence(nextSeed);
+		int nwords = 0;
 		Word nextWord = null;
 		do {
 			nextWord = getNextWord();
 			log.debug("next word: '" + nextWord + "'");
-			if(!nextWord.equals(Sentence.TERMINAL)) {
+			if(!nextWord.equals(Sentence.TERMINAL) && nwords <= maximumLength) {
 				generatedSentence.add(nextWord);
+				nwords++;
 			}
 		}while(!nextWord.equals(Sentence.TERMINAL));  	// determine when to stop adding words.
 		return generatedSentence;
@@ -250,6 +258,22 @@ public class SentenceProducer  implements IProducer<MarkovChain<Word, Sentence>,
 	public SentenceProducer setMinimumLength(int minimumLength) {
 		this.minimumLength = minimumLength;
 		return this;
+	}
+
+	public ThreadLocalRandom getRandom() {
+		return random;
+	}
+
+	public void setRandom(ThreadLocalRandom random) {
+		this.random = random;
+	}
+
+	public int getMaximumLength() {
+		return maximumLength;
+	}
+
+	public void setMaximumLength(int maximumLength) {
+		this.maximumLength = maximumLength;
 	}
 
 	

@@ -178,9 +178,9 @@ public class CharacterCollector implements ICollector<Word, MarkovChain<Characte
 				}
 				// add terminal state
 				subset = word.subset(lim);
-				subset.append(Word.TERMINAL);
+				subset.append(Word.TERMINAL);	// '¶'
 				log.debug("  terminal state, subset: '" + subset + "'");
-				addOccurrence(subset, Word.NULL_VALUE, false);
+				addOccurrence(subset, Word.NULL_VALUE, false);	// '§'
 			}
 		}
 		return markovChain;

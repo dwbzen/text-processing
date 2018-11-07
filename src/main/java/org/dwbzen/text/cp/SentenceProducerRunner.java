@@ -1,6 +1,7 @@
 package org.dwbzen.text.cp;
 
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.Optional;
 import java.util.Set;
 
@@ -37,8 +38,10 @@ public class SentenceProducerRunner {
 		WordCollector collector = null;
 		int repeats = 1;
 		int minLength = 3;
+		int maxLength = 10;
 		boolean pretty = false;
 		String schema = null;
+		boolean enableDisplay = true;	// display results as they are produced
 		for(int i=0; i<args.length; i++) {
 			if(args[i].equalsIgnoreCase("-file")) {
 				inputFile = args[++i];
@@ -60,6 +63,9 @@ public class SentenceProducerRunner {
 			}
 			else if(args[i].equalsIgnoreCase("-minLength")) {
 				minLength = Integer.parseInt(args[++i]);
+			}
+			else if(args[i].equalsIgnoreCase("-maxLength")) {
+				maxLength = Integer.parseInt(args[++i]);
 			}
 			else if(args[i].equalsIgnoreCase("-repeat")) {
 				repeats = Integer.parseInt(args[++i]);
@@ -111,9 +117,11 @@ public class SentenceProducerRunner {
 			producer.setRecycleSeedNumber(recycleSeedNumber);
 			producer.setStatisticalPick(statistical);
 			producer.setMinimumLength(minLength);
-			Set<Sentence> sentences = producer.produce();
-			for(Sentence sentence : sentences) {
-				System.out.println(sentence.toString());
+			producer.setMaximumLength(maxLength);
+			Set<Sentence> sentences = producer.produce(enableDisplay);
+			if(!enableDisplay) {
+				PrintStream stream = System.out;
+				sentences.stream().forEach(s -> stream.println(s));
 			}
 		}
 	}
