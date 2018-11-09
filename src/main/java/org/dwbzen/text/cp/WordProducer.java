@@ -124,7 +124,7 @@ public class WordProducer implements IProducer<MarkovChain<Character, Word>, Wor
 		do {
 			nextChar = getNextCharacter();
 			logger.debug("next char: '" + nextChar + "'");
-			if(! (nextChar.equals(Word.TERMINAL) || nextChar.equals(Word.NULL_VALUE))) {	// '¶'
+			if(! (nextChar.equals(Word.TERMINAL) || nextChar.equals(Word.NULL_VALUE))) {	// '¶'  '§'
 				generatedWord.append(nextChar);
 			}
 		} while(!nextChar.equals(Word.TERMINAL) && generatedWord.size() < maximumLength);		// determines when to stop adding Characters

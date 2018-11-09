@@ -123,13 +123,16 @@ public class Word extends ArrayList<Character> implements Comparable<Word>, List
 		return DELIM_CHARACTER;
 	}
 	
+	@Override
 	public Character getTerminal() {
 		return Word.TERMINAL;
 	}
 	
+	@Override
 	public Character getNullValue() {
 		return Word.NULL_VALUE;
 	}
+	
 	
 	@Override
 	public String toString() {
