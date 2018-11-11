@@ -142,6 +142,7 @@ import mathlib.cp.OutputStyle;
 			CharacterCollector.instance(order, filenames, ignoreCase, posOption.get()) :
 			CharacterCollector.instance(order, filenames, ignoreCase);
 		if(filenames.length == 0) {
+			text = ignoreCase ? text.toLowerCase() : text;
 			collector.setText(text);
 		}
 		collector.setTrace(trace);
