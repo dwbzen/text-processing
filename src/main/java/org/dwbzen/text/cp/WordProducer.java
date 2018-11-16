@@ -40,7 +40,7 @@ public class WordProducer implements IProducer<MarkovChain<Character, Word>, Wor
 	private boolean statisticalPick = true;
 	private int recycleSeedNumber = 1;	
 	private int recycleSeedCount = 0;	// pick a new seed every recycleSeedNumber iterations
-	private int minimumLength = 4;		// doesn't save Words with fewer characters than this
+	private int minimumLength = 5;		// doesn't save Words with fewer characters than this
 	private int maximumLength = 12;
 	private int count = 0;
 	private Collection<Word> wordListChain = new ArrayList<Word>();	// in order generated

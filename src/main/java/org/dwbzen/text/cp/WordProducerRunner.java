@@ -166,7 +166,7 @@ import mathlib.cp.OutputStyle;
 			producer.setStatisticalPick(statistical);
 			producer.setMinimumWordLength(minLength);
 			producer.setMaximumLength(maxLength);
-			Set<Word> words = producer.produce();
+			Set<Word> words = producer.produce(enableDisplay);
 			Collection<Word> wordCollection = showOrderGenerated ?  producer.getWordListChain() : words;
 			if(showOrderGenerated || !enableDisplay) {
 				PrintStream stream = System.out;
