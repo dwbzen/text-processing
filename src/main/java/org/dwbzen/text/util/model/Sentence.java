@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import mathlib.cp.ICollectable;
+import mathlib.util.INameable;
 
 /**
  * A Sentence is a collection of Words separated by white space.
@@ -42,17 +43,19 @@ import mathlib.cp.ICollectable;
  * @author don_bacon
  *
  */
-public class Sentence extends ArrayList<Word> implements Comparable<Sentence>, List<Word>, Supplier<Word>, ICollectable<Word> {
+public class Sentence extends ArrayList<Word> implements Comparable<Sentence>, List<Word>, Supplier<Word>, ICollectable<Word>, INameable {
 
 	private static final long serialVersionUID = 5982270956795205537L;
 	private static Pattern WHITE_SPACE = Pattern.compile("\\s+");	// white space
 	private static Pattern PUNCTUATION = Pattern.compile("\\p{Punct}");
+	static Word DELIM = new Word(".");
+	
 	private String source = null;
 	private BreakIterator boundary = null;
 	private int index = -1;
 	private boolean ignoreWhiteSpace = true;
 	private boolean ignorePunctuation = false;
-	static Word DELIM = new Word(".");
+	private String name = null;
 	
 	/** Used to represent a NULL key in a Map - since it can't really be a null */
 	public static Word NULL_VALUE = new Word(Word.NULL_VALUE);
@@ -71,44 +74,45 @@ public class Sentence extends ArrayList<Word> implements Comparable<Sentence>, L
 	}
 	
 	public Sentence() {
-		super();
 	}
 	
-	public Sentence(String string) {
+	public Sentence(String string, boolean skipws, Sentence otherSentence, Word word, String name) {
 		super();
-		setSource(string);
+		if(string != null) {
+			setSource(string);
+		}
+		if(otherSentence != null) {
+			for(Word w: otherSentence) {
+				add(w);
+			}
+			if(word != null) {
+				add(word);
+			}
+			setSource();
+		}
+		ignoreWhiteSpace = skipws;
+		this.name = (name != null && name.length()>0) ? name : createName();
+	}
+	
+	private String createName() {
+		name = (source != null) ? "hash:"+source.hashCode() : "NoName";
+		return name;
+	}
+
+	public Sentence(String string) {
+		this(string, true, null, null, null);
 	}
 	
 	public Sentence(String string, boolean skipws) {
-		super();
-		ignoreWhiteSpace = skipws;
-		setSource(string);
+		this(string, skipws, null, null, null);
 	}
 	
-	public Sentence(Sentence other) {
-		this(null, other);
+	public Sentence(Sentence otherSentence) {
+		this(null, true, otherSentence, null, null);
 	}
 	
-	public Sentence(Word word, Sentence other) {
-		super();
-		if(word != null) {
-			add(word);
-		}
-		for(Word w: other) {
-			add(w);
-		}
-		setSource();
-	}
-	
-	public Sentence(Sentence other, Word word) {
-		super();
-		for(Word w: other) {
-			add(w);
-		}
-		if(word != null) {
-			add(word);
-		}
-		setSource();
+	public Sentence(Sentence otherSentence, Word word) {
+		this(null, true, otherSentence, word, null);
 	}
 
 	private void breakIntoWords(String stringToExamine) {
@@ -173,6 +177,7 @@ public class Sentence extends ArrayList<Word> implements Comparable<Sentence>, L
 
 	public void setSource(String sourceString) {
 		source = sourceString;
+		createName();
 		breakIntoWords(sourceString);
 	}
 	
@@ -267,6 +272,21 @@ public class Sentence extends ArrayList<Word> implements Comparable<Sentence>, L
 			System.out.println((++i)+ ": "+ w.toString());
 		}
 
+	}
+
+	@Override
+	/** 
+	 * The sentence name is anything that can identify the sentence- an Id, summary whatever.
+	 * 
+	 */
+	public void setName(String name) {
+		this.name = name;
+		
+	}
+
+	@Override
+	public String getName() {
+		return name;
 	}
 
 }
