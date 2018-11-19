@@ -12,6 +12,7 @@ import org.apache.logging.log4j.Logger;
 import org.dwbzen.text.util.DataSourceDescription;
 import org.dwbzen.text.util.DataSourceType;
 import org.dwbzen.text.util.TextFileDataSource;
+import org.dwbzen.text.util.Util;
 import org.dwbzen.text.util.exception.InvalidDataSourceException;
 import org.dwbzen.text.util.model.Book;
 import org.dwbzen.text.util.model.Book.TYPE;
@@ -66,7 +67,8 @@ public class WordCollectorRunner {
 				}
 			}
 			if(inputFile != null) {
-				dataSourceDescription = new DataSourceDescription(inputFile, DataSourceType.TextFile);
+				String inputFilename = Util.getInputFilename(inputFile);
+				dataSourceDescription = new DataSourceDescription(inputFilename, DataSourceType.TextFile);
 				dataSourceDescription.getProperties().setProperty("eol", (type.equals(TYPE.VERSE)) ? "\n" : "");
 				schemaName = theschema.isPresent() ? theschema.get() : "text";
 				dataSourceDescription.setSchema(schemaName);
@@ -84,7 +86,7 @@ public class WordCollectorRunner {
 			Book book = new Book(collector.getText());
 			book.setType(type);
 			collector.setBook(book);
-			collector.setMarkovChain(new MarkovChain<Word, Sentence>(order));
+			collector.setMarkovChain(new MarkovChain<Word, Sentence, Book>(order));
 			return collector;
 		}
 
@@ -98,6 +100,7 @@ public class WordCollectorRunner {
 		String orderstring = null;
 		List<Integer> orderList = new ArrayList<Integer>();
 		String schema = "none";
+		
 		for(int i=0; i<args.length; i++) {
 			if(args[i].equalsIgnoreCase("-file")) {
 				inputFile = args[++i];
@@ -154,19 +157,19 @@ public class WordCollectorRunner {
 				orderList.add(Integer.parseInt(order));
 			}
 		}
-		Map<Integer, MarkovChain<Word,Sentence>> markovChains = new TreeMap<Integer, MarkovChain<Word,Sentence>>();
+		Map<Integer, MarkovChain<Word,Sentence, Book>> markovChains = new TreeMap<Integer, MarkovChain<Word,Sentence, Book>>();
 		String[] collectorArg = new String[1];
 		collectorArg[0] = (inputFile != null) ? "file:" + inputFile : text;
 		Optional<String> optionalSchema = Optional.ofNullable(schema);
 		for(Integer order : orderList) {
 			WordCollector collector = WordCollectorBuilder.build(order, ignoreCase, type, optionalSchema, collectorArg);
 			collector.collect();
-			MarkovChain<Word, Sentence> markovChain = collector.getMarkovChain();
+			MarkovChain<Word, Sentence, Book> markovChain = collector.getMarkovChain();
 			markovChains.put(order, markovChain);
 		}
 		if(orderList.size() == 1) {
 			Integer ord = orderList.get(0);
-			MarkovChain<Word, Sentence> markovChain = markovChains.get(ord);
+			MarkovChain<Word, Sentence, Book> markovChain = markovChains.get(ord);
 			if(displayMarkovChain) {
 				if(sorted) {
 					String s = markovChain.getSortedDisplayText(outputStyle);
@@ -190,9 +193,9 @@ public class WordCollectorRunner {
 
 	}
 	
-	private static void displayMultichains(Map<Integer, MarkovChain<Word, Sentence>> markovChains, OutputStyle outputStyle) {
+	private static void displayMultichains(Map<Integer, MarkovChain<Word, Sentence, Book>> markovChains, OutputStyle outputStyle) {
 		for(Integer ord : markovChains.keySet()) {
-			MarkovChain<Word, Sentence> markovChain = markovChains.get(ord);
+			MarkovChain<Word, Sentence, Book> markovChain = markovChains.get(ord);
 			boolean displayJson = outputStyle==OutputStyle.JSON || outputStyle==OutputStyle.PRETTY_JSON;
 			if(displayMarkovChain) { 
 				System.out.println( displayJson ? markovChain.toJson() :  markovChain.getMarkovChainDisplayText()); 

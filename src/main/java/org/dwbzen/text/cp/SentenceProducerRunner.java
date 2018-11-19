@@ -100,7 +100,7 @@ public class SentenceProducerRunner {
 		Optional<String> optionalSchema = Optional.ofNullable(schema);
 		collector = WordCollectorBuilder.build(order, ignoreCase, type, optionalSchema, collectorArg);
 		collector.collect();
-		MarkovChain<Word, Sentence> markovChain = collector.getMarkovChain();
+		MarkovChain<Word, Sentence, Book> markovChain = collector.getMarkovChain();
 		if(trace) {
 			System.out.print(markovChain.getMarkovChainDisplayText());
 			System.out.print(markovChain.getSummaryMapText());

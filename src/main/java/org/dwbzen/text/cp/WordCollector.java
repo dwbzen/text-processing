@@ -10,6 +10,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dwbzen.text.util.Configuration;
 import org.dwbzen.text.util.IDataFormatter;
+import org.dwbzen.text.util.Util;
 import org.dwbzen.text.util.WordListUtils;
 import org.dwbzen.text.util.model.Book;
 import org.dwbzen.text.util.model.Book.TYPE;
@@ -38,7 +39,7 @@ import mathlib.cp.MarkovChain;
  * @author don_bacon
  *
  */
-public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sentence>, Book> {
+public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sentence, Book>, Book> {
 	protected static final Logger log = LogManager.getLogger(WordCollector.class);
 	public static final String CONFIG_FILENAME = "/config.properties";
 	public final static String[] CONFIG_FILES = {"/config.properties"};
@@ -46,7 +47,7 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 
 	private int order;
 	private String text = null;
-	private MarkovChain<Word, Sentence> markovChain;
+	private MarkovChain<Word, Sentence, Book> markovChain;
 	private Book book = new Book();
 	private Book.TYPE	bookType = TYPE.PROSE;	// default
 	private List<String> filterWords = new ArrayList<String>();
@@ -77,13 +78,13 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 	public boolean configure()  {
 		boolean okay = true;
 		try {
-			configuration = Configuration.getInstance(CONFIG_FILES);
+			configuration = Util.getConfiguration();
 			configProperties = configuration.getProperties();
 			isFilteringInputText = configProperties.getProperty("filterWordsToIgnore", "false").equalsIgnoreCase("true");
 			isFilteringPunctuation  = configProperties.getProperty("filterPunctuation", "false").equalsIgnoreCase("true");
 			substituteWordVariants = configProperties.getProperty("substituteWordVariants", "false").equalsIgnoreCase("true");
 			dataFormatterClassName = configProperties.getProperty("dataFormatterClass." + schema);
-			if(dataFormatterClassName != null && !schema.equalsIgnoreCase("none")) {
+			if(dataFormatterClassName != null && !dataFormatterClassName.equalsIgnoreCase("none") && !schema.equalsIgnoreCase("none")) {
 				try {
 					Class<IDataFormatter<String>> formatterClass = (Class<IDataFormatter<String>>)Class.forName(dataFormatterClassName);
 					this.dataFormatter = formatterClass.getDeclaredConstructor().newInstance();
@@ -129,7 +130,7 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 	}
 
     @Override
-	public MarkovChain<Word, Sentence> apply(Sentence sentence) {
+	public MarkovChain<Word, Sentence, Book> apply(Sentence sentence) {
     	Sentence subset = null;
     	Word nextWord = null;
     	if(sentence.size() > order-1) {	// blank line
@@ -156,12 +157,12 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
     private void addOccurrence(Sentence theSentence, Word theWord) {
     	boolean terminal = theWord.equals(Sentence.NULL_VALUE);
 		if(markovChain.containsKey(theSentence)) {
-			CollectorStats<Word, Sentence> collectorStats = markovChain.get(theSentence);
+			CollectorStats<Word, Sentence, Book> collectorStats = markovChain.get(theSentence);
 			collectorStats.addOccurrence(theWord);
 			collectorStats.setTerminal(terminal);
 		}
 		else {
-			CollectorStats<Word, Sentence> collectorStats = new CollectorStats<>();
+			CollectorStats<Word, Sentence, Book> collectorStats = new CollectorStats<>();
 			collectorStats.setSubset(theSentence);
 			collectorStats.addOccurrence(theWord);
 			collectorStats.setTerminal(terminal);
@@ -185,11 +186,11 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 		this.order = order;
 	}
 	
-	public MarkovChain<Word, Sentence> getMarkovChain() {
+	public MarkovChain<Word, Sentence, Book> getMarkovChain() {
 		return markovChain;
 	}
 
-	void setMarkovChain(MarkovChain<Word, Sentence> markovChain) {
+	void setMarkovChain(MarkovChain<Word, Sentence, Book> markovChain) {
 		this.markovChain = markovChain;
 	}
 	

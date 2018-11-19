@@ -15,6 +15,7 @@ import java.util.stream.Stream;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.dwbzen.text.util.model.Sentence;
 import org.dwbzen.text.util.model.Word;
 
 import mathlib.cp.CollectorStats;
@@ -24,7 +25,7 @@ import mathlib.cp.MarkovChain;
 import mathlib.cp.OccurrenceProbability;
 
 
-public class WordProducer implements IProducer<MarkovChain<Character, Word>, Word > { 
+public class WordProducer implements IProducer<MarkovChain<Character, Word, Sentence>, Word > { 
 	
 	protected static final Logger logger = LogManager.getLogger(WordProducer.class);
 
@@ -33,7 +34,7 @@ public class WordProducer implements IProducer<MarkovChain<Character, Word>, Wor
 	private Word originalSeed = null;
 	private Word nextSeed = null;
 	private int order;
-	private MarkovChain<Character, Word> markovChain = null;
+	private MarkovChain<Character, Word, Sentence> markovChain = null;
 	private ThreadLocalRandom random = ThreadLocalRandom.current();
 	private boolean sortedResult = false;
 	private boolean ignoreCase = true;
@@ -45,7 +46,7 @@ public class WordProducer implements IProducer<MarkovChain<Character, Word>, Wor
 	private int count = 0;
 	private Collection<Word> wordListChain = new ArrayList<Word>();	// in order generated
 	
-	public static WordProducer instance(int order, MarkovChain<Character, Word> cstatsMap, Word seed ) {
+	public static WordProducer instance(int order, MarkovChain<Character, Word, Sentence> cstatsMap, Word seed ) {
 		WordProducer producer = new WordProducer(order, cstatsMap);
 		producer.setSeed(seed);
 		producer.setOriginalSeed(seed);
@@ -81,7 +82,7 @@ public class WordProducer implements IProducer<MarkovChain<Character, Word>, Wor
 		return result;
 	}
 	
-	protected WordProducer(int order, MarkovChain<Character, Word> cstatsMap ) {
+	protected WordProducer(int order, MarkovChain<Character, Word, Sentence> cstatsMap ) {
 		this.order = order;
 		this.markovChain = cstatsMap;
 	}
@@ -115,7 +116,7 @@ public class WordProducer implements IProducer<MarkovChain<Character, Word>, Wor
 	}
 	
 	@Override
-	public Word apply(MarkovChain<Character, Word> cstatsMap) {
+	public Word apply(MarkovChain<Character, Word, Sentence> cstatsMap) {
 		if(nextSeed.contains(Word.TERMINAL)) {
 			return new Word();
 		}
@@ -133,7 +134,7 @@ public class WordProducer implements IProducer<MarkovChain<Character, Word>, Wor
 	
 	protected Character getNextCharacter() {
 		Character nextChar = null;
-		CollectorStats<Character, Word> cstats = markovChain.get(nextSeed);
+		CollectorStats<Character, Word, Sentence> cstats = markovChain.get(nextSeed);
 		/*
 		 * it's impossible that nextSeed does not occur in the MarkovChain
 		 * This would indicate some kind of internal error so return a TERMINAL character and log an error
@@ -215,7 +216,7 @@ public class WordProducer implements IProducer<MarkovChain<Character, Word>, Wor
 		this.ignoreCase = ignoreCase;
 	}
 
-	public CollectorStatsMap<Character, Word> getCollectorStatsMap() {
+	public CollectorStatsMap<Character, Word, Sentence> getCollectorStatsMap() {
 		return markovChain;
 	}
 

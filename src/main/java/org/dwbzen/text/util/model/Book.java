@@ -14,6 +14,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dwbzen.text.util.TextFileReader;
 
+import mathlib.util.INameable;
+
 /**
  * A Book is a Supplier of Sentences.
  * Optional mark-up in the text can be used to distinguish book properties:
@@ -30,7 +32,7 @@ import org.dwbzen.text.util.TextFileReader;
  * @author don_bacon
  *
  */
-public class Book implements Supplier<Sentence>, Collection<Word>, Serializable {
+public class Book implements Supplier<Sentence>, Collection<Word>, Serializable, INameable {
 	private static final long serialVersionUID = -6403206930194239270L;
 	protected static final Logger log = LogManager.getLogger(Book.class);
 
@@ -61,6 +63,7 @@ public class Book implements Supplier<Sentence>, Collection<Word>, Serializable 
 		sections.add(CLASS);
 	}
 	
+	private String name = null;		// Title
 	private String source = "";
 	private BreakIterator boundary = null;
 	private Properties properties = new Properties();
@@ -127,7 +130,7 @@ public class Book implements Supplier<Sentence>, Collection<Word>, Serializable 
 			if(startInd >= 0) {
 				int e = workingText.indexOf(COLON, startInd + section.length()+1);
 				String title = workingText.substring(startInd + section.length() + 1, e);
-				
+				this.name = title;
 				properties.setProperty(section, title);
 				if(startInd > 0) {
 					workingText = workingText.substring(0, startInd-1).concat(workingText.substring(e+1));
@@ -261,6 +264,16 @@ public class Book implements Supplier<Sentence>, Collection<Word>, Serializable 
 	public void clear() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	@Override
+	public String getName() {
+		return name==null ? "unnamed" : name;
 	}
 
 }

@@ -8,6 +8,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.dwbzen.text.util.model.Book;
 import org.dwbzen.text.util.model.Sentence;
 import org.dwbzen.text.util.model.Word;
 
@@ -37,7 +38,7 @@ import mathlib.cp.OccurrenceProbability;
  *  
  *   @author don_bacon
  */
-public class SentenceProducer  implements IProducer<MarkovChain<Word, Sentence>, Sentence > {
+public class SentenceProducer  implements IProducer<MarkovChain<Word, Sentence, Book>, Sentence > {
 	
 	protected static final Logger log = LogManager.getLogger(SentenceProducer.class);
 	private int numberToGenerate;		// #words to generate
@@ -45,7 +46,7 @@ public class SentenceProducer  implements IProducer<MarkovChain<Word, Sentence>,
 	private Sentence originalSeed = null;
 	private Sentence nextSeed = null;
 	private int order;
-	private MarkovChain<Word, Sentence> markovChain = null;
+	private MarkovChain<Word, Sentence, Book> markovChain = null;
 	private ThreadLocalRandom random = ThreadLocalRandom.current();
 	private boolean sortedResult = false;
 	private boolean ignoreCase = true;
@@ -56,14 +57,14 @@ public class SentenceProducer  implements IProducer<MarkovChain<Word, Sentence>,
 	private int maximumLength = 10;
 	private int count = 0;
 
-	public static SentenceProducer getSentenceProducer(int order, MarkovChain<Word, Sentence> cstatsMap, Sentence seed ) {
+	public static SentenceProducer getSentenceProducer(int order, MarkovChain<Word, Sentence, Book> cstatsMap, Sentence seed ) {
 		SentenceProducer producer = new SentenceProducer(order, cstatsMap);
 		producer.setSeed(seed);
 		producer.setOriginalSeed(seed);
 		return producer;
 	}
 	
-	protected SentenceProducer(int order, MarkovChain<Word, Sentence> cstatsMap ) {
+	protected SentenceProducer(int order, MarkovChain<Word, Sentence, Book> cstatsMap ) {
 		this.order = order;
 		this.markovChain = cstatsMap;
 	}
@@ -95,7 +96,7 @@ public class SentenceProducer  implements IProducer<MarkovChain<Word, Sentence>,
 	}
 
 	@Override
-	public Sentence apply(MarkovChain<Word, Sentence> cstatsMap) {
+	public Sentence apply(MarkovChain<Word, Sentence, Book> cstatsMap) {
 		Sentence generatedSentence = new Sentence(nextSeed);
 		int nwords = 0;
 		Word nextWord = null;
@@ -112,7 +113,7 @@ public class SentenceProducer  implements IProducer<MarkovChain<Word, Sentence>,
 	
 	protected Word getNextWord() {
 		Word nextWord = null;
-		CollectorStats<Word, Sentence> cstats = markovChain.get(nextSeed);
+		CollectorStats<Word, Sentence, Book> cstats = markovChain.get(nextSeed);
 		/*
 		 * it's impossible that nextSeed does not occur in collectorStatsMap
 		 * This would indicate some kind of internal error so throw a RuntimeException
@@ -184,7 +185,7 @@ public class SentenceProducer  implements IProducer<MarkovChain<Word, Sentence>,
 		return this;
 	}
 
-	public MarkovChain<Word, Sentence> getMarkovChain() {
+	public MarkovChain<Word, Sentence, Book> getMarkovChain() {
 		return markovChain;
 	}
 

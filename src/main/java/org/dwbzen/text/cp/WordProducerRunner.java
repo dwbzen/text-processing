@@ -9,6 +9,7 @@ import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.dwbzen.text.util.model.Sentence;
 import org.dwbzen.text.util.model.Word;
 
 import mathlib.cp.CollectorStats;
@@ -17,34 +18,36 @@ import mathlib.cp.OccurrenceProbability;
 import mathlib.cp.OutputStyle;
 
 /**
- * Produces made-up Words based on the MarkovChain result from a CharacterCollector.
- * Command Line Arguments:
- * 	-seed <text>		Initial seed to use
- *  -order	n			Length of the seed, used when picking a seed from the Markov Chain.
- *  					This is set from -seed if one is provided
+ * Produces made-up Words based on the MarkovChain result from a CharacterCollector.<br>
+ * Command Line Arguments:<pre>
+ *  -seed <text>	Initial seed to use
+ *  -order n	Length of the seed, used when picking a seed from the Markov Chain.
+ *  		This is set from -seed if one is provided
  *  -file <file list>	Comma-delimited list of text file names containing source Words.
- *  					Used to create the MarkovChain for generation.
- *  					If not provided, source is taken from the command line
- *  -num n				Number of Words to produce
- *  -min n				Minimum word length, default is 4 characters
- *  -recycle n			How often to pick a new seed, default is after each produced word
- *  -ignoreCase			Ignores case (converts input to lower)
- *  -repeat n			#times to run the producer - each run produces <num> Words
- *  -sort  				Sort the output.
- *  -list				Display produce Words in order produced
- *  -trace				Follow the action on seed picking. Sets trace mode on CharacterCollector
- *  -format				post-processing: TC = title case, UC = upper case, LC = lower case
- *  -init				choose initial seed only (start of word)
- *  -pos				Specify parts of speech. Assumes file list includes a POS file.
+ *  		Used to create the MarkovChain for generation.
+ *  		If not provided, source is taken from the command line
+ *  -num n	Number of Words to produce
+ *  -min n	Minimum word length, default is 4 characters
+ *  -recycle n	How often to pick a new seed, default is pick a new seed after each word produced
+ *  -ignoreCase	Ignores case (converts input to lower)
+ *  -repeat n	#times to run the producer - each run produces <num> Words
+ *  -sort  	Sort the output.
+ *  -list y|n		Display produce Words in order produced, default is 'n'
+ *  -trace y|n	Traces seed picking. Sets trace mode on CharacterCollector, default is 'n'
+ *  -format	post-processing: TC = title case, UC = upper case, LC = lower case
+ *  -init		choose initial seed only (start of word)
+ *  -pos		Specify parts of speech. Assumes file list includes a POS file.
+ *  -stat y|n	Use Markov chain probabilities in production, otherwise
+ *  		selects a successor at random. Default is 'Y'
+ *  </pre>
  *  
- *  
- * If you wanted to use the same seed, for example " KA" for womens names, specify -recycle number
+ * If you wanted to use the same seed, for example " KA" for womens names, specify -recycle number<br>
  * to be > number of words to produce (-num) times #repeats (-repeat):
- * 
- * -file "build\resources\main\reference\femaleFirstNames.txt" -num 50 -order 3  -list -recycle 2
- * 
+ * <pre>
+ * -file "$RESOURCE/femaleFirstNames.txt" -num 50 -order 3  -list -recycle 2
  * -file "build/resources/main/reference/drugNames.txt" -num 50  -order 3 -list
- *  
+ *  </pre>
+ *  $RESOURCE is replaced with the configured value of RESOURCE, default = build/resources/main/reference
  * @author don_bacon
  *
  */public class WordProducerRunner {
@@ -112,13 +115,13 @@ import mathlib.cp.OutputStyle;
 				sort = true;
 			}
 			else if(args[i].equalsIgnoreCase("-trace")) {
-				trace = true;
+				trace = args[++i].equalsIgnoreCase("Y");
 			}
-			else if(args[i].startsWith("-statis")) {
+			else if(args[i].startsWith("-stat")) {
 				statistical = args[++i].equalsIgnoreCase("Y");
 			}
 			else if(args[i].startsWith("-list")) {
-				showOrderGenerated = true;
+				showOrderGenerated = args[++i].equalsIgnoreCase("Y");
 			}
 			else if(args[i].startsWith("-format")) {
 				// format processing
@@ -139,15 +142,15 @@ import mathlib.cp.OutputStyle;
 
 		// Run the CharacterCollector first
 		collector = posOption.isPresent() ? 
-			CharacterCollector.instance(order, filenames, ignoreCase, posOption.get()) :
-			CharacterCollector.instance(order, filenames, ignoreCase);
+			CharacterCollectorRunner.CharacterCollectorBuilder.build(order, filenames, ignoreCase, posOption.get()) :
+			CharacterCollectorRunner.CharacterCollectorBuilder.build(order, filenames, ignoreCase);
 		if(filenames.length == 0) {
 			text = ignoreCase ? text.toLowerCase() : text;
 			collector.setText(text);
 		}
 		collector.setTrace(trace);
 		collector.collect();
-		MarkovChain<Character, Word> markovChain = collector.getMarkovChain();
+		MarkovChain<Character, Word, Sentence> markovChain = collector.getMarkovChain();
 		markovChain.setPickInitialSeed(pickInitialSeed);
 		if(seed == null) {
 			seed = markovChain.pickSeed();
@@ -199,12 +202,12 @@ import mathlib.cp.OutputStyle;
 		stream.println(wordString);
 	}
 	
-	public static void displaySortedMarkovChainText(MarkovChain<Character, Word> markovChain, OutputStyle outputStyle) {
+	public static void displaySortedMarkovChainText(MarkovChain<Character, Word, Sentence> markovChain, OutputStyle outputStyle) {
 		Map<?,?> sortedChain = markovChain.sortByValue();
 		for(Object obj : sortedChain.keySet()) {
 			Word word = (Word)obj;
 			@SuppressWarnings("unchecked")
-			CollectorStats<Character, Word> cstats = (CollectorStats<Character, Word>)sortedChain.get(word);
+			CollectorStats<Character, Word, Sentence> cstats = (CollectorStats<Character, Word, Sentence>)sortedChain.get(word);
 			Map<Character,OccurrenceProbability> sortedStats = (Map<Character,OccurrenceProbability>)cstats.sortByValue();
 			System.out.println(word + "\t" + cstats.getTotalOccurrance());
 			for(Character key : sortedStats.keySet()) {

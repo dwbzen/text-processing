@@ -1,13 +1,11 @@
 package org.dwbzen.text.cp;
 
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dwbzen.text.util.TextFileReader;
 import org.dwbzen.text.util.model.Sentence;
 import org.dwbzen.text.util.model.Word;
 
@@ -48,7 +46,7 @@ import mathlib.cp.MarkovChain;
  * @author don_bacon
  *
  */
-public class CharacterCollector implements ICollector<Word, MarkovChain<Character, Word>, Sentence> {
+public class CharacterCollector implements ICollector<Word, MarkovChain<Character, Word, Sentence>, Sentence> {
 	protected static final Logger log = LogManager.getLogger(CharacterCollector.class);
 	private boolean ignoreCase = true; 
 	private int order; 
@@ -57,65 +55,8 @@ public class CharacterCollector implements ICollector<Word, MarkovChain<Characte
 	private StringBuilder text = new StringBuilder();
 	private boolean trace = false;
 	private Character[] filters = {'-', '.'};	// filters words not to include if they contain these characters
-	private MarkovChain<Character, Word> markovChain = null;
-	private static TextFileReader reader = null;
+	private MarkovChain<Character, Word, Sentence> markovChain = null;
 	
-	/**
-	 * Factory method.
-	 * @param order length of the key in #of characters, usually 2 or 3
-	 * @param inputFile full path to the input file. Use null for STDIN
-	 * @param ignorecaseflag set to true to ignore case. This converts all input to lower case.
-	 * @return CharacterCollector instance
-	 */
-	public static CharacterCollector instance(int order, String[] inputFiles, boolean ignorecaseflag) throws IOException {
-		CharacterCollector collector = new CharacterCollector(order, inputFiles, ignorecaseflag);
-		collector.markovChain = new MarkovChain<Character, Word>(order);
-		for(String inputFile : inputFiles) {
-			reader = TextFileReader.getInstance(inputFile);
-			reader.setMinimumLength(order);
-			collector.setText( (ignorecaseflag? 
-						reader.getFileText().toLowerCase() :
-						reader.getFileText()) );
-		}
-		return collector;
-	}
-	
-	public static CharacterCollector instance(int order, String[] inputFiles, boolean ignorecaseflag, String pos) throws IOException {
-		CharacterCollector collector = new CharacterCollector(order, inputFiles, ignorecaseflag, pos);
-		collector.markovChain = new MarkovChain<Character, Word>(order);
-		for(String inputFile : inputFiles) {
-			reader = TextFileReader.getInstance(inputFile);
-			reader.setMinimumLength(order);
-			List<String> fileText = reader.getFileLines();
-			for(String s : fileText) {
-				String[] splits = s.split("\t");
-				if(splits.length > 1) {
-					if(containsAny(splits[1], pos)) {
-						collector.setText( (ignorecaseflag ? splits[0].toLowerCase() : splits[0]) + " ");
-					}
-				}
-				else {	// no POS specified
-					collector.setText( (ignorecaseflag ? splits[0].toLowerCase() : splits[0]) + " ");
-				}
-			}
-		}
-		return collector;
-	}
-	
-	/**
-	 * Returns true if ANY of the compareString characters are in sourceString, false otherwise.</p>
-	 * Comparisons are case-sensitive.
-	 * For example containsAny("iNv", "LN") == true</p>
-	 * containsAny("iNv", "V") == false.
-	 * @param sourceString
-	 * @param compareString
-	 * @return
-	 */
-	static boolean containsAny(String sourceString, String compareString) {
-		boolean contains = false;
-		contains |= compareString.chars().anyMatch(c -> sourceString.indexOf(c) >= 0);
-		return contains;
-	}
 	
 	/**
 	 * 
@@ -157,7 +98,7 @@ public class CharacterCollector implements ICollector<Word, MarkovChain<Characte
 	}
 
 	@Override
-	public MarkovChain<Character, Word> apply(Word theWord) {
+	public MarkovChain<Character, Word, Sentence> apply(Word theWord) {
 		Word word = new Word(Word.DELIM_STRING, theWord);	// space is the word delimiter
 		Word subset = null;
 		Character nextChar = null;
@@ -189,13 +130,13 @@ public class CharacterCollector implements ICollector<Word, MarkovChain<Characte
 	private void addOccurrence(Word theWord, Character theChar, boolean initial) {
 		boolean terminal = theChar.equals(Word.NULL_VALUE);
 		if(markovChain.containsKey(theWord)) {
-			CollectorStats<Character, Word> collectorStats = markovChain.get(theWord);
+			CollectorStats<Character, Word, Sentence> collectorStats = markovChain.get(theWord);
 			collectorStats.addOccurrence(theChar);
 			collectorStats.setTerminal(terminal);
 			collectorStats.setInitial(initial);
 		}
 		else {
-			CollectorStats<Character, Word> collectorStats = new CollectorStats<Character, Word>();
+			CollectorStats<Character, Word, Sentence> collectorStats = new CollectorStats<Character, Word, Sentence>();
 			collectorStats.setSubset(theWord);
 			collectorStats.addOccurrence(theChar);
 			collectorStats.setTerminal(terminal);
@@ -208,8 +149,20 @@ public class CharacterCollector implements ICollector<Word, MarkovChain<Characte
 		return getMarkovChain().getSummaryMap();
 	}
 	
-	public MarkovChain<Character, Word> getMarkovChain() {
+	public MarkovChain<Character, Word, Sentence> getMarkovChain() {
 		return markovChain;
+	}
+
+	public void setIgnoreCase(boolean ignoreCase) {
+		this.ignoreCase = ignoreCase;
+	}
+
+	public void setText(StringBuilder text) {
+		this.text = text;
+	}
+
+	public void setMarkovChain(MarkovChain<Character, Word, Sentence> markovChain) {
+		this.markovChain = markovChain;
 	}
 
 	public String getText() {
@@ -232,6 +185,10 @@ public class CharacterCollector implements ICollector<Word, MarkovChain<Characte
 		return fileNames;
 	}
 	
+	public void setFileNames(String[] fileNames) {
+		this.fileNames = fileNames;
+	}
+
 	public boolean isTrace() {
 		return trace;
 	}
