@@ -55,6 +55,9 @@ public class Sentence extends ArrayList<Word> implements Comparable<Sentence>, L
 	private int index = -1;
 	private boolean ignoreWhiteSpace = true;
 	private boolean ignorePunctuation = false;
+	/*
+	 * If not provided, defaults to "hash:<source hash code>" or "Unnamed"
+	 */
 	private String name = null;
 	
 	/** Used to represent a NULL key in a Map - since it can't really be a null */
@@ -95,7 +98,7 @@ public class Sentence extends ArrayList<Word> implements Comparable<Sentence>, L
 	}
 	
 	private String createName() {
-		name = (source != null) ? "hash:"+source.hashCode() : "NoName";
+		name = (source != null) ? "hash:"+source.hashCode() : "Unnamed";
 		return name;
 	}
 

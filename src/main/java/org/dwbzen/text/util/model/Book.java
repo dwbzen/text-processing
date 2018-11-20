@@ -63,7 +63,7 @@ public class Book implements Supplier<Sentence>, Collection<Word>, Serializable,
 		sections.add(CLASS);
 	}
 	
-	private String name = null;		// Title
+	private String name = null;
 	private String source = "";
 	private BreakIterator boundary = null;
 	private Properties properties = new Properties();
@@ -125,12 +125,12 @@ public class Book implements Supplier<Sentence>, Collection<Word>, Serializable,
 	
 	public void setSource(String sourceText) {
 		workingText = sourceText;
+		String title = null;
 		for(String section : sections) {
 			int startInd = workingText.indexOf(section + COLON);
 			if(startInd >= 0) {
 				int e = workingText.indexOf(COLON, startInd + section.length()+1);
-				String title = workingText.substring(startInd + section.length() + 1, e);
-				this.name = title;
+				title = workingText.substring(startInd + section.length() + 1, e);
 				properties.setProperty(section, title);
 				if(startInd > 0) {
 					workingText = workingText.substring(0, startInd-1).concat(workingText.substring(e+1));
@@ -140,6 +140,7 @@ public class Book implements Supplier<Sentence>, Collection<Word>, Serializable,
 				}
 			}
 		}
+		name = (title == null) ? "Untitled" : title;
 		source = workingText;
 		boundary = null;
 	}
@@ -273,7 +274,7 @@ public class Book implements Supplier<Sentence>, Collection<Word>, Serializable,
 
 	@Override
 	public String getName() {
-		return name==null ? "unnamed" : name;
+		return name==null ? "Untitled" : name;
 	}
 
 }
