@@ -77,6 +77,7 @@ public class Sentence extends ArrayList<Word> implements Comparable<Sentence>, L
 	}
 	
 	public Sentence() {
+		name = INameable.DEFAULT_NAME;
 	}
 	
 	public Sentence(String string, boolean skipws, Sentence otherSentence, Word word, String name) {

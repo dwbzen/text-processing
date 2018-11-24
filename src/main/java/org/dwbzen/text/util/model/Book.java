@@ -73,6 +73,7 @@ public class Book implements Supplier<Sentence>, Collection<Word>, Serializable,
 	private TYPE type = TYPE.PROSE;
 	
 	public Book() {
+		name = INameable.DEFAULT_NAME;
 	}
 	
 	public Book(String sourceText) {
