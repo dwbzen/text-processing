@@ -56,7 +56,7 @@ public class CharacterCollector implements ICollector<Word, MarkovChain<Characte
 	private boolean trace = false;
 	private Character[] filters = {'-', '.'};	// filters words not to include if they contain these characters
 	private MarkovChain<Character, Word, Sentence> markovChain = null;
-	
+	private Sentence sentence = null;	// current Sentence we are collecting Words in
 	
 	/**
 	 * 
@@ -79,7 +79,7 @@ public class CharacterCollector implements ICollector<Word, MarkovChain<Characte
 	
 	@Override
 	public void collect() {
-		Sentence sentence = new Sentence(text.toString(), true);
+		sentence = new Sentence(text.toString(), true);
 		accept(sentence);
 	}
 	
@@ -131,14 +131,14 @@ public class CharacterCollector implements ICollector<Word, MarkovChain<Characte
 		boolean terminal = theChar.equals(Word.NULL_VALUE);
 		if(markovChain.containsKey(theWord)) {
 			CollectorStats<Character, Word, Sentence> collectorStats = markovChain.get(theWord);
-			collectorStats.addOccurrence(theChar);
+			collectorStats.addOccurrence(theChar, sentence);
 			collectorStats.setTerminal(terminal);
 			collectorStats.setInitial(initial);
 		}
 		else {
 			CollectorStats<Character, Word, Sentence> collectorStats = new CollectorStats<Character, Word, Sentence>();
 			collectorStats.setSubset(theWord);
-			collectorStats.addOccurrence(theChar);
+			collectorStats.addOccurrence(theChar, sentence);
 			collectorStats.setTerminal(terminal);
 			collectorStats.setInitial(initial);
 			markovChain.put(theWord, collectorStats);

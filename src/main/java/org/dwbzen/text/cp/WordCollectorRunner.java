@@ -82,6 +82,7 @@ public class WordCollectorRunner {
 				}
 			}
 			WordCollector collector = new WordCollector(order, ignorecaseflag, schemaName);
+			CollectorStats.trace = false;
 			collector.setText(sourceText);	// also filters unwanted words
 			Book book = new Book(collector.getText());
 			book.setType(type);

@@ -10,6 +10,7 @@ import org.dwbzen.text.util.Util;
 import org.dwbzen.text.util.model.Sentence;
 import org.dwbzen.text.util.model.Word;
 
+import mathlib.cp.CollectorStats;
 import mathlib.cp.MarkovChain;
 import mathlib.cp.OutputStyle;
 
@@ -118,6 +119,8 @@ public class CharacterCollectorRunner {
 			}
 		}
 		CharacterCollector collector = CharacterCollectorBuilder.build(order, filenames, ignoreCase);
+		collector.setTrace(false);
+		CollectorStats.trace = false;
 		if(filenames.length == 0) {
 			text = ignoreCase ? text.toLowerCase() : text;
 			collector.setText(text);

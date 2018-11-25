@@ -144,6 +144,9 @@ import mathlib.cp.OutputStyle;
 		collector = posOption.isPresent() ? 
 			CharacterCollectorRunner.CharacterCollectorBuilder.build(order, filenames, ignoreCase, posOption.get()) :
 			CharacterCollectorRunner.CharacterCollectorBuilder.build(order, filenames, ignoreCase);
+			
+		collector.setTrace(trace);
+		CollectorStats.trace = trace;
 		if(filenames.length == 0) {
 			text = ignoreCase ? text.toLowerCase() : text;
 			collector.setText(text);

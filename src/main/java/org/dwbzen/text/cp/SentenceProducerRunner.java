@@ -11,6 +11,7 @@ import org.dwbzen.text.util.model.Sentence;
 import org.dwbzen.text.util.model.Word;
 import org.dwbzen.text.util.model.Book.TYPE;
 
+import mathlib.cp.CollectorStats;
 import mathlib.cp.MarkovChain;
 
 public class SentenceProducerRunner {
@@ -98,6 +99,7 @@ public class SentenceProducerRunner {
 		String[] collectorArg = new String[1];
 		collectorArg[0] = (inputFile != null) ? "file:" + inputFile : text;
 		Optional<String> optionalSchema = Optional.ofNullable(schema);
+		CollectorStats.trace = false;
 		collector = WordCollectorBuilder.build(order, ignoreCase, type, optionalSchema, collectorArg);
 		collector.collect();
 		MarkovChain<Word, Sentence, Book> markovChain = collector.getMarkovChain();
