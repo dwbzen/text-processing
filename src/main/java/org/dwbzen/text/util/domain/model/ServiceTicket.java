@@ -9,8 +9,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 
 import mathlib.util.IJson;
+import mathlib.util.INameable;
 
-public class ServiceTicket implements IJson {
+public class ServiceTicket implements INameable, IJson {
 
 	private static final long serialVersionUID = -4515187462233738568L;
 	
@@ -65,6 +66,17 @@ public class ServiceTicket implements IJson {
 	
 	public String getResources() {
 		return resourceString;
+	}
+
+	@Override
+	public void setName(String name) {
+		this.id = name;
+		
+	}
+
+	@Override
+	public String getName() {
+		return id;
 	}
 	
 }
