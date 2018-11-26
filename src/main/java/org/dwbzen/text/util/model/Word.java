@@ -3,6 +3,7 @@ package org.dwbzen.text.util.model;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.IntConsumer;
+import java.util.function.Supplier;
 
 import mathlib.cp.ICollectable;
 
@@ -12,7 +13,7 @@ import mathlib.cp.ICollectable;
  * @author don_bacon
  *
  */
-public class Word extends ArrayList<Character> implements Comparable<Word>, List<Character>, IntConsumer, ICollectable<Character> {
+public class Word extends ArrayList<Character> implements Comparable<Word>, List<Character>, Supplier<Character>, IntConsumer, ICollectable<Character> {
 
 	private static final long serialVersionUID = 7157404340284643268L;
 	private StringBuffer wordString = new StringBuffer();
@@ -25,6 +26,7 @@ public class Word extends ArrayList<Character> implements Comparable<Word>, List
 	
 	/** 0xA7 Used to represent a NULL key in a Map - since it can't really be a null */
 	public static Character NULL_VALUE = '§';
+	private int index = -1;
 	
 	public Word() {
 	}
@@ -159,6 +161,18 @@ public class Word extends ArrayList<Character> implements Comparable<Word>, List
 	@Override
 	public void accept(int value) {
 		add((char) value);
+	}
+
+	/**
+	 * Gets characters one at a time. Returns null when it runs out of characters.
+	 */
+	@Override
+	public Character get() {
+		Character c = null;
+		if(++index <= size()-1 ) {
+			c = get(index);
+		}
+		return c;
 	}
 
 }
