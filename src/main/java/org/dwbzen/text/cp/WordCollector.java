@@ -227,11 +227,18 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 		String convertedText = ignoreCase ? text.toLowerCase() : text;
 		if(isFilteringInputText && filterWords.size() > 0) {
 			StringBuilder sb = new StringBuilder();
-			BreakIterator boundry = BreakIterator.getWordInstance(Locale.US);
-			boundry.setText(convertedText);
+			BreakIterator lineBoundry = BreakIterator.getLineInstance();
+			BreakIterator wordBoundry = BreakIterator.getWordInstance(Locale.US);
+			lineBoundry.setText(convertedText);
 			int start = 0;
 			int end = 0;
-			while((end=boundry.next()) != BreakIterator.DONE) {
+			while((end=lineBoundry.next()) != BreakIterator.DONE) {
+				
+			}
+			
+			
+			wordBoundry.setText(convertedText);
+			while((end=wordBoundry.next()) != BreakIterator.DONE) {
 
 				String temp = convertedText.substring(start, end).trim();
 				String variant = (substituteWordVariants && variantMap.containsKey(temp)) ?
