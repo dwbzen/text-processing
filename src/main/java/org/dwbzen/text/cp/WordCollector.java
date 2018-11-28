@@ -1,6 +1,7 @@
 package org.dwbzen.text.cp;
 import java.text.BreakIterator;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -61,16 +62,18 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 	private IDataFormatter<String> dataFormatter = null;
 	private String schema = "text";
 	private Map<String, String> variantMap = null;
+	private Map<Book.TYPE, Boolean> substituteWordVariantsMap = new HashMap<>();
 
 	
 	protected WordCollector() {
 		configure();
 	}
 	
-	protected WordCollector(int order, boolean ignorecaseflag, String schema) {
+	protected WordCollector(int order, boolean ignorecaseflag, String schema, TYPE type) {
 		this.order = order;
 		this.ignoreCase = ignorecaseflag;
 		this.schema = schema;
+		setBookType(type);
 		configure();
 	}
 	
@@ -82,7 +85,11 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 			configProperties = configuration.getProperties();
 			isFilteringInputText = configProperties.getProperty("filterWordsToIgnore", "false").equalsIgnoreCase("true");
 			isFilteringPunctuation  = configProperties.getProperty("filterPunctuation", "false").equalsIgnoreCase("true");
-			substituteWordVariants = configProperties.getProperty("substituteWordVariants", "false").equalsIgnoreCase("true");
+			
+			substituteWordVariantsMap.put(TYPE.PROSE, configProperties.getProperty("substituteWordVariants.PROSE", "false").equalsIgnoreCase("true"));
+			substituteWordVariantsMap.put(TYPE.VERSE, configProperties.getProperty("substituteWordVariants.VERSE", "false").equalsIgnoreCase("true"));
+			substituteWordVariantsMap.put(TYPE.TECHNICAL, configProperties.getProperty("substituteWordVariants.TECHNICAL", "true").equalsIgnoreCase("true"));
+			
 			dataFormatterClassName = configProperties.getProperty("dataFormatterClass." + schema);
 			if(dataFormatterClassName != null && !dataFormatterClassName.equalsIgnoreCase("none") && !schema.equalsIgnoreCase("none")) {
 				try {
@@ -215,15 +222,22 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 	}
 
 	/**
-	 * Sets the text string after filtering out words to ignore in filterWords
-	 * and substituting word variants if so configured.
-	 * If ignoreCase is set, text is converted to lower case.
-	 * Substituting word variants should be configured by type.
-	 * substituteWordVariants.TECHNICAL=true
-	 * substituteWordVariants.PROSE=false
-	 * substituteWordVariants.VERSE=false
-	 * Also the : metacharacter for title, author etc. are also word boundries
-	 * and get stripped. So need to fix that.
+	 * Sets the text string after filtering out words to ignore in filterWords<br>
+	 * and substituting word variants if so configured.<br>
+	 * If ignoreCase is set, text is converted to lower case first.<br>
+	 * Substituting word variants is configured by type. The defaults are:<br>
+	 * substituteWordVariants.TECHNICAL=true<br>
+	 * substituteWordVariants.PROSE=false<br>
+	 * substituteWordVariants.VERSE=false</p>
+	 * 
+	 * The Sentence structure is preserved for TECHNICAL and PROSE content types.<br>
+	 * For TECHNCIAL, each line (defined as ending in "\n") is a Sentence.<br>
+	 * For PROSE, a SentenceInstance BreakIterator delimits sentences.
+	 * For VERSE the words are all delivered in a single sentence.<br>
+	 * 
+	 * TODO: make preserving sentence structure configurable.
+	 * TODO the : metacharacter for title, author etc. are also word boundaries and get stripped. So need to fix that.
+	 * TODO build the Book here.
 	 * @param text
 	 */
 	public void setText(String text) {
@@ -234,8 +248,8 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 		if(isFilteringInputText && filterWords.size() > 0) {
 			StringBuilder sb = new StringBuilder();
 			BreakIterator wordBoundry = BreakIterator.getWordInstance(Locale.US);
-			BreakIterator lineBoundry = BreakIterator.getLineInstance();
-			lineBoundry.setText(convertedText);
+			BreakIterator sentenceBoundry = BreakIterator.getSentenceInstance();
+
 			int start = 0;
 			int end = 0;
 			int len = convertedText.length();
@@ -245,6 +259,7 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 				start = end + 1;
 			}
 			
+			sentenceBoundry.setText(convertedText);
 			wordBoundry.setText(convertedText);
 			start = end = 0;
 			while((end=wordBoundry.next()) != BreakIterator.DONE) {

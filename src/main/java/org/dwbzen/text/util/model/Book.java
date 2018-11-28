@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.text.BreakIterator;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 import java.util.function.Supplier;
@@ -27,12 +25,13 @@ import mathlib.util.INameable;
  * Markup is <PROPERTY>:.... :
  * 
  * Everything else is book text. If no mark-up is used, all the text is treated equally.
- * TODO: does not handle markup correctly - as written, workingText contains markup. Need to iterate over lines, not sections.
+ * TODO: Change the interface and remove Collection<Word>. Keep sentences in a private List<Sentence>
+ * The get() then becomes a simple iterator over the Sentence List.
  * 
  * @author don_bacon
  *
  */
-public class Book implements Supplier<Sentence>, Collection<Word>, Serializable, INameable {
+public class Book implements Supplier<Sentence>, Serializable, INameable {
 	private static final long serialVersionUID = -6403206930194239270L;
 	protected static final Logger log = LogManager.getLogger(Book.class);
 
@@ -46,13 +45,18 @@ public class Book implements Supplier<Sentence>, Collection<Word>, Serializable,
 	public static final String CLASS = "Class";
 	
 	/**
-	 * the Book Type determines how Sentences are processed
+	 * The Book Type determines how Sentences are processed.
 	 * @author don_bacon
 	 *
 	 */
 	public static enum TYPE  {PROSE, VERSE, TECHNICAL };
+	public static enum ContentType {PLAIN_TEXT, JSON };
 	
-	private static List<String> sections = new ArrayList<String>();
+	/**
+	 * Sections apply to JSON-formatted text.
+	 * 
+	 */
+	public static List<String> sections = new ArrayList<String>();
 	static {
 		sections.add(TITLE);
 		sections.add(AUTHOR);
@@ -64,6 +68,7 @@ public class Book implements Supplier<Sentence>, Collection<Word>, Serializable,
 	}
 	
 	private String name = null;
+	private List<Sentence> sentences = new ArrayList<>();
 	private String source = "";
 	private BreakIterator boundary = null;
 	private Properties properties = new Properties();
@@ -129,6 +134,11 @@ public class Book implements Supplier<Sentence>, Collection<Word>, Serializable,
 		return properties.getProperty(key);
 	}
 	
+	/**
+	 * TODO the : metacharacter for title, author etc. are also word boundaries and get stripped. So need to fix that.
+	 * 
+	 * @param sourceText
+	 */
 	public void setSource(String sourceText) {
 		workingText = sourceText;
 		String title = null;
@@ -195,82 +205,22 @@ public class Book implements Supplier<Sentence>, Collection<Word>, Serializable,
 		}
 	}
 
-	@Override
 	public int size() {
-		// TODO Auto-generated method stub
-		return 0;
+		return sentences.size();
 	}
 
-	@Override
 	public boolean isEmpty() {
-		// TODO Auto-generated method stub
-		return false;
+		return sentences.isEmpty();
 	}
 
-	@Override
-	public boolean contains(Object o) {
-		// TODO Auto-generated method stub
-		return false;
+
+	public boolean add(Sentence e) {
+		return sentences.add(e);
 	}
 
-	@Override
-	public Iterator<Word> iterator() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
-	@Override
-	public Object[] toArray() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public <T> T[] toArray(T[] a) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public boolean add(Word e) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean remove(Object o) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean containsAll(Collection<?> c) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean addAll(Collection<? extends Word> c) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean removeAll(Collection<?> c) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean retainAll(Collection<?> c) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
 	public void clear() {
-		// TODO Auto-generated method stub
-		
+		sentences.clear();
 	}
 
 	@Override
