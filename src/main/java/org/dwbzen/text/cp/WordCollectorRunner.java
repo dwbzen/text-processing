@@ -101,6 +101,7 @@ public class WordCollectorRunner {
 		String orderstring = null;
 		List<Integer> orderList = new ArrayList<Integer>();
 		String schema = "none";
+		boolean trace = false;
 		
 		for(int i=0; i<args.length; i++) {
 			if(args[i].equalsIgnoreCase("-file")) {
@@ -139,6 +140,9 @@ public class WordCollectorRunner {
 			else if(args[i].equalsIgnoreCase("-type")) {
 				textType = args[++i];
 			}
+			else if(args[i].equalsIgnoreCase("-trace")) {
+				trace = args[++i].equalsIgnoreCase("true") ? true : false;
+			}
 			else {
 				text = args[i];
 			}
@@ -162,6 +166,7 @@ public class WordCollectorRunner {
 		String[] collectorArg = new String[1];
 		collectorArg[0] = (inputFile != null) ? "file:" + inputFile : text;
 		Optional<String> optionalSchema = Optional.ofNullable(schema);
+		CollectorStats.trace = trace;
 		for(Integer order : orderList) {
 			WordCollector collector = WordCollectorBuilder.build(order, ignoreCase, type, optionalSchema, collectorArg);
 			collector.collect();
