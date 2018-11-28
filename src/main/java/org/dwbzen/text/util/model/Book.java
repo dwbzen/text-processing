@@ -77,9 +77,14 @@ public class Book implements Supplier<Sentence>, Collection<Word>, Serializable,
 	}
 	
 	public Book(String sourceText) {
-		setSource(sourceText);
+		this(sourceText, TYPE.PROSE);
 	}
 
+	public Book(String sourceText, TYPE type) {
+		this.type = type;
+		setSource(sourceText);
+	}
+	
 	/**
 	 * Supplies a Sentence one at a time.
 	 * @return Sentence, null when it runs out.

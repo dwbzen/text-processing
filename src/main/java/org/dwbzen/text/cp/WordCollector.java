@@ -218,6 +218,12 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 	 * Sets the text string after filtering out words to ignore in filterWords
 	 * and substituting word variants if so configured.
 	 * If ignoreCase is set, text is converted to lower case.
+	 * Substituting word variants should be configured by type.
+	 * substituteWordVariants.TECHNICAL=true
+	 * substituteWordVariants.PROSE=false
+	 * substituteWordVariants.VERSE=false
+	 * Also the : metacharacter for title, author etc. are also word boundries
+	 * and get stripped. So need to fix that.
 	 * @param text
 	 */
 	public void setText(String text) {
@@ -227,17 +233,20 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 		String convertedText = ignoreCase ? text.toLowerCase() : text;
 		if(isFilteringInputText && filterWords.size() > 0) {
 			StringBuilder sb = new StringBuilder();
-			BreakIterator lineBoundry = BreakIterator.getLineInstance();
 			BreakIterator wordBoundry = BreakIterator.getWordInstance(Locale.US);
+			BreakIterator lineBoundry = BreakIterator.getLineInstance();
 			lineBoundry.setText(convertedText);
 			int start = 0;
 			int end = 0;
-			while((end=lineBoundry.next()) != BreakIterator.DONE) {
-				
+			int len = convertedText.length();
+			while(start < len && (end=convertedText.indexOf('\n', start)) >= 0) {
+				String temp = convertedText.substring(start, end).trim();
+				System.out.println(temp);
+				start = end + 1;
 			}
 			
-			
 			wordBoundry.setText(convertedText);
+			start = end = 0;
 			while((end=wordBoundry.next()) != BreakIterator.DONE) {
 
 				String temp = convertedText.substring(start, end).trim();

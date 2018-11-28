@@ -55,6 +55,11 @@ public class TicketDataFormatter implements IDataFormatter<String> {
 					summary = summary.substring(1, summary.length());
 				}
 				sb.append(summary);
+				// check the last character. If it's not a . or ?, add a period to complete the sentence
+				char c = summary.charAt(summary.length()-1);
+				if(!(c=='?' || c=='.' || c=='!')) {
+					sb.append(". ");
+				}
 				sb.append("\n");
 			}
 		}
