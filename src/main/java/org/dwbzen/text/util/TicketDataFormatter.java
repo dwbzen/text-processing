@@ -35,6 +35,9 @@ public class TicketDataFormatter implements IDataFormatter<String> {
 
 	}
 	
+	/**
+	 * This makes sure each ServiceTicket summary ends with a sentence delimiter and a newline.
+	 */
 	@Override
 	public String format(String rawData) {
 		String summary = "";

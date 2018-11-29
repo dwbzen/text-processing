@@ -9,7 +9,7 @@ import org.dwbzen.text.cp.WordCollectorRunner.WordCollectorBuilder;
 import org.dwbzen.text.util.model.Book;
 import org.dwbzen.text.util.model.Sentence;
 import org.dwbzen.text.util.model.Word;
-import org.dwbzen.text.util.model.Book.TYPE;
+import org.dwbzen.text.util.model.Book.ContentType;
 
 import mathlib.cp.CollectorStats;
 import mathlib.cp.MarkovChain;
@@ -94,7 +94,7 @@ public class SentenceProducerRunner {
 			}
 		}
 
-		Book.TYPE type = (textType != null && textType.equalsIgnoreCase("verse")) ? TYPE.VERSE : TYPE.PROSE;
+		Book.ContentType type = (textType != null && textType.equalsIgnoreCase("verse")) ? ContentType.VERSE : ContentType.PROSE;
 		// Run the WordCollector first
 		String[] collectorArg = new String[1];
 		collectorArg[0] = (inputFile != null) ? "file:" + inputFile : text;

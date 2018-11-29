@@ -14,7 +14,7 @@ import org.dwbzen.text.util.IDataFormatter;
 import org.dwbzen.text.util.Util;
 import org.dwbzen.text.util.WordListUtils;
 import org.dwbzen.text.util.model.Book;
-import org.dwbzen.text.util.model.Book.TYPE;
+import org.dwbzen.text.util.model.Book.ContentType;
 import org.dwbzen.text.util.model.Sentence;
 import org.dwbzen.text.util.model.Word;
 
@@ -49,8 +49,8 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 	private int order;
 	private String text = null;
 	private MarkovChain<Word, Sentence, Book> markovChain;
-	private Book book = new Book();
-	private Book.TYPE	bookType = TYPE.PROSE;	// default
+	private Book book = null;
+	private Book.ContentType	bookType = ContentType.PROSE;	// default
 	private List<String> filterWords = new ArrayList<String>();
 	private Properties configProperties = null;
 	private Configuration configuration = null;
@@ -62,14 +62,14 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 	private IDataFormatter<String> dataFormatter = null;
 	private String schema = "text";
 	private Map<String, String> variantMap = null;
-	private Map<Book.TYPE, Boolean> substituteWordVariantsMap = new HashMap<>();
+	private Map<Book.ContentType, Boolean> substituteWordVariantsMap = new HashMap<>();
 
 	
 	protected WordCollector() {
 		configure();
 	}
 	
-	protected WordCollector(int order, boolean ignorecaseflag, String schema, TYPE type) {
+	protected WordCollector(int order, boolean ignorecaseflag, String schema, ContentType type) {
 		this.order = order;
 		this.ignoreCase = ignorecaseflag;
 		this.schema = schema;
@@ -86,9 +86,9 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 			isFilteringInputText = configProperties.getProperty("filterWordsToIgnore", "false").equalsIgnoreCase("true");
 			isFilteringPunctuation  = configProperties.getProperty("filterPunctuation", "false").equalsIgnoreCase("true");
 			
-			substituteWordVariantsMap.put(TYPE.PROSE, configProperties.getProperty("substituteWordVariants.PROSE", "false").equalsIgnoreCase("true"));
-			substituteWordVariantsMap.put(TYPE.VERSE, configProperties.getProperty("substituteWordVariants.VERSE", "false").equalsIgnoreCase("true"));
-			substituteWordVariantsMap.put(TYPE.TECHNICAL, configProperties.getProperty("substituteWordVariants.TECHNICAL", "true").equalsIgnoreCase("true"));
+			substituteWordVariantsMap.put(ContentType.PROSE, configProperties.getProperty("substituteWordVariants.PROSE", "false").equalsIgnoreCase("true"));
+			substituteWordVariantsMap.put(ContentType.VERSE, configProperties.getProperty("substituteWordVariants.VERSE", "false").equalsIgnoreCase("true"));
+			substituteWordVariantsMap.put(ContentType.TECHNICAL, configProperties.getProperty("substituteWordVariants.TECHNICAL", "true").equalsIgnoreCase("true"));
 			
 			dataFormatterClassName = configProperties.getProperty("dataFormatterClass." + schema);
 			if(dataFormatterClassName != null && !dataFormatterClassName.equalsIgnoreCase("none") && !schema.equalsIgnoreCase("none")) {
@@ -233,7 +233,7 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 	 * The Sentence structure is preserved for TECHNICAL and PROSE content types.<br>
 	 * For TECHNCIAL, each line (defined as ending in "\n") is a Sentence.<br>
 	 * For PROSE, a SentenceInstance BreakIterator delimits sentences.
-	 * For VERSE the words are all delivered in a single sentence.<br>
+	 * For VERSE the words are all delivered as a single sentence.<br>
 	 * 
 	 * TODO: make preserving sentence structure configurable.
 	 * TODO the : metacharacter for title, author etc. are also word boundaries and get stripped. So need to fix that.
@@ -279,11 +279,11 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 		}
 	}
 
-	public Book.TYPE getBookType() {
+	public Book.ContentType getBookType() {
 		return bookType;
 	}
 
-	public void setBookType(Book.TYPE bookType) {
+	public void setBookType(Book.ContentType bookType) {
 		this.bookType = bookType;
 	}
 	

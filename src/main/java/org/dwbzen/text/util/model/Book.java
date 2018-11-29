@@ -49,8 +49,8 @@ public class Book implements Supplier<Sentence>, Serializable, INameable {
 	 * @author don_bacon
 	 *
 	 */
-	public static enum TYPE  {PROSE, VERSE, TECHNICAL };
-	public static enum ContentType {PLAIN_TEXT, JSON };
+	public static enum ContentType  {PROSE, VERSE, TECHNICAL };
+	public static enum ContentFormat {PLAIN_TEXT, JSON, XML };
 	
 	/**
 	 * Sections apply to JSON-formatted text.
@@ -75,17 +75,17 @@ public class Book implements Supplier<Sentence>, Serializable, INameable {
 	private int start = 0;
 	private int end = 0;
 	private String workingText = null;
-	private TYPE type = TYPE.PROSE;
+	private ContentType type = ContentType.PROSE;
 	
 	public Book() {
 		name = INameable.DEFAULT_NAME;
 	}
 	
 	public Book(String sourceText) {
-		this(sourceText, TYPE.PROSE);
+		this(sourceText, ContentType.PROSE);
 	}
 
-	public Book(String sourceText, TYPE type) {
+	public Book(String sourceText, ContentType type) {
 		this.type = type;
 		setSource(sourceText);
 	}
@@ -98,7 +98,7 @@ public class Book implements Supplier<Sentence>, Serializable, INameable {
 	public Sentence get() {
 		Sentence sentence = null;
 		if(boundary == null) {
-			boundary = (type.equals(TYPE.VERSE)) ? 
+			boundary = (type.equals(ContentType.VERSE)) ? 
 					TextBreakIterator.getVerseInstance() :
 					TextBreakIterator.getSentenceInstance();
 			boundary.setText(source);
@@ -162,11 +162,11 @@ public class Book implements Supplier<Sentence>, Serializable, INameable {
 	}
 	
 	
-	public TYPE getType() {
+	public ContentType getType() {
 		return type;
 	}
 
-	public void setType(TYPE type) {
+	public void setType(ContentType type) {
 		this.type = type;
 	}
 
@@ -186,8 +186,8 @@ public class Book implements Supplier<Sentence>, Serializable, INameable {
 				textType = args[++i];
 			}
 		}
-		Book.TYPE type = (textType != null && textType.equalsIgnoreCase("verse")) ? TYPE.VERSE : TYPE.PROSE;
-		String eol = (type.equals(TYPE.VERSE)) ? "\n" : "";
+		Book.ContentType type = (textType != null && textType.equalsIgnoreCase("verse")) ? ContentType.VERSE : ContentType.PROSE;
+		String eol = (type.equals(ContentType.VERSE)) ? "\n" : "";
 		TextFileReader reader = TextFileReader.getInstance(inputFile, eol);
 		String fileText = reader.getFileText();
 		

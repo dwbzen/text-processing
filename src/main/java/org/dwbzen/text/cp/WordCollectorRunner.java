@@ -15,7 +15,7 @@ import org.dwbzen.text.util.TextFileDataSource;
 import org.dwbzen.text.util.Util;
 import org.dwbzen.text.util.exception.InvalidDataSourceException;
 import org.dwbzen.text.util.model.Book;
-import org.dwbzen.text.util.model.Book.TYPE;
+import org.dwbzen.text.util.model.Book.ContentType;
 import org.dwbzen.text.util.model.Sentence;
 import org.dwbzen.text.util.model.Word;
 import mathlib.cp.*;
@@ -51,7 +51,7 @@ public class WordCollectorRunner {
 		 * @return WordCollector instance
 		 * If the schema is specified, it maps to a configured implementation class.
 		 */
-		public static WordCollector build(int order, boolean ignorecaseflag, TYPE type, Optional<String> theschema, String... args)  {
+		public static WordCollector build(int order, boolean ignorecaseflag, ContentType type, Optional<String> theschema, String... args)  {
 			String sourceText = null;
 			String inputFile = null;
 			DataSourceDescription dataSourceDescription = null;
@@ -69,7 +69,7 @@ public class WordCollectorRunner {
 			if(inputFile != null) {
 				String inputFilename = Util.getInputFilename(inputFile);
 				dataSourceDescription = new DataSourceDescription(inputFilename, DataSourceType.TextFile);
-				dataSourceDescription.getProperties().setProperty("eol", (type.equals(TYPE.VERSE)) ? "\n" : "");
+				dataSourceDescription.getProperties().setProperty("eol", (type.equals(ContentType.VERSE)) ? "\n" : "");
 				schemaName = theschema.isPresent() ? theschema.get() : "text";
 				dataSourceDescription.setSchema(schemaName);
 				dataSource = new TextFileDataSource(dataSourceDescription);
@@ -147,12 +147,12 @@ public class WordCollectorRunner {
 				text = args[i];
 			}
 		}
-		Book.TYPE type = TYPE.PROSE;
+		Book.ContentType type = ContentType.PROSE;
 		if(textType.equalsIgnoreCase("verse")) {
-			type = TYPE.VERSE;
+			type = ContentType.VERSE;
 		}
 		else if(textType.equalsIgnoreCase("technical")) {
-			type = TYPE.TECHNICAL;
+			type = ContentType.TECHNICAL;
 		}
 		if(orderstring == null) {
 			orderList.add(2);	// default order is 2 if not specified
