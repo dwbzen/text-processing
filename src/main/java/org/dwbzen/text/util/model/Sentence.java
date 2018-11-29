@@ -77,10 +77,10 @@ public class Sentence extends ArrayList<Word> implements Comparable<Sentence>, L
 	}
 	
 	public Sentence() {
-		name = INameable.DEFAULT_NAME;
+		this(null, true, null, null, INameable.DEFAULT_NAME);
 	}
 	
-	public Sentence(String string, boolean skipws, Sentence otherSentence, Word word, String name) {
+	public Sentence(String string, boolean skipws, Sentence otherSentence, Word word, String aname) {
 		super();
 		if(string != null) {
 			setSource(string);
@@ -95,12 +95,18 @@ public class Sentence extends ArrayList<Word> implements Comparable<Sentence>, L
 			setSource();
 		}
 		ignoreWhiteSpace = skipws;
-		this.name = (name != null && name.length()>0) ? name : createName();
+		this.name = (aname != null && aname.length()>0 && aname.length()<=20) ? aname : createName(aname);
 	}
 	
-	private String createName() {
-		name = (source != null) ? "hash:"+source.hashCode() : "Unnamed";
-		return name;
+	private String createName(String aname) {
+		String createdName = null;
+		if(aname != null && aname.length() > 20) {
+			createdName = aname.substring(0, 19) + "...";
+		}
+		else {
+			createdName = (source != null) ? "hash:"+source.hashCode() : "Unnamed";
+		}
+		return createdName;
 	}
 
 	public Sentence(String string) {
@@ -181,7 +187,6 @@ public class Sentence extends ArrayList<Word> implements Comparable<Sentence>, L
 
 	public void setSource(String sourceString) {
 		source = sourceString;
-		createName();
 		breakIntoWords(sourceString);
 	}
 	

@@ -50,7 +50,7 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 	private String text = null;
 	private MarkovChain<Word, Sentence, Book> markovChain;
 	private Book book = null;
-	private Book.ContentType	bookType = ContentType.PROSE;	// default
+	private Book.ContentType	contentType = ContentType.PROSE;	// default
 	private List<String> filterWords = new ArrayList<String>();
 	private Properties configProperties = null;
 	private Configuration configuration = null;
@@ -73,7 +73,7 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 		this.order = order;
 		this.ignoreCase = ignorecaseflag;
 		this.schema = schema;
-		setBookType(type);
+		this.contentType = type;
 		configure();
 	}
 	
@@ -232,19 +232,17 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 	 * 
 	 * The Sentence structure is preserved for TECHNICAL and PROSE content types.<br>
 	 * For TECHNCIAL, each line (defined as ending in "\n") is a Sentence.<br>
-	 * For PROSE, a SentenceInstance BreakIterator delimits sentences.
+	 * For PROSE, a SentenceInstance BreakIterator delimits sentences.<br>
 	 * For VERSE the words are all delivered as a single sentence.<br>
 	 * 
 	 * TODO: make preserving sentence structure configurable.
-	 * TODO the : metacharacter for title, author etc. are also word boundaries and get stripped. So need to fix that.
-	 * TODO build the Book here.
+	 * 
 	 * @param text
+	 * @return Book instance
 	 */
-	public void setText(String text) {
-		if(dataFormatter != null) {
-			text = dataFormatter.format(text);
-		}
-		String convertedText = ignoreCase ? text.toLowerCase() : text;
+	public Book setText(String sourceText) {
+		String convertedText = (dataFormatter != null) ? dataFormatter.format(sourceText) : sourceText;
+		convertedText = ignoreCase ? convertedText.toLowerCase() : convertedText;
 		if(isFilteringInputText && filterWords.size() > 0) {
 			StringBuilder sb = new StringBuilder();
 			BreakIterator wordBoundry = BreakIterator.getWordInstance(Locale.US);
@@ -277,14 +275,16 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 		else {
 			this.text = convertedText;
 		}
+		book = new Book(text, contentType);
+		return book;
 	}
 
-	public Book.ContentType getBookType() {
-		return bookType;
+	public Book.ContentType getContentType() {
+		return contentType;
 	}
 
-	public void setBookType(Book.ContentType bookType) {
-		this.bookType = bookType;
+	public void setContentType(Book.ContentType type) {
+		this.contentType = type;
 	}
 	
 	public boolean isFilteringInputText() {

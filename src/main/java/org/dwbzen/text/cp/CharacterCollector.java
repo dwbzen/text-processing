@@ -57,6 +57,7 @@ public class CharacterCollector implements ICollector<Word, MarkovChain<Characte
 	private Character[] filters = {'-', '.'};	// filters words not to include if they contain these characters
 	private MarkovChain<Character, Word, Sentence> markovChain = null;
 	private Sentence sentence = null;	// current Sentence we are collecting Words in
+	private Word word = null;	// current Word we are scanning
 	
 	/**
 	 * 
@@ -91,7 +92,6 @@ public class CharacterCollector implements ICollector<Word, MarkovChain<Characte
 	@Override
 	public void accept(Sentence sentence) {
 		log.debug("accept sentence: " + sentence);
-		Word word = null;
 		while((word = sentence.get()) != null) {
 			apply(word);
 		}
@@ -127,18 +127,23 @@ public class CharacterCollector implements ICollector<Word, MarkovChain<Characte
 		return markovChain;
 	}
 	
-	private void addOccurrence(Word theWord, Character theChar, boolean initial) {
+	protected void addOccurrence(Word theWord, Character theChar, boolean initial) {
 		boolean terminal = theChar.equals(Word.NULL_VALUE);
+		/*
+		 *  the Supplier is just the Word we are currently working on - as a Sentence whose name is - 
+		 *  the Word we are working on.
+		 */
+		Sentence supplierSentence = new Sentence(null, true, null, word, word.getWordString());
 		if(markovChain.containsKey(theWord)) {
 			CollectorStats<Character, Word, Sentence> collectorStats = markovChain.get(theWord);
-			collectorStats.addOccurrence(theChar, sentence);
+			collectorStats.addOccurrence(theChar, supplierSentence);
 			collectorStats.setTerminal(terminal);
 			collectorStats.setInitial(initial);
 		}
 		else {
 			CollectorStats<Character, Word, Sentence> collectorStats = new CollectorStats<Character, Word, Sentence>();
 			collectorStats.setSubset(theWord);
-			collectorStats.addOccurrence(theChar, sentence);
+			collectorStats.addOccurrence(theChar, supplierSentence);
 			collectorStats.setTerminal(terminal);
 			collectorStats.setInitial(initial);
 			markovChain.put(theWord, collectorStats);

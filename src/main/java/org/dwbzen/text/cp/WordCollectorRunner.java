@@ -83,10 +83,7 @@ public class WordCollectorRunner {
 			}
 			WordCollector collector = new WordCollector(order, ignorecaseflag, schemaName, type);
 			CollectorStats.trace = false;
-			collector.setText(sourceText);	// also filters unwanted words
-			Book book = new Book(collector.getText());
-			book.setType(type);
-			collector.setBook(book);
+			collector.setText(sourceText);	// also filters unwanted words, substitutes word variants and creates the Book
 			collector.setMarkovChain(new MarkovChain<Word, Sentence, Book>(order));
 			return collector;
 		}
