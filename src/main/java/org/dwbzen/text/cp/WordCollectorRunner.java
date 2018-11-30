@@ -166,6 +166,7 @@ public class WordCollectorRunner {
 		CollectorStats.trace = trace;
 		for(Integer order : orderList) {
 			WordCollector collector = WordCollectorBuilder.build(order, ignoreCase, type, optionalSchema, collectorArg);
+			collector.setTrace(trace);
 			collector.collect();
 			MarkovChain<Word, Sentence, Book> markovChain = collector.getMarkovChain();
 			markovChains.put(order, markovChain);

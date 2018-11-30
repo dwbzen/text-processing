@@ -63,7 +63,7 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 	private String schema = "text";
 	private Map<String, String> variantMap = null;
 	private Map<Book.ContentType, Boolean> substituteWordVariantsMap = new HashMap<>();
-
+	private boolean trace = false;
 	
 	protected WordCollector() {
 		configure();
@@ -253,7 +253,7 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 			int len = convertedText.length();
 			while(start < len && (end=convertedText.indexOf('\n', start)) >= 0) {
 				String temp = convertedText.substring(start, end).trim();
-				System.out.println(temp);
+				if(trace) { System.out.println(temp); }
 				start = end + 1;
 			}
 			
@@ -309,6 +309,26 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 
 	public void setSubstituteWordVariants(boolean substituteWordVariants) {
 		this.substituteWordVariants = substituteWordVariants;
+	}
+
+	public boolean isTrace() {
+		return trace;
+	}
+
+	public void setTrace(boolean trace) {
+		this.trace = trace;
+	}
+
+	public List<String> getFilterWords() {
+		return filterWords;
+	}
+
+	public Map<String, String> getVariantMap() {
+		return variantMap;
+	}
+
+	public Map<Book.ContentType, Boolean> getSubstituteWordVariantsMap() {
+		return substituteWordVariantsMap;
 	}
 
 }
