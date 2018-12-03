@@ -81,7 +81,8 @@ import mathlib.cp.OutputStyle;
 		boolean trace = false;
 		boolean pickInitialSeed = false;
 		boolean enableDisplay = false;	// display results as they are produced
-		
+		String seedPickerClassName = null;
+
 		for(int i=0; i<args.length; i++) {
 			if(args[i].equalsIgnoreCase("-file")) {
 				filenames =  args[++i].split(",");
@@ -110,6 +111,12 @@ import mathlib.cp.OutputStyle;
 			else if(args[i].equalsIgnoreCase("-seed")){
 				seed = new Word(args[++i]);
 				order = seed.size();
+			}
+			else if(args[i].equalsIgnoreCase("-seedPicker")) {
+				// for example, -seedPicker "CharacterCollector"
+				// find seedPickerClass.CharacterCollector key in config file to get class name
+				// TODO finish the implementation
+				seedPickerClassName = args[++i];
 			}
 			else if(args[i].equalsIgnoreCase("-sort")) {
 				sort = true;

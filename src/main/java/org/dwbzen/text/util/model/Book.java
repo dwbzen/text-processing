@@ -27,7 +27,6 @@ import mathlib.util.INameable;
  * Chapter	(CHAPTER)
  * 
  * All the text is treated equally.
- * TODO The get() becomes a simple iterator over the Sentence List.
  * 
  * @author don_bacon
  *

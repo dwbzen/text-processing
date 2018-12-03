@@ -99,6 +99,7 @@ public class WordCollectorRunner {
 		List<Integer> orderList = new ArrayList<Integer>();
 		String schema = "none";
 		boolean trace = false;
+		boolean showSupplierCounts = false;
 		
 		for(int i=0; i<args.length; i++) {
 			if(args[i].equalsIgnoreCase("-file")) {
@@ -123,6 +124,7 @@ public class WordCollectorRunner {
 					else if(f.startsWith("pretty")) { outputStyle = OutputStyle.PRETTY_JSON; }
 					else if(f.equalsIgnoreCase("text")) { outputStyle = OutputStyle.TEXT; }
 					else if(f.equalsIgnoreCase("csv")) { outputStyle = OutputStyle.CSV; }
+					else if(f.equalsIgnoreCase("suppliers")) { showSupplierCounts = true;}
 				}
 			}
 			else if(args[i].equalsIgnoreCase("-sorted")) {
@@ -176,11 +178,11 @@ public class WordCollectorRunner {
 			MarkovChain<Word, Sentence, Book> markovChain = markovChains.get(ord);
 			if(displayMarkovChain) {
 				if(sorted) {
-					String s = markovChain.getSortedDisplayText(outputStyle);
+					String s = markovChain.getSortedDisplayText(outputStyle, showSupplierCounts);
 					System.out.println(s);
 				}
 				else {
-					System.out.println(  markovChain.getMarkovChainDisplayText(outputStyle)); 
+					System.out.println(  markovChain.getMarkovChainDisplayText(outputStyle, showSupplierCounts)); 
 				}
 			}
 			if(displaySummaryMap) { 

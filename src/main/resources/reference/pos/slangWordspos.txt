@@ -15,6 +15,7 @@ ears	pB
 eat	Vt
 enormous	A
 face	NB
+far out	!
 fecund	A
 fetid	A
 finger	NBVt
@@ -23,6 +24,7 @@ for	P
 gigantic	A
 grab	Vt
 greedily	v
+groovy	A
 grope	Vi
 hair	NB
 he	rN
@@ -54,6 +56,7 @@ she	rN
 slimy	A
 sloppy	A
 soft	A
+the bomb	A
 them	rp
 they	rp
 tickle	Vti
