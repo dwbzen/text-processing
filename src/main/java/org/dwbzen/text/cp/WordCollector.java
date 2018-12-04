@@ -261,7 +261,6 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 			wordBoundry.setText(convertedText);
 			start = end = 0;
 			while((end=wordBoundry.next()) != BreakIterator.DONE) {
-
 				String temp = convertedText.substring(start, end).trim();
 				String variant = (substituteWordVariants && variantMap.containsKey(temp)) ?
 						variantMap.get(temp) : temp;
