@@ -1,7 +1,10 @@
 package org.dwbzen.text.cp;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -76,10 +79,11 @@ public class CharacterCollectorRunner {
 	public static void main(String...args) throws IOException {
 		String[] filenames = {};
 		String text = null;
-		int order = 2;
 		boolean ignoreCase = false;
 		boolean trace = false;
 		boolean showSupplierCounts = false;
+		String orderstring = null;
+		List<Integer> orderList = new ArrayList<Integer>();
 		
 		for(int i=0; i<args.length; i++) {
 			if(args[i].startsWith("-file")) {
@@ -89,7 +93,7 @@ public class CharacterCollectorRunner {
 				ignoreCase = true;
 			}
 			else if(args[i].equalsIgnoreCase("-order")) {
-				order = Integer.parseInt(args[++i]);
+				orderstring = args[++i];
 			}
 			else if(args[i].equalsIgnoreCase("-trace")) {
 				trace = true;
@@ -120,32 +124,66 @@ public class CharacterCollectorRunner {
 				text = args[i];
 			}
 		}
-		CharacterCollector collector = CharacterCollectorBuilder.build(order, filenames, ignoreCase);
-		collector.setTrace(false);
-		CollectorStats.trace = false;
-		if(filenames.length == 0) {
-			text = ignoreCase ? text.toLowerCase() : text;
-			collector.setText(text);
+		if(orderstring == null) {
+			orderList.add(2);	// default order is 2 if not specified
 		}
-		collector.setTrace(trace);
-		collector.collect();
-		MarkovChain<Character, Word, Sentence> markovChain = collector.getMarkovChain();
-		
-		if(displayMarkovChain) {
-			if(sorted) {
-				String s = markovChain.getSortedDisplayText(outputStyle, showSupplierCounts);
-				System.out.println(s);
-			}
-			else {
-				System.out.println(  markovChain.getMarkovChainDisplayText(outputStyle, showSupplierCounts)); 
+		else {
+			for(String order : orderstring.split(",")) {
+				orderList.add(Integer.parseInt(order));
 			}
 		}
-		if(displaySummaryMap) { 
-			System.out.println(markovChain.getSummaryMapText()); 
+		Map<Integer, MarkovChain<Character, Word, Sentence>>  markovChains = new TreeMap<Integer, MarkovChain<Character, Word, Sentence>>();
+		CollectorStats.trace = trace;
+		for(Integer order : orderList) {
+			CharacterCollector collector = CharacterCollectorBuilder.build(order, filenames, ignoreCase);
+			collector.setTrace(trace);
+			if(filenames.length == 0) {
+				text = ignoreCase ? text.toLowerCase() : text;
+				collector.setText(text);
+			}
+			collector.collect();
+			MarkovChain<Character, Word, Sentence> markovChain = collector.getMarkovChain();
+			markovChains.put(order, markovChain);
 		}
-		if(displayInvertedSummary) { 
+
+		if(orderList.size() == 1) {
+			Integer ord = orderList.get(0);
+			MarkovChain<Character, Word, Sentence> markovChain = markovChains.get(ord);
+			if(displayMarkovChain) {
+				if(sorted) {
+					String s = markovChain.getSortedDisplayText(outputStyle, showSupplierCounts);
+					System.out.println(s);
+				}
+				else {
+					System.out.println(  markovChain.getMarkovChainDisplayText(outputStyle, showSupplierCounts)); 
+				}
+			}
+			if(displaySummaryMap) { 
+				System.out.println(markovChain.getSummaryMapText()); 
+			}
+			if(displayInvertedSummary) { 
+				boolean displayJson = outputStyle==OutputStyle.JSON || outputStyle==OutputStyle.PRETTY_JSON;
+				System.out.println(markovChain.getInvertedSummaryMapText(displayJson , outputStyle==OutputStyle.PRETTY_JSON));
+			}
+		}
+		else {
+			displayMultichains(markovChains, outputStyle);
+		}
+	}
+	
+	private static void displayMultichains(Map<Integer, MarkovChain<Character, Word, Sentence>> markovChains, OutputStyle outputStyle) {
+		for(Integer ord : markovChains.keySet()) {
+			MarkovChain<Character, Word, Sentence> markovChain = markovChains.get(ord);
 			boolean displayJson = outputStyle==OutputStyle.JSON || outputStyle==OutputStyle.PRETTY_JSON;
-			System.out.println(markovChain.getInvertedSummaryMapText(displayJson , outputStyle==OutputStyle.PRETTY_JSON));
-		}	
+			if(displayMarkovChain) { 
+				System.out.println( displayJson ? markovChain.toJson() :  markovChain.getMarkovChainDisplayText()); 
+			}
+			if(displaySummaryMap) { 
+				System.out.println(markovChain.getSummaryMapText()); 
+			}
+			if(displayInvertedSummary) { 
+				System.out.println(markovChain.getInvertedSummaryMapText(displayJson,  outputStyle==OutputStyle.PRETTY_JSON));
+			}
+		}
 	}
 }
