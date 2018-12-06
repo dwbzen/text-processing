@@ -146,44 +146,35 @@ public class CharacterCollectorRunner {
 			markovChains.put(order, markovChain);
 		}
 
-		if(orderList.size() == 1) {
-			Integer ord = orderList.get(0);
-			MarkovChain<Character, Word, Sentence> markovChain = markovChains.get(ord);
-			if(displayMarkovChain) {
-				if(sorted) {
-					String s = markovChain.getSortedDisplayText(outputStyle, showSupplierCounts);
-					System.out.println(s);
-				}
-				else {
-					System.out.println(  markovChain.getMarkovChainDisplayText(outputStyle, showSupplierCounts)); 
-				}
+		MarkovChain<Character, Word, Sentence> markovChain = combineMultichains(markovChains);
+		if(displayMarkovChain) {
+			if(sorted) {
+				String s = markovChain.getSortedDisplayText(outputStyle, showSupplierCounts);
+				System.out.println(s);
 			}
-			if(displaySummaryMap) { 
-				System.out.println(markovChain.getSummaryMapText()); 
-			}
-			if(displayInvertedSummary) { 
-				boolean displayJson = outputStyle==OutputStyle.JSON || outputStyle==OutputStyle.PRETTY_JSON;
-				System.out.println(markovChain.getInvertedSummaryMapText(displayJson , outputStyle==OutputStyle.PRETTY_JSON));
+			else {
+				System.out.println(  markovChain.getMarkovChainDisplayText(outputStyle, showSupplierCounts)); 
 			}
 		}
-		else {
-			displayMultichains(markovChains, outputStyle);
+		if(displaySummaryMap) { 
+			System.out.println(markovChain.getSummaryMapText()); 
+		}
+		if(displayInvertedSummary) { 
+			boolean displayJson = outputStyle==OutputStyle.JSON || outputStyle==OutputStyle.PRETTY_JSON;
+			System.out.println(markovChain.getInvertedSummaryMapText(displayJson , outputStyle==OutputStyle.PRETTY_JSON));
 		}
 	}
 	
-	private static void displayMultichains(Map<Integer, MarkovChain<Character, Word, Sentence>> markovChains, OutputStyle outputStyle) {
+	private static MarkovChain<Character, Word, Sentence>combineMultichains(Map<Integer, MarkovChain<Character, Word, Sentence>> markovChains) {
+		MarkovChain<Character, Word, Sentence> markovChain = null;
 		for(Integer ord : markovChains.keySet()) {
-			MarkovChain<Character, Word, Sentence> markovChain = markovChains.get(ord);
-			boolean displayJson = outputStyle==OutputStyle.JSON || outputStyle==OutputStyle.PRETTY_JSON;
-			if(displayMarkovChain) { 
-				System.out.println( displayJson ? markovChain.toJson() :  markovChain.getMarkovChainDisplayText()); 
+			if(markovChain == null) {
+				markovChain = markovChains.get(ord);
 			}
-			if(displaySummaryMap) { 
-				System.out.println(markovChain.getSummaryMapText()); 
-			}
-			if(displayInvertedSummary) { 
-				System.out.println(markovChain.getInvertedSummaryMapText(displayJson,  outputStyle==OutputStyle.PRETTY_JSON));
+			else {
+				markovChain.add(markovChains.get(ord));
 			}
 		}
+		return markovChain;
 	}
 }

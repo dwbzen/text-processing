@@ -2,7 +2,9 @@ package org.dwbzen.text.cp;
 
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -72,7 +74,6 @@ import mathlib.cp.OutputStyle;
 		boolean sort = false;
 		boolean statistical = true;
 		int recycleSeedNumber = 1;		// how often to pick a new seed.
-		int order = 2;
 		int repeats = 1;	// number of times to run WordProducer
 		int minLength = 0;
 		int maxLength = 10;
@@ -82,6 +83,8 @@ import mathlib.cp.OutputStyle;
 		boolean pickInitialSeed = false;
 		boolean enableDisplay = false;	// display results as they are produced
 		String seedPickerClassName = null;
+		String orderstring = null;
+		List<Integer> orderList = new ArrayList<Integer>();
 
 		for(int i=0; i<args.length; i++) {
 			if(args[i].equalsIgnoreCase("-file")) {
@@ -91,7 +94,7 @@ import mathlib.cp.OutputStyle;
 				ignoreCase = true;
 			}
 			else if(args[i].equalsIgnoreCase("-order")) {
-				order = Integer.parseInt(args[++i]);
+				orderstring = args[++i];
 			}
 			else if(args[i].equalsIgnoreCase("-num")) {
 				num = Integer.parseInt(args[++i]);
@@ -110,7 +113,7 @@ import mathlib.cp.OutputStyle;
 			}
 			else if(args[i].equalsIgnoreCase("-seed")){
 				seed = new Word(args[++i]);
-				order = seed.size();
+				orderstring = String.valueOf(seed.size());
 			}
 			else if(args[i].equalsIgnoreCase("-seedPicker")) {
 				// for example, -seedPicker "CharacterCollector"
@@ -122,13 +125,13 @@ import mathlib.cp.OutputStyle;
 				sort = true;
 			}
 			else if(args[i].equalsIgnoreCase("-trace")) {
-				trace = args[++i].equalsIgnoreCase("Y");
+				trace = args[++i].equalsIgnoreCase("true");
 			}
 			else if(args[i].startsWith("-stat")) {
-				statistical = args[++i].equalsIgnoreCase("Y");
+				statistical = args[++i].equalsIgnoreCase("true");
 			}
 			else if(args[i].startsWith("-list")) {
-				showOrderGenerated = args[++i].equalsIgnoreCase("Y");
+				showOrderGenerated = args[++i].equalsIgnoreCase("true");
 			}
 			else if(args[i].startsWith("-format")) {
 				// format processing
@@ -146,7 +149,15 @@ import mathlib.cp.OutputStyle;
 				text = args[i];
 			}
 		}
-
+		if(orderstring == null) {
+			orderList.add(2);	// default order is 2 if not specified
+		}
+		else {
+			for(String order : orderstring.split(",")) {
+				orderList.add(Integer.parseInt(order));
+			}
+		}
+		int order = orderList.get(0);
 		// Run the CharacterCollector first
 		collector = posOption.isPresent() ? 
 			CharacterCollectorRunner.CharacterCollectorBuilder.build(order, filenames, ignoreCase, posOption.get()) :
