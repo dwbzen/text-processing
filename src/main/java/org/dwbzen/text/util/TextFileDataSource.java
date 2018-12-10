@@ -19,7 +19,7 @@ import org.dwbzen.text.util.exception.InvalidDataSourceException;
  * @author DBacon
  *
  */
-public class TextFileDataSource implements IDataSource<String>,IDataFormatter<String> {
+public class TextFileDataSource implements IDataSource<String> {
 
 	private DataSourceDescription dataSourceDescription;
 	private Properties dataSourceProperties = null;
@@ -52,7 +52,7 @@ public class TextFileDataSource implements IDataSource<String>,IDataFormatter<St
 	@Override
 	public String getData() throws InvalidDataSourceException {
 		try {
-			fileText = format(reader.getFileText());
+			fileText = reader.getFileText();
 		}
 		catch(FileNotFoundException e1) {
 			throw new InvalidDataSourceException("File not found: " + filename);
@@ -101,11 +101,6 @@ public class TextFileDataSource implements IDataSource<String>,IDataFormatter<St
 
 	public List<String> getLines() {
 		return lines;
-	}
-
-	@Override
-	public String format(String rawData) {
-		return rawData;
 	}
 
 }

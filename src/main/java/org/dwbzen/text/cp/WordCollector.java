@@ -11,6 +11,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dwbzen.text.util.Configuration;
 import org.dwbzen.text.util.IDataFormatter;
+import org.dwbzen.text.util.IDataSource;
 import org.dwbzen.text.util.Util;
 import org.dwbzen.text.util.WordListUtils;
 import org.dwbzen.text.util.model.Book;
@@ -63,17 +64,19 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 	private String schema = "text";
 	private Map<String, String> variantMap = null;
 	private Map<Book.ContentType, Boolean> substituteWordVariantsMap = new HashMap<>();
+	private IDataSource<String> dataSource = null;
 	private boolean trace = false;
 	
 	protected WordCollector() {
 		configure();
 	}
 	
-	protected WordCollector(int order, boolean ignorecaseflag, String schema, ContentType type) {
+	protected WordCollector(int order, boolean ignorecaseflag, String schema, ContentType type, IDataSource<String> dataSource) {
 		this.order = order;
 		this.ignoreCase = ignorecaseflag;
 		this.schema = schema;
 		this.contentType = type;
+		this.dataSource = dataSource;
 		configure();
 	}
 	
@@ -328,6 +331,10 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 
 	public Map<Book.ContentType, Boolean> getSubstituteWordVariantsMap() {
 		return substituteWordVariantsMap;
+	}
+
+	public IDataSource<String> getDataSource() {
+		return dataSource;
 	}
 
 }

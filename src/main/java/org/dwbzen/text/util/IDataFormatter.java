@@ -12,7 +12,9 @@ import java.util.List;
  *
  */
 public interface IDataFormatter<T extends Serializable>  {
-	T format(T rawData);
+	default T format(T rawData) {
+		return rawData;
+	}
 	
 	default List<T> formatAsList(T rawData) {
 		List<T> list = new ArrayList<T>();
