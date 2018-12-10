@@ -5,16 +5,15 @@ import java.io.IOException;
 import org.dwbzen.text.util.domain.model.ServiceTicket;
 import org.dwbzen.text.util.domain.model.ServiceTickets;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Strips off and returns only the 'summary' portion of a JSON trouble ticket.<br>
  * Some examples:<br>
  * input:  <code><br>
-{ "serviceTickets" : [<br>
-{'id': '3392541', 'summary': 'TeamCity > GWT builds need to fail for unused imports'},<br>
-{'id': '7225692', 'summary': 'Cloud Control > New service to run cloud search data import'} }]<br>
+{'id': '9801816', 'summary': 'Workflow Rule> Add new Email Tokens', 'status': 'Dev-Assigned (Alpha)', 
+ 'team': 'Maint', 'resources': 'JCasuga, MDupre, RAnderson, SRyu', 'board': 'MNG-Alpha', 'age': 301}
 </code>
  * output: <code><br>
 'TeamCity > GWT builds need to fail for unused imports'<br>
@@ -29,10 +28,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class TicketDataFormatter implements IDataFormatter<String> {
 
 	static ObjectMapper mapper = new ObjectMapper();
-	@JsonProperty	private ServiceTickets serviceTickets = null;
+	private ServiceTickets serviceTickets = null;
+	private ServiceTicket serviceTicket = null;
 	
 	public TicketDataFormatter() {
-
+		mapper.configure(JsonParser.Feature.ALLOW_COMMENTS, true);
+		mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
 	}
 	
 	/**
@@ -42,30 +43,32 @@ public class TicketDataFormatter implements IDataFormatter<String> {
 	public String format(String rawData) {
 		String summary = "";
 		StringBuilder sb = new StringBuilder();
-		try {
-			rawData = rawData.replace("\"", "\\\"");
-			String textData = rawData.replace("'", "\"");
-			serviceTickets = mapper.readValue(textData, ServiceTickets.class);
-		} catch (IOException e) {
-			System.err.println("Exception: " + e.toString());
-			e.printStackTrace();
-		}
-		if(serviceTickets != null && serviceTickets.size() > 0) {
-			for(ServiceTicket serviceTicket : serviceTickets.getServiceTickets()) {
+		int start = 0;
+		int end = rawData.indexOf('}');
+		String rec = null;
+		while(end > 0) {
+			try {
+				rec = rawData.substring(start, end+1);
+				serviceTicket = mapper.readValue(rec, ServiceTicket.class);
 				summary = serviceTicket.getSummary();
-				if(summary.startsWith("'") || summary.startsWith("\"")) {
-					// strip the quotes
-					summary = summary.substring(1, summary.length());
-				}
-				sb.append(summary);
-				// check the last character. If it's not a . or ?, add a period to complete the sentence
-				char c = summary.charAt(summary.length()-1);
-				if(!(c=='?' || c=='.' || c=='!')) {
-					sb.append(". ");
-				}
-				sb.append("\n");
+			} catch (IOException e) {
+				System.err.println("Exception: " + e.toString() + "\n" + rec);
 			}
+			if(summary.startsWith("'") || summary.startsWith("\"")) {
+				// strip the quotes
+				summary = summary.substring(1, summary.length());
+			}
+			sb.append(summary);
+			// check the last character. If it's not a . or ?, add a period to complete the sentence
+			char c = summary.charAt(summary.length()-1);
+			if(!(c=='?' || c=='.' || c=='!')) {
+				sb.append(". ");
+			}
+			sb.append("\n");
+			start = end + 1;
+			end = rawData.indexOf('}', start);
 		}
+
 		return sb.toString();
 	}
 

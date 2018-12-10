@@ -17,7 +17,11 @@ public class ServiceTicket implements INameable, IJson {
 	
 	@JsonProperty	String id = null;
 	@JsonProperty	String summary = null;
+	@JsonProperty	int age = 0;
+	@JsonProperty	String team = null;
+	@JsonProperty	String status = null;
 	@JsonIgnore		private String resourceString = null;	// comma-separated list of userIDs or 'na'
+	@JsonProperty	private String board = null;
 	private List<String> resourceList = new ArrayList<String>();
 	
 	
@@ -77,6 +81,38 @@ public class ServiceTicket implements INameable, IJson {
 	@Override
 	public String getName() {
 		return id;
+	}
+
+	public int getAge() {
+		return age;
+	}
+
+	public void setAge(int age) {
+		this.age = age;
+	}
+
+	public String getTeam() {
+		return team;
+	}
+
+	public void setTeam(String team) {
+		this.team = team;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public String getBoard() {
+		return board;
+	}
+
+	public void setBoard(String board) {
+		this.board = board;
 	}
 	
 }
