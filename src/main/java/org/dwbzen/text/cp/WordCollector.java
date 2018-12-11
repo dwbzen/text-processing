@@ -76,8 +76,11 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 		this.ignoreCase = ignorecaseflag;
 		this.schema = schema;
 		this.contentType = type;
-		this.dataSource = dataSource;
 		configure();
+		if(dataSource != null) {
+			List<String> sourceTextLines = dataSource.getDataList();
+			this.dataSource = dataSource;
+		}
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -92,6 +95,7 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 			substituteWordVariantsMap.put(ContentType.PROSE, configProperties.getProperty("substituteWordVariants.PROSE", "false").equalsIgnoreCase("true"));
 			substituteWordVariantsMap.put(ContentType.VERSE, configProperties.getProperty("substituteWordVariants.VERSE", "false").equalsIgnoreCase("true"));
 			substituteWordVariantsMap.put(ContentType.TECHNICAL, configProperties.getProperty("substituteWordVariants.TECHNICAL", "true").equalsIgnoreCase("true"));
+			substituteWordVariants = substituteWordVariantsMap.get(this.contentType);
 			
 			dataFormatterClassName = configProperties.getProperty("dataFormatterClass." + schema);
 			if(dataFormatterClassName != null && !dataFormatterClassName.equalsIgnoreCase("none") && !schema.equalsIgnoreCase("none")) {
@@ -253,22 +257,18 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 
 			int start = 0;
 			int end = 0;
-			int len = convertedText.length();
-			while(start < len && (end=convertedText.indexOf('\n', start)) >= 0) {
-				String temp = convertedText.substring(start, end).trim();
-				if(trace) { System.out.println(temp); }
-				start = end + 1;
-			}
-			
 			sentenceBoundry.setText(convertedText);
 			wordBoundry.setText(convertedText);
-			start = end = 0;
 			while((end=wordBoundry.next()) != BreakIterator.DONE) {
 				String temp = convertedText.substring(start, end).trim();
-				String variant = (substituteWordVariants && variantMap.containsKey(temp)) ?
-						variantMap.get(temp) : temp;
-				if(variant.length() > 0 && !filterWords.contains(variant)) {
-					sb.append(variant + " ");
+				if(substituteWordVariants && variantMap.containsKey(temp)) {
+					String variant = variantMap.get(temp);
+					if(!filterWords.contains(variant)) {
+						sb.append(variant + " ");
+					}
+				}
+				else {
+					sb.append(temp + " ");
 				}
 				start = end;
 			}
