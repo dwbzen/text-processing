@@ -45,7 +45,7 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 	protected static final Logger log = LogManager.getLogger(WordCollector.class);
 	public static final String CONFIG_FILENAME = "/config.properties";
 	public final static String[] CONFIG_FILES = {"/config.properties"};
-	public static final String[] punctuation = {".", "?", "!", ",", ":", "&", "+", "“", "”" };
+	public static final String[] punctuation = {",", "“", "”" };		// additions to configured PUNCTUATION
 
 	private int order;
 	private String text = null;
@@ -53,6 +53,7 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 	private Book book = null;
 	private Book.ContentType	contentType = ContentType.PROSE;	// default
 	private List<String> filterWords = new ArrayList<String>();
+	private List<String> filterPunctuation = new ArrayList<String>();
 	private Properties configProperties = null;
 	private Configuration configuration = null;
 	private boolean ignoreCase = false; 
@@ -63,9 +64,17 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 	private IDataFormatter<String> dataFormatter = null;
 	private String schema = "text";
 	private Map<String, String> variantMap = null;
-	private Map<Book.ContentType, Boolean> substituteWordVariantsMap = new HashMap<>();
 	private IDataSource<String> dataSource = null;
+	private List<String> sourceTextLines = null;
 	private boolean trace = false;
+	public static Map<Book.ContentType, String> contentTypes = new HashMap<>();
+	
+	static {
+		contentTypes.put(ContentType.PROSE, "PROSE");
+		contentTypes.put(ContentType.VERSE, "VERSE");
+		contentTypes.put(ContentType.TECHNICAL, "TECHNICAL");
+		contentTypes.put(ContentType.OTHER, "OTHER");
+	}
 	
 	protected WordCollector() {
 		configure();
@@ -78,24 +87,25 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 		this.contentType = type;
 		configure();
 		if(dataSource != null) {
-			List<String> sourceTextLines = dataSource.getDataList();
+			sourceTextLines = dataSource.getDataList();
 			this.dataSource = dataSource;
 		}
 	}
 	
 	@SuppressWarnings("unchecked")
+	/**
+	 * Filtering out words to ignore and punctuation is configured by ContentType.<br>
+	 * Substitution of word variants is also configured by ContentType.
+	 * @return
+	 */
 	public boolean configure()  {
 		boolean okay = true;
 		try {
 			configuration = Util.getConfiguration();
 			configProperties = configuration.getProperties();
-			isFilteringInputText = configProperties.getProperty("filterWordsToIgnore", "false").equalsIgnoreCase("true");
-			isFilteringPunctuation  = configProperties.getProperty("filterPunctuation", "false").equalsIgnoreCase("true");
-			
-			substituteWordVariantsMap.put(ContentType.PROSE, configProperties.getProperty("substituteWordVariants.PROSE", "false").equalsIgnoreCase("true"));
-			substituteWordVariantsMap.put(ContentType.VERSE, configProperties.getProperty("substituteWordVariants.VERSE", "false").equalsIgnoreCase("true"));
-			substituteWordVariantsMap.put(ContentType.TECHNICAL, configProperties.getProperty("substituteWordVariants.TECHNICAL", "true").equalsIgnoreCase("true"));
-			substituteWordVariants = substituteWordVariantsMap.get(this.contentType);
+			isFilteringInputText = configProperties.getProperty("filterWordsToIgnore." + contentTypes.get(contentType), "false").equalsIgnoreCase("true");
+			isFilteringPunctuation  = configProperties.getProperty("filterPunctuation." + contentTypes.get(contentType), "false").equalsIgnoreCase("true");
+			substituteWordVariants = configProperties.getProperty("substituteWordVariants." + contentTypes.get(contentType), "false").equalsIgnoreCase("true");
 			
 			dataFormatterClassName = configProperties.getProperty("dataFormatterClass." + schema);
 			if(dataFormatterClassName != null && !dataFormatterClassName.equalsIgnoreCase("none") && !schema.equalsIgnoreCase("none")) {
@@ -109,18 +119,12 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 	    			log.error(e.toString() );
 				}
 			}
-			if(isFilteringInputText && configProperties.containsKey("WORDS_TO_IGNORE")) {
-				String ignoreThese = configProperties.getProperty("WORDS_TO_IGNORE");
-				String[] wordsToIgnore = ignoreThese.split(",");
-				for(String word : wordsToIgnore) { filterWords.add(word); }
-			}
-			if(isFilteringPunctuation) {
-				for(String p : punctuation) { filterWords.add(p); }
-			}
-			if(substituteWordVariants) {
-				String inputFileName = configProperties.getProperty("VARIANTS_MAP_FILENAME");
-				variantMap = WordListUtils.getVariantMap(inputFileName);
-			}
+			for(String word : configProperties.getProperty("WORDS_TO_IGNORE").split(",")) { filterWords.add(word); 	}
+			for(String p : punctuation) { filterPunctuation.add(p); }
+			for(String word : configProperties.getProperty("PUNCTUATION").split(",")) {	filterPunctuation.add(word); }
+			
+			variantMap = WordListUtils.getVariantMap(configProperties.getProperty("VARIANTS_MAP_FILENAME"));
+			
 		} catch(Exception e) {
 			System.err.println("Configuration error: " + e.getMessage());
 			e.printStackTrace(System.err);
@@ -327,10 +331,6 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 
 	public Map<String, String> getVariantMap() {
 		return variantMap;
-	}
-
-	public Map<Book.ContentType, Boolean> getSubstituteWordVariantsMap() {
-		return substituteWordVariantsMap;
 	}
 
 	public IDataSource<String> getDataSource() {
