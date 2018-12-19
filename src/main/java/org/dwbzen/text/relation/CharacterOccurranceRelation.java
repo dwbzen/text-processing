@@ -7,9 +7,9 @@ import org.dwbzen.text.util.model.Sentence;
 import org.dwbzen.text.util.model.Word;
 
 import mathlib.Tupple;
-import mathlib.cp.AbstractRelation;
+import mathlib.cp.Relation;
 
-public class CharacterOccurranceRelation extends AbstractRelation<Character, Word, Sentence>  {
+public class CharacterOccurranceRelation extends Relation<Character, Word, Sentence>  {
 	
 	public CharacterOccurranceRelation() {
 		
@@ -40,7 +40,7 @@ public class CharacterOccurranceRelation extends AbstractRelation<Character, Wor
 	}
 	
 	public static void main(String...strings) {
-		Word word = new Word("aviva");
+		Word word = new Word("eliquis");
 		CharacterOccurranceRelation relation = new CharacterOccurranceRelation();
 		Set<Tupple<Character>> partitions = relation.partition(word, 2);
 		System.out.println(partitions);
