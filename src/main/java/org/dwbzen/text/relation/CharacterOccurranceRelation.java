@@ -40,9 +40,10 @@ public class CharacterOccurranceRelation extends Relation<Character, Word, Sente
 	}
 	
 	public static void main(String...strings) {
-		Word word = new Word("eliquis");
+		Word word = new Word(strings[0]);
+		int degree = Integer.parseInt(strings[1]);
 		CharacterOccurranceRelation relation = new CharacterOccurranceRelation();
-		Set<Tupple<Character>> partitions = relation.partition(word, 2);
+		Set<Tupple<Character>> partitions = relation.partition(word, degree);
 		System.out.println(partitions);
 	}
 
