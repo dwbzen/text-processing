@@ -1,5 +1,6 @@
 package org.dwbzen.text.relation;
 
+import java.util.Collection;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -16,9 +17,9 @@ public class CharacterOccurranceRelation extends Relation<Character, Word, Sente
 	}
 
 	@Override
-	public boolean isElement(Tupple<Character> element, Word unit) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean isElement(Tupple<Character> tupple, Word unit) {
+		Collection<Integer> keys = partitionKeys(unit, tupple.size());
+		return keys.contains( tupple.getKey());
 	}
 
 	@Override
@@ -35,8 +36,11 @@ public class CharacterOccurranceRelation extends Relation<Character, Word, Sente
 		else if(unit.size() > degree) {
 			partitions = super.partition(unit, degree);
 		}
-		 
 		return partitions;
+	}
+	
+	public Collection<Integer> partitionKeys(Word unit, int degree) {
+		return super.createPartitionKeys(unit, degree).values();
 	}
 	
 	public static void main(String...strings) {
@@ -45,6 +49,11 @@ public class CharacterOccurranceRelation extends Relation<Character, Word, Sente
 		CharacterOccurranceRelation relation = new CharacterOccurranceRelation();
 		Set<Tupple<Character>> partitions = relation.partition(word, degree);
 		System.out.println(partitions);
+		System.out.println(relation.partitionKeys(word, degree));
+		
+		Tupple<Character> t1 = new Tupple<>('q', 'i', 'e', 'e');
+		System.out.println(t1.toString() + " key : " +  t1.getKey());
+		System.out.println(relation.isElement(t1, word));
 	}
 
 
