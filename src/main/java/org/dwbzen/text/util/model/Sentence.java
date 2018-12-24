@@ -43,11 +43,12 @@ import mathlib.util.INameable;
  * @author don_bacon
  *
  */
-public class Sentence extends ArrayList<Word> implements Comparable<Sentence>, List<Word>, Supplier<Word>, ICollectable<Word>, INameable {
+public class Sentence extends ArrayList<Word> 
+		implements Comparable<Sentence>, List<Word>, Supplier<Word>, ICollectable<Word>, INameable {
 
 	private static final long serialVersionUID = 5982270956795205537L;
 	private static Pattern WHITE_SPACE = Pattern.compile("\\s+");	// white space
-	private static Pattern PUNCTUATION = Pattern.compile("\\p{Punct}");
+	private static Pattern PUNCTUATION = Pattern.compile("\\p{Punct}", Pattern.UNICODE_CHARACTER_CLASS);
 	static Word DELIM = new Word(".");
 	
 	private String source = null;
@@ -77,11 +78,13 @@ public class Sentence extends ArrayList<Word> implements Comparable<Sentence>, L
 	}
 	
 	public Sentence() {
-		this(null, true, null, null, INameable.DEFAULT_NAME);
+		this(null, true, null, null, INameable.DEFAULT_NAME, false);
 	}
 	
-	public Sentence(String string, boolean skipws, Sentence otherSentence, Word word, String aname) {
+	public Sentence(String string, boolean skipws, Sentence otherSentence, Word word, String aname, boolean skipPunctuation) {
 		super();
+		ignoreWhiteSpace = skipws;
+		ignorePunctuation = skipPunctuation;
 		if(string != null) {
 			setSource(string);
 		}
@@ -94,7 +97,6 @@ public class Sentence extends ArrayList<Word> implements Comparable<Sentence>, L
 			}
 			setSource();
 		}
-		ignoreWhiteSpace = skipws;
 		this.name = (aname != null && aname.length()>0 && aname.length()<=20) ? aname : createName(aname);
 	}
 	
@@ -110,19 +112,23 @@ public class Sentence extends ArrayList<Word> implements Comparable<Sentence>, L
 	}
 
 	public Sentence(String string) {
-		this(string, true, null, null, null);
+		this(string, true, null, null, null, false);
 	}
 	
 	public Sentence(String string, boolean skipws) {
-		this(string, skipws, null, null, null);
+		this(string, skipws, null, null, null, false);
+	}
+	
+	public Sentence(String string, boolean skipws, boolean skipPunctuation) {
+		this(string, skipws, null, null, null, skipPunctuation);
 	}
 	
 	public Sentence(Sentence otherSentence) {
-		this(null, true, otherSentence, null, null);
+		this(null, true, otherSentence, null, null, false);
 	}
 	
 	public Sentence(Sentence otherSentence, Word word) {
-		this(null, true, otherSentence, word, null);
+		this(null, true, otherSentence, word, null, false);
 	}
 
 	private void breakIntoWords(String stringToExamine) {
@@ -179,6 +185,15 @@ public class Sentence extends ArrayList<Word> implements Comparable<Sentence>, L
 				.map(w -> w.toString())
 				.collect(Collectors.joining(" "));
 		return sentenceString;
+	}
+	
+	/**
+	 * Returns a new Sentence where the Words are all in lower case
+	 * This is not modified.
+	 * @return Sentence in lower case
+	 */
+	public Sentence toLowerCase() {
+		return new Sentence(this.toString().toLowerCase());
 	}
 	
 	public String getSource() {

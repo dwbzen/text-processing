@@ -13,7 +13,8 @@ import mathlib.cp.ICollectable;
  * @author don_bacon
  *
  */
-public class Word extends ArrayList<Character> implements Comparable<Word>, List<Character>, Supplier<Character>, IntConsumer, ICollectable<Character> {
+public class Word extends ArrayList<Character> 
+	implements Comparable<Word>, List<Character>, Supplier<Character>, IntConsumer, ICollectable<Character> {
 
 	private static final long serialVersionUID = 7157404340284643268L;
 	private StringBuffer wordString = new StringBuffer();
@@ -156,6 +157,10 @@ public class Word extends ArrayList<Character> implements Comparable<Word>, List
 	
 	public String lower() {
 		return wordString.toString().toLowerCase();
+	}
+	
+	public Word toLowerCase() {
+		return new Word(lower());
 	}
 
 	@Override

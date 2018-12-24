@@ -1,60 +1,45 @@
 package org.dwbzen.text.relation;
 
-import java.util.Collection;
 import java.util.Set;
-import java.util.TreeSet;
 
 import org.dwbzen.text.util.model.Sentence;
 import org.dwbzen.text.util.model.Word;
 
 import mathlib.Tupple;
-import mathlib.cp.Relation;
+import mathlib.cp.OccurranceRelation;
 
-public class CharacterOccurranceRelation extends Relation<Character, Word, Sentence>  {
+public class CharacterOccurranceRelation extends OccurranceRelation<Character, Word, Sentence>  {
+	private boolean ignoreCase = true;
 	
-	public CharacterOccurranceRelation() {
-		
+	protected CharacterOccurranceRelation() {
+		super();
+	}
+	
+	public CharacterOccurranceRelation(Word unit, int degree) {
+		this(unit, degree, false);
+	}
+	
+	public CharacterOccurranceRelation(Word unit, int degree, boolean ignoreCaseFlag) {
+		ignoreCase = ignoreCaseFlag;
+		Word word = ignoreCase ? unit.toLowerCase() : unit;
+		super.partition(word, degree);
 	}
 
 	@Override
 	public boolean isElement(Tupple<Character> tupple, Word unit) {
-		Collection<Integer> keys = partitionKeys(unit, tupple.size());
-		return keys.contains( tupple.getKey());
-	}
-
-	@Override
-	/**
-	 * Partitions a given Word into degree-length subsets.
-	 * @return Returns a sorted Collection of all degree-length Character subsets of a given Word as a Collection of Tuplet<Character>
-	 * 
-	 */
-	public Set<Tupple<Character>> partition(Word unit, int degree) {
-		Set<Tupple<Character>> partitions = new TreeSet<>();
-		if(unit.size() == degree) {
-			partitions.add(new Tupple<Character>(unit));
-		}
-		else if(unit.size() > degree) {
-			partitions = super.partition(unit, degree);
-		}
-		return partitions;
-	}
-	
-	public Collection<Integer> partitionKeys(Word unit, int degree) {
-		return super.createPartitionKeys(unit, degree).values();
+		return getPartitionKeys().contains( tupple.getKey());
 	}
 	
 	public static void main(String...strings) {
 		Word word = new Word(strings[0]);
 		int degree = Integer.parseInt(strings[1]);
-		CharacterOccurranceRelation relation = new CharacterOccurranceRelation();
-		Set<Tupple<Character>> partitions = relation.partition(word, degree);
-		System.out.println(partitions);
-		System.out.println(relation.partitionKeys(word, degree));
+		CharacterOccurranceRelation relation = new CharacterOccurranceRelation(word, degree, true);
+		Set<Tupple<Character>> partitions = relation.getPartitions();
+		System.out.println(word + "\n" + partitions);
 		
-		Tupple<Character> t1 = new Tupple<>('q', 'i', 'e', 'e');
-		System.out.println(t1.toString() + " key : " +  t1.getKey());
-		System.out.println(relation.isElement(t1, word));
-	}
+		Tupple<Character> t1 = new Tupple<>(new Word("ao"));
+		System.out.println("'" + t1.toString() + "' key : " +  t1.getKey() + " isElement: " + relation.isElement(t1, word));
 
+	}
 
 }

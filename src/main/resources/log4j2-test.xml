@@ -20,8 +20,8 @@
 		<appender-ref ref="FILE"/>
 	</Logger>
 
-    <Logger name="math" additivity="false">
-		<level value="INFO"/>
+    <Logger name="mathlib.*" additivity="false">
+		<level value="DEBUG"/>
 		<appender-ref ref="STDOUT"/>
 	</Logger>
 
