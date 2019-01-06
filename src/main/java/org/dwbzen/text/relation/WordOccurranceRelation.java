@@ -8,9 +8,9 @@ import org.dwbzen.text.util.model.Sentence;
 import org.dwbzen.text.util.model.Word;
 
 import mathlib.Tupple;
-import mathlib.cp.OccurranceRelation;
+import mathlib.relation.OccurrenceRelation;
 
-public class WordOccurranceRelation extends OccurranceRelation<Word, Sentence, Book> {
+public class WordOccurranceRelation extends OccurrenceRelation<Word, Sentence, Book> {
 	
 	private boolean ignoreCase = true;
 

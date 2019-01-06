@@ -6,20 +6,25 @@ import org.dwbzen.text.util.model.Sentence;
 import org.dwbzen.text.util.model.Word;
 
 import mathlib.Tupple;
-import mathlib.cp.OccurranceRelation;
+import mathlib.relation.OccurrenceRelation;
 
-public class CharacterOccurranceRelation extends OccurranceRelation<Character, Word, Sentence>  {
+/**
+ * 
+ * @author don_bacon
+ *
+ */
+public class CharacterOccurrenceRelation extends OccurrenceRelation<Character, Word, Sentence>  {
 	private boolean ignoreCase = true;
 	
-	protected CharacterOccurranceRelation() {
+	protected CharacterOccurrenceRelation() {
 		super();
 	}
 	
-	public CharacterOccurranceRelation(Word unit, int degree) {
+	public CharacterOccurrenceRelation(Word unit, int degree) {
 		this(unit, degree, false);
 	}
 	
-	public CharacterOccurranceRelation(Word unit, int degree, boolean ignoreCaseFlag) {
+	public CharacterOccurrenceRelation(Word unit, int degree, boolean ignoreCaseFlag) {
 		ignoreCase = ignoreCaseFlag;
 		Word word = ignoreCase ? unit.toLowerCase() : unit;
 		super.partition(word, degree);
@@ -33,7 +38,7 @@ public class CharacterOccurranceRelation extends OccurranceRelation<Character, W
 	public static void main(String...strings) {
 		Word word = new Word(strings[0]);
 		int degree = Integer.parseInt(strings[1]);
-		CharacterOccurranceRelation relation = new CharacterOccurranceRelation(word, degree, true);
+		CharacterOccurrenceRelation relation = new CharacterOccurrenceRelation(word, degree, true);
 		Set<Tupple<Character>> partitions = relation.getPartitions();
 		System.out.println(word + "\n" + partitions);
 		
