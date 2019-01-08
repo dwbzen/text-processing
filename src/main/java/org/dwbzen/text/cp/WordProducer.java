@@ -22,7 +22,7 @@ import mathlib.cp.CollectorStats;
 import mathlib.cp.CollectorStatsMap;
 import mathlib.cp.IProducer;
 import mathlib.cp.MarkovChain;
-import mathlib.cp.OccurrenceProbability;
+import mathlib.OccurrenceProbability;
 
 
 public class WordProducer implements IProducer<MarkovChain<Character, Word, Sentence>, Word > { 

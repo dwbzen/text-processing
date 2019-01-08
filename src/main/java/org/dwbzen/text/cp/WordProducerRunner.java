@@ -16,7 +16,7 @@ import org.dwbzen.text.util.model.Word;
 
 import mathlib.cp.CollectorStats;
 import mathlib.cp.MarkovChain;
-import mathlib.cp.OccurrenceProbability;
+import mathlib.OccurrenceProbability;
 import mathlib.cp.OutputStyle;
 
 /**
