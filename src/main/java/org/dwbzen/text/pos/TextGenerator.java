@@ -21,20 +21,21 @@ import org.dwbzen.text.util.ITextGenerator;
  * Usage: TextGenerator [options] [pattern1 pattern2...]
  * Where: 
  * 	pattern1, pattern2...  :  POS pattern to use for text generation. 
- * Options:
- * 	-pattern <text> : inline pattern to use
- * 	-lib <filename>	: path to text file containing patterns to select from
- *  -n <number>		: number of strings to generate
- *  -format			: output format(s) processing:
- *  					UC = convert to UPPER CASE, 
- *						LC = lower case,
- *						TC = Title Case, 
- *						SC = Convert to sentence case.
- *						NC = no conversion (default)
- *						CSV = comma-separated words
- *						TAB = tab-separated words
- *						JSON:fieldname = as JSON array
- * config.properties specifies the names and locations of POS files.
+ * Options:<br>
+ * 	-pattern <text> : inline pattern to use<br>
+ * 	-lib <filename>	: path to text file containing patterns to select from<br>
+ *  -n <number>		: number of strings to generate<br>
+ *  -format			: output format(s) processing:<br>
+ *  					UC = convert to UPPER CASE, <br>
+ *						LC = lower case,<br>
+ *						TC = Title Case,<br>
+ *						PW = PasswordFormat (title case w/white space removed)
+ *						SC = Convert to sentence case.<br>
+ *						NC = no conversion (default)<br>
+ *						CSV = comma-separated words<br>
+ *						TAB = tab-separated words<br>
+ *						JSON:fieldname = as JSON array<br>
+ * config.properties specifies the names and locations of POS files.</p>
  * Sample patterns:
  *  	[M|F|N](and)(the)A?p  - band name
  *  	!(where did you get that)A{1,3}[b|B](?) - puerile insults
@@ -63,6 +64,8 @@ public class TextGenerator implements ITextGenerator {
 	private boolean sentenceCase = false;
 	private boolean titleCase = false;
 	private boolean lowerCase = false;
+	private boolean addDelimiter = true;
+	private boolean removeWhiteSpace = false;
 	private boolean jsonOutput = false;
 	private boolean csvOutput = false;
 	private boolean tabSeparatedOutput = false;
@@ -171,9 +174,6 @@ public class TextGenerator implements ITextGenerator {
 	/**
 	 * Sample patterns: "AANp" "ANp" "NvV" "Np" "Ap" "vVp" "!AN" "ALp"
 	 * Choice/range patterns: "[F|M]vtPAp" "N{2,5}" "[F|M]C[F|M]vtPAp"
-	 * "[F|M]S(and)[F|M]SvtPAp!(cried)[F|M]" 
-	 * "F[(ate)|(licked)]{4}M"
-	 * "$1=Ft$2=M(while)($2)t($1)"
 	 * 
 	 * @param numberToGenerate
 	 * @param pattern
@@ -271,7 +271,17 @@ public class TextGenerator implements ITextGenerator {
 				if(posCount.containsKey(c)) {
 					int n = posCount.get(c);
 					if(n > 0) {
+						/*
+						 * word can actually be 2 words, for example "human rights"
+						 * 
+						 */
 						String word = wordMap.get(c).get(random.nextInt(n));
+						int ind = word.indexOf(' ');
+						if(ind > 0 && removeWhiteSpace) {
+							word = word.substring(0, ind) 
+									+  String.valueOf(word.charAt(ind+1)).toUpperCase()
+									+ word.substring(ind+2);
+						}
 						if(setVariable) {
 							variables.put(variable, word);
 							setVariable = false;
@@ -294,12 +304,12 @@ public class TextGenerator implements ITextGenerator {
 	 * @return formatted string
 	 */
 	public String format(List<String> generatedList) {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		if(jsonOutput) {
 			formatJSON(sb, generatedList);
 		}
 		else {
-			String outputDelim = csvOutput ? "," : (tabSeparatedOutput? "\t" : SPACE);
+			String outputDelim = csvOutput ? "," : (tabSeparatedOutput? "\t" : (addDelimiter ? SPACE : ""));
 			int len = generatedList.size();
 			boolean startOfSentence = true;
 			
@@ -344,7 +354,7 @@ public class TextGenerator implements ITextGenerator {
 		return sb.toString();
 	}
 
-	public void formatJSON(StringBuffer sb, List<String> generatedList) {
+	public void formatJSON(StringBuilder sb, List<String> generatedList) {
 		// example:    "keywords" : ["cnn", "politics", "united states"]
 		int i=0;
 		sb.append(QUOTE + jsonFieldname + QUOTE);
@@ -471,6 +481,11 @@ public class TextGenerator implements ITextGenerator {
 			}
 			else if(pp.equalsIgnoreCase("TC")) {
 				titleCase = true;
+			}
+			else if(pp.equalsIgnoreCase("PW")) {
+				titleCase = true;
+				addDelimiter = false;
+				removeWhiteSpace = true;
 			}
 			else if(pp.equalsIgnoreCase("SC")) {
 				sentenceCase = true;
