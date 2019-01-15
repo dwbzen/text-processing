@@ -26,7 +26,8 @@ public class CharacterOccurrenceRelation extends OccurrenceRelation<Character, W
 	
 	public CharacterOccurrenceRelation(Word unit, int degree, boolean ignoreCaseFlag) {
 		ignoreCase = ignoreCaseFlag;
-		Word word = ignoreCase ? unit.toLowerCase() : unit;
+		this.unit = ignoreCase ? unit.toLowerCase() : unit;
+		Word word = new Word(this.unit);
 		super.partition(word, degree);
 	}
 
