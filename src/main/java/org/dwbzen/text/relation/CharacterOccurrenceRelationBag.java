@@ -10,6 +10,8 @@ import mathlib.relation.OccurrenceRelationBag;
 
 public class CharacterOccurrenceRelationBag extends OccurrenceRelationBag<Character, Word, Sentence> {
 
+	private static final long serialVersionUID = 8408003287349121596L;
+
 	public CharacterOccurrenceRelationBag(int degree) {
 		super(degree);
 	}

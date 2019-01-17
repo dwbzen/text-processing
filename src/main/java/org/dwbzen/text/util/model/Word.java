@@ -5,7 +5,11 @@ import java.util.List;
 import java.util.function.IntConsumer;
 import java.util.function.Supplier;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import mathlib.cp.ICollectable;
+import mathlib.util.IJson;
 
 /**
  * A Word is a String that has an underlying structure of List<Character>.
@@ -14,10 +18,10 @@ import mathlib.cp.ICollectable;
  *
  */
 public class Word extends ArrayList<Character> 
-	implements Comparable<Word>, List<Character>, Supplier<Character>, IntConsumer, ICollectable<Character> {
+	implements Comparable<Word>, List<Character>, Supplier<Character>, IntConsumer, ICollectable<Character>, IJson {
 
 	private static final long serialVersionUID = 7157404340284643268L;
-	private StringBuffer wordString = new StringBuffer();
+	@JsonProperty("word")	private StringBuffer wordString = new StringBuffer();
 	
 	public static Character DELIM_CHARACTER =  ' ';
 	public static String DELIM_STRING = String.valueOf(DELIM_CHARACTER);
@@ -27,7 +31,7 @@ public class Word extends ArrayList<Character>
 	
 	/** 0xA7 Used to represent a NULL key in a Map - since it can't really be a null */
 	public static Character NULL_VALUE = '§';
-	private int index = -1;
+	@JsonIgnore	private int index = -1;
 	
 	public Word() {
 	}
@@ -178,6 +182,16 @@ public class Word extends ArrayList<Character>
 			c = get(index);
 		}
 		return c;
+	}
+	
+	@Override
+	public String toJson() {
+		return "[\"" + wordString.toString() + "\"]";
+	}
+	
+	@Override
+	public String toJson(boolean pretty) {
+		return toJson();
 	}
 
 }

@@ -32,6 +32,7 @@ public class WordTest extends TestCase {
 		word.trim();
 		assertEquals(6, word.size());
 		assertTrue(word.getWordString().equals("gentyx"));
+		System.out.println(word.toJson());
 }
 
 	@Test
