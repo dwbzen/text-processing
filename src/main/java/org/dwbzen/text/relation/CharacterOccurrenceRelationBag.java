@@ -1,32 +1,125 @@
 package org.dwbzen.text.relation;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
+import org.dwbzen.text.util.TextFileReader;
+import org.dwbzen.text.util.Util;
 import org.dwbzen.text.util.model.Sentence;
 import org.dwbzen.text.util.model.Word;
 
 import mathlib.Tupple;
+import mathlib.cp.OutputStyle;
 import mathlib.relation.OccurrenceRelationBag;
 
 public class CharacterOccurrenceRelationBag extends OccurrenceRelationBag<Character, Word, Sentence> {
 
 	private static final long serialVersionUID = 8408003287349121596L;
-
+	static OutputStyle outputStyle = OutputStyle.TEXT;
+	static boolean trace = false;
+	
 	public CharacterOccurrenceRelationBag(int degree) {
 		super(degree);
 	}
 	
 	public static void main(String...args) {
-		Sentence sentence = new Sentence(args[0]);
-		int degree = Integer.parseInt(args[1]);
-		CharacterOccurrenceRelationBag occurrenceRelationBag = new CharacterOccurrenceRelationBag(degree);
+		String[] filenames = {};
+		List<OutputStyle> outputStyles = new ArrayList<>();
+		String text = null;
+		boolean sortByOccurrence = false;
+		String orderstring = null;
+		boolean ignoreCase = false;
+		Sentence sentence = null;
+		List<Integer> orderList = new ArrayList<Integer>();
+		
+		for(int i=0; i<args.length; i++) {
+			if(args[i].startsWith("-file")) {
+				// comma-separated list of files
+				filenames = args[++i].split(",");
+			}
+			else if(args[i].equalsIgnoreCase("-ignoreCase")) {
+				ignoreCase = true;
+			}
+			else if(args[i].equalsIgnoreCase("-order")) {
+				orderstring = args[++i];
+			}
+			else if(args[i].equalsIgnoreCase("-sort")) {
+				sortByOccurrence = true;
+			}
+			else if(args[i].equalsIgnoreCase("-trace")) {
+				trace = true;
+			}
+			else if(args[i].equalsIgnoreCase("-output")) {
+				String[] outputFormats = args[++i].split(",");
+				// text, csv, json, pretty
+				for(String f : outputFormats) {
+					if(f.equalsIgnoreCase("json")) { outputStyles.add(OutputStyle.JSON); }
+					else if(f.startsWith("pretty")) { outputStyles.add(OutputStyle.PRETTY_JSON); }
+					else if(f.equalsIgnoreCase("text")) { outputStyles.add(OutputStyle.TEXT); }
+					else if(f.equalsIgnoreCase("csv")) { outputStyles.add(OutputStyle.CSV); }
+				}
+			}
+			else {
+				text = args[i];
+			}
+		}
+		if(outputStyles.size() == 0) {
+			// default output style if not set
+			outputStyles.add(OutputStyle.PRETTY_JSON);
+		}
+		if(orderstring == null) {
+			orderList.add(2);	// default order is 2 if not specified
+		}
+		else {
+			for(String order : orderstring.split(",")) {
+				orderList.add(Integer.parseInt(order));
+			}
+		}
+		int order = orderList.get(0);
+		CharacterOccurrenceRelationBag occurrenceRelationBag = new CharacterOccurrenceRelationBag(order);
+
+		if(text != null && text.length() > 0) {
+			sentence = new Sentence(text);
+			addSentence(sentence, occurrenceRelationBag, order, ignoreCase);
+		}
+		if(filenames.length > 0) {
+			try {
+				for(String inputFile : filenames) {
+					String inputFilename = Util.getInputFilename(inputFile);
+					TextFileReader reader = TextFileReader.getInstance(inputFilename);
+					reader.setMinimumLength(order);
+					String fileText = ignoreCase ? reader.getFileText().toLowerCase() : reader.getFileText();
+					sentence = new Sentence(fileText);
+					addSentence(sentence, occurrenceRelationBag, order, ignoreCase);
+				}
+			}
+			catch(Exception ex) { System.err.println("Something went wrong " +  ex.toString()); }
+		}
+		occurrenceRelationBag.sourceOccurrenceProbabilityMap.s
+		/*
+		 * Display the results according to specified style(s)
+		 */
+		for(OutputStyle style : outputStyles) {
+			switch(style) {
+			case TEXT:
+			case JSON: System.out.println(occurrenceRelationBag.toJson());
+				break;
+			case CSV:
+			case PRETTY_JSON: System.out.println(occurrenceRelationBag.toJson(true));
+				break;
+			}
+		}
+	}
+	
+	private static void addSentence(Sentence sentence, CharacterOccurrenceRelationBag occurrenceRelationBag, int order, boolean ignoreCase) {
 		for(Word word:sentence) {
-			CharacterOccurrenceRelation occurrenceRelation = new CharacterOccurrenceRelation(word, degree, true);
-			Set<Tupple<Character>> partitions = occurrenceRelation.getPartitions();
-			System.out.println(word + "\n" + partitions);
+			CharacterOccurrenceRelation occurrenceRelation = new CharacterOccurrenceRelation(word, order, ignoreCase);
+			if(trace) {
+				Set<Tupple<Character>> partitions = occurrenceRelation.getPartitions();
+				System.out.println(word + "\n" + partitions);
+			}
 			occurrenceRelationBag.addOccurrenceRelation(occurrenceRelation);
 		}
-		System.out.println(occurrenceRelationBag.toJson(true));
 	}
-
 }
