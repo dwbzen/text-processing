@@ -2,6 +2,7 @@ package org.dwbzen.text.relation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.dwbzen.text.util.TextFileReader;
@@ -9,6 +10,7 @@ import org.dwbzen.text.util.Util;
 import org.dwbzen.text.util.model.Sentence;
 import org.dwbzen.text.util.model.Word;
 
+import mathlib.SourceOccurrenceProbability;
 import mathlib.Tupple;
 import mathlib.cp.OutputStyle;
 import mathlib.relation.OccurrenceRelationBag;
@@ -96,17 +98,27 @@ public class CharacterOccurrenceRelationBag extends OccurrenceRelationBag<Charac
 			}
 			catch(Exception ex) { System.err.println("Something went wrong " +  ex.toString()); }
 		}
-		occurrenceRelationBag.sourceOccurrenceProbabilityMap.s
+		Map<Character, SourceOccurrenceProbability<Character,Word>> sortedMap = null;
 		/*
 		 * Display the results according to specified style(s)
 		 */
+		if(sortByOccurrence) {
+			sortedMap = occurrenceRelationBag.sortByValue();
+		}
 		for(OutputStyle style : outputStyles) {
 			switch(style) {
 			case TEXT:
-			case JSON: System.out.println(occurrenceRelationBag.toJson());
+			case JSON: 
+				System.out.println(occurrenceRelationBag.toJson());
 				break;
 			case CSV:
-			case PRETTY_JSON: System.out.println(occurrenceRelationBag.toJson(true));
+			case PRETTY_JSON:
+				if(sortByOccurrence) {
+					System.out.println(sortedMap.toString());
+				}
+				else {
+					System.out.println(occurrenceRelationBag.toJson(true));
+				}
 				break;
 			}
 		}
