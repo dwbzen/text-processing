@@ -1,5 +1,6 @@
 package org.dwbzen.text.relation;
 
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -60,6 +61,7 @@ public class CharacterOccurrenceRelationBag extends OccurrenceRelationBag<Charac
 					else if(f.startsWith("pretty")) { outputStyles.add(OutputStyle.PRETTY_JSON); }
 					else if(f.equalsIgnoreCase("text")) { outputStyles.add(OutputStyle.TEXT); }
 					else if(f.equalsIgnoreCase("csv")) { outputStyles.add(OutputStyle.CSV); }
+					else if(f.equalsIgnoreCase("summary")) { outputStyles.add(OutputStyle.TEXT_SUMMARY); }
 				}
 			}
 			else {
@@ -80,7 +82,8 @@ public class CharacterOccurrenceRelationBag extends OccurrenceRelationBag<Charac
 		}
 		int order = orderList.get(0);
 		CharacterOccurrenceRelationBag occurrenceRelationBag = new CharacterOccurrenceRelationBag(order);
-
+		CharacterOccurrenceRelationBag targetoccurrenceRelationBag = occurrenceRelationBag;
+		
 		if(text != null && text.length() > 0) {
 			sentence = new Sentence(text);
 			addSentence(sentence, occurrenceRelationBag, order, ignoreCase);
@@ -98,32 +101,40 @@ public class CharacterOccurrenceRelationBag extends OccurrenceRelationBag<Charac
 			}
 			catch(Exception ex) { System.err.println("Something went wrong " +  ex.toString()); }
 		}
-		Map<Character, SourceOccurrenceProbability<Character,Word>> sortedMap = null;
+		Map<Tupple<Character>, SourceOccurrenceProbability<Character,Word>> sortedMap = null;
 		/*
 		 * Display the results according to specified style(s)
 		 */
 		if(sortByOccurrence) {
 			sortedMap = occurrenceRelationBag.sortByValue();
+			targetoccurrenceRelationBag = new CharacterOccurrenceRelationBag(order);
+			targetoccurrenceRelationBag.setSourceOccurrenceProbabilityMap(sortedMap);
+			targetoccurrenceRelationBag.setTotalOccurrences(occurrenceRelationBag.getTotalOccurrences());
 		}
 		for(OutputStyle style : outputStyles) {
 			switch(style) {
 			case TEXT:
+			case TEXT_SUMMARY: displayTextOutput(targetoccurrenceRelationBag, style, System.out);
+				break;
 			case JSON: 
-				System.out.println(occurrenceRelationBag.toJson());
+				System.out.println(targetoccurrenceRelationBag.toJson());
 				break;
 			case CSV:
 			case PRETTY_JSON:
-				if(sortByOccurrence) {
-					System.out.println(sortedMap.toString());
-				}
-				else {
-					System.out.println(occurrenceRelationBag.toJson(true));
-				}
+				System.out.println(targetoccurrenceRelationBag.toJson(true));
 				break;
 			}
 		}
 	}
-	
+
+
+	private static void displayTextOutput(CharacterOccurrenceRelationBag orb, OutputStyle style, PrintStream out) {
+		out.println("totalOccurrences: " + orb.getTotalOccurrences());
+		for(SourceOccurrenceProbability<Character, Word> sop : 	orb.sourceOccurrenceProbabilityMap.values()) {
+			out.println(sop.getKey().toString(false) + ": " + sop.getOccurrenceProbability().getOccurrence());
+		}
+	}
+
 	private static void addSentence(Sentence sentence, CharacterOccurrenceRelationBag occurrenceRelationBag, int order, boolean ignoreCase) {
 		for(Word word:sentence) {
 			CharacterOccurrenceRelation occurrenceRelation = new CharacterOccurrenceRelation(word, order, ignoreCase);

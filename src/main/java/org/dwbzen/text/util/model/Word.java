@@ -191,7 +191,7 @@ public class Word extends ArrayList<Character>
 	
 	@Override
 	public String toJson(boolean pretty) {
-		return toJson();
+		return this.toJson();
 	}
 
 }
