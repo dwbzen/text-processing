@@ -102,6 +102,7 @@ public class CharacterOccurrenceRelationBag extends OccurrenceRelationBag<Charac
 			}
 			catch(Exception ex) { System.err.println("Something went wrong " +  ex.toString()); }
 		}
+		occurrenceRelationBag.close();
 		Map<Tupple<Character>, SourceOccurrenceProbability<Character,Word>> sortedMap = null;
 		/*
 		 * Display the results according to specified style(s)
@@ -111,11 +112,12 @@ public class CharacterOccurrenceRelationBag extends OccurrenceRelationBag<Charac
 			targetoccurrenceRelationBag = new CharacterOccurrenceRelationBag(order);
 			targetoccurrenceRelationBag.setSourceOccurrenceProbabilityMap(sortedMap);
 			targetoccurrenceRelationBag.setTotalOccurrences(occurrenceRelationBag.getTotalOccurrences());
+			targetoccurrenceRelationBag.recomputeProbabilities();
 		}
 		for(OutputStyle style : outputStyles) {
 			switch(style) {
 			case TEXT:
-			case TEXT_SUMMARY: displayTextOutput(targetoccurrenceRelationBag, style, System.out);
+			case TEXT_SUMMARY: displaySummaryTextOutput(targetoccurrenceRelationBag, style, System.out);
 				break;
 			case JSON: 
 				System.out.println(targetoccurrenceRelationBag.toJson());
@@ -141,8 +143,13 @@ public class CharacterOccurrenceRelationBag extends OccurrenceRelationBag<Charac
 			sb.append(sop.getOccurrenceProbability().toJson(indent));
 			sb.append(",\n");
 			sb.append(indent);
-			sb.append("\"sources\" : [ ");
-			
+			sb.append("\"sources\" : [");
+			int nsources = sop.getSources().size();
+			int i = 0;
+			for(Word word : sop.getSources()) {
+				sb.append("[" + word.quoteString(word.toString()) + "]");
+				if(++i < nsources) {sb.append(","); }
+			}
 			sb.append("]\n    },\n");
 		}
 		sb.deleteCharAt(sb.length()-2);
@@ -150,7 +157,7 @@ public class CharacterOccurrenceRelationBag extends OccurrenceRelationBag<Charac
 		return sb.toString();
 	}
 
-	private static void displayTextOutput(CharacterOccurrenceRelationBag orb, OutputStyle style, PrintStream out) {
+	private static void displaySummaryTextOutput(CharacterOccurrenceRelationBag orb, OutputStyle style, PrintStream out) {
 		out.println("totalOccurrences: " + orb.getTotalOccurrences());
 		for(SourceOccurrenceProbability<Character, Word> sop : 	orb.sourceOccurrenceProbabilityMap.values()) {
 			out.println(sop.getKey().toString(false) + ": " + sop.getOccurrenceProbability().getOccurrence());
