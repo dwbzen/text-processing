@@ -21,6 +21,7 @@ public class CharacterOccurrenceRelationBag extends OccurrenceRelationBag<Charac
 	private static final long serialVersionUID = 8408003287349121596L;
 	static OutputStyle outputStyle = OutputStyle.TEXT;
 	static boolean trace = false;
+	public static final String indent = "      ";
 	
 	public CharacterOccurrenceRelationBag(int degree) {
 		super(degree);
@@ -127,6 +128,27 @@ public class CharacterOccurrenceRelationBag extends OccurrenceRelationBag<Charac
 		}
 	}
 
+	@Override
+	public String toJson(boolean pretty) {
+		if(!pretty) {
+			return super.toJson();
+		}
+		StringBuilder sb = new StringBuilder("{\n  \"totalOccurrences\" : " + getTotalOccurrences() + "\n");
+		sb.append("  \"degree\" : " + this.getDegree() + "\n");
+		sb.append("  \"sourceOccurrenceProbabilityMap\" : {\n");
+		for(SourceOccurrenceProbability<Character, Word> sop : 	sourceOccurrenceProbabilityMap.values()) {
+			sb.append("    \"" + sop.getKey().toString(false) + "\" : {\n");
+			sb.append(sop.getOccurrenceProbability().toJson(indent));
+			sb.append(",\n");
+			sb.append(indent);
+			sb.append("\"sources\" : [ ");
+			
+			sb.append("]\n    },\n");
+		}
+		sb.deleteCharAt(sb.length()-2);
+		sb.append("}\n");
+		return sb.toString();
+	}
 
 	private static void displayTextOutput(CharacterOccurrenceRelationBag orb, OutputStyle style, PrintStream out) {
 		out.println("totalOccurrences: " + orb.getTotalOccurrences());
