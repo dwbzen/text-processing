@@ -22,6 +22,7 @@ public class CharacterOccurrenceRelationBag extends OccurrenceRelationBag<Charac
 	static OutputStyle outputStyle = OutputStyle.TEXT;
 	static boolean trace = false;
 	public static final String indent = "      ";
+	public final static String[] CONFIG_FILES = {"/config.properties"};
 	
 	public CharacterOccurrenceRelationBag(int degree) {
 		super(degree);
@@ -31,7 +32,7 @@ public class CharacterOccurrenceRelationBag extends OccurrenceRelationBag<Charac
 		String[] filenames = {};
 		List<OutputStyle> outputStyles = new ArrayList<>();
 		String text = null;
-		boolean sortByOccurrence = false;
+		boolean sorted = false;
 		String orderstring = null;
 		boolean ignoreCase = false;
 		Sentence sentence = null;
@@ -48,8 +49,8 @@ public class CharacterOccurrenceRelationBag extends OccurrenceRelationBag<Charac
 			else if(args[i].equalsIgnoreCase("-order")) {
 				orderstring = args[++i];
 			}
-			else if(args[i].equalsIgnoreCase("-sort")) {
-				sortByOccurrence = true;
+			else if(args[i].startsWith("-sort")) {
+				sorted = args[++i].equalsIgnoreCase("true") ? true : false;
 			}
 			else if(args[i].equalsIgnoreCase("-trace")) {
 				trace = true;
@@ -107,7 +108,7 @@ public class CharacterOccurrenceRelationBag extends OccurrenceRelationBag<Charac
 		/*
 		 * Display the results according to specified style(s)
 		 */
-		if(sortByOccurrence) {
+		if(sorted) {
 			sortedMap = occurrenceRelationBag.sortByValue();
 			targetoccurrenceRelationBag = new CharacterOccurrenceRelationBag(order);
 			targetoccurrenceRelationBag.setSourceOccurrenceProbabilityMap(sortedMap);
