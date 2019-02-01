@@ -23,6 +23,7 @@ public class CharacterOccurrenceRelationBag extends OccurrenceRelationBag<Charac
 	static boolean trace = false;
 	public static final String indent = "      ";
 	public final static String[] CONFIG_FILES = {"/config.properties"};
+	private boolean supressSourceOutput = false;
 	
 	public CharacterOccurrenceRelationBag(int degree) {
 		super(degree);
@@ -35,6 +36,7 @@ public class CharacterOccurrenceRelationBag extends OccurrenceRelationBag<Charac
 		boolean sorted = false;
 		String orderstring = null;
 		boolean ignoreCase = false;
+		boolean supressSources = false;
 		Sentence sentence = null;
 		List<Integer> orderList = new ArrayList<Integer>();
 		
@@ -55,6 +57,9 @@ public class CharacterOccurrenceRelationBag extends OccurrenceRelationBag<Charac
 			else if(args[i].equalsIgnoreCase("-trace")) {
 				trace = true;
 			}
+			else if(args[i].startsWith("-nos")) {	// Suppress sources in output
+				supressSources = true;
+			}			
 			else if(args[i].equalsIgnoreCase("-output")) {
 				String[] outputFormats = args[++i].split(",");
 				// text, csv, json, pretty
@@ -84,6 +89,7 @@ public class CharacterOccurrenceRelationBag extends OccurrenceRelationBag<Charac
 		}
 		int order = orderList.get(0);
 		CharacterOccurrenceRelationBag occurrenceRelationBag = new CharacterOccurrenceRelationBag(order);
+		occurrenceRelationBag.setSupressSourceOutput(supressSources);
 		CharacterOccurrenceRelationBag targetoccurrenceRelationBag = occurrenceRelationBag;
 		
 		if(text != null && text.length() > 0) {
@@ -111,6 +117,7 @@ public class CharacterOccurrenceRelationBag extends OccurrenceRelationBag<Charac
 		if(sorted) {
 			sortedMap = occurrenceRelationBag.sortByValue();
 			targetoccurrenceRelationBag = new CharacterOccurrenceRelationBag(order);
+			targetoccurrenceRelationBag.setSupressSourceOutput(supressSources);
 			targetoccurrenceRelationBag.setSourceOccurrenceProbabilityMap(sortedMap);
 			targetoccurrenceRelationBag.setTotalOccurrences(occurrenceRelationBag.getTotalOccurrences());
 			targetoccurrenceRelationBag.recomputeProbabilities();
@@ -131,6 +138,14 @@ public class CharacterOccurrenceRelationBag extends OccurrenceRelationBag<Charac
 		}
 	}
 
+	public boolean isSupressSourceOutput() {
+		return supressSourceOutput;
+	}
+
+	public void setSupressSourceOutput(boolean supressSourceOutput) {
+		this.supressSourceOutput = supressSourceOutput;
+	}
+
 	@Override
 	public String toJson(boolean pretty) {
 		if(!pretty) {
@@ -142,16 +157,21 @@ public class CharacterOccurrenceRelationBag extends OccurrenceRelationBag<Charac
 		for(SourceOccurrenceProbability<Character, Word> sop : 	sourceOccurrenceProbabilityMap.values()) {
 			sb.append("    \"" + sop.getKey().toString(false) + "\" : {\n");
 			sb.append(sop.getOccurrenceProbability().toJson(indent));
-			sb.append(",\n");
-			sb.append(indent);
-			sb.append("\"sources\" : [");
-			int nsources = sop.getSources().size();
-			int i = 0;
-			for(Word word : sop.getSources()) {
-				sb.append("[" + word.quoteString(word.toString()) + "]");
-				if(++i < nsources) {sb.append(","); }
+			if(!isSupressSourceOutput()) {
+				sb.append(",\n");
+				sb.append(indent);				sb.append("\"sources\" : [");
+				int nsources = sop.getSources().size();
+				int i = 0;
+				for(Word word : sop.getSources()) {
+					sb.append("[" + word.quoteString(word.toString()) + "]");
+					if(++i < nsources) {sb.append(","); }
+				}
+				sb.append("]\n");
+				sb.append("    },\n");
 			}
-			sb.append("]\n    },\n");
+			else {
+				sb.append(",\n");
+			}
 		}
 		sb.deleteCharAt(sb.length()-2);
 		sb.append("}\n");
