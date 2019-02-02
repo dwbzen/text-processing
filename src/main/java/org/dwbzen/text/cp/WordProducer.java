@@ -93,7 +93,7 @@ public class WordProducer implements IProducer<MarkovChain<Character, Word, Sent
 		nextSeed = seed;
 		while(count<numberToGenerate) {
 			Word word = apply(markovChain);
-			if(word != null && word.size() >= minimumLength) {
+			if(word != null && word.trimmedSize() >= minimumLength) { // white space doesn't count when considering length
 				logger.debug("adding: '" + word + "'");
 				if(enableDisplay) {
 					System.out.println(word);

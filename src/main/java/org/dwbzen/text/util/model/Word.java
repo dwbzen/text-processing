@@ -130,6 +130,17 @@ public class Word extends ArrayList<Character>
 		return DELIM_CHARACTER;
 	}
 	
+	public int trimmedSize() {
+		int count = 0;
+		for(Character c : this) {
+			if(c == DELIM_CHARACTER || c == TERMINAL || c == NULL_VALUE) {
+				continue;
+			}
+			count++;
+		}
+		return count;
+	}
+	
 	@Override
 	public Character getTerminal() {
 		return Word.TERMINAL;

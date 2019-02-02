@@ -29,11 +29,29 @@ public class CharacterOccurrenceRelationBag extends OccurrenceRelationBag<Charac
 		super(degree);
 	}
 	
+	/**
+	 * Copy constructor (shallow)
+	 * @param CharacterOccurrenceRelationBag otherBag
+	 * @param Map<Tupple<Character>, SourceOccurrenceProbability<Character,Word>> optionalMap
+	 */
+	public CharacterOccurrenceRelationBag(CharacterOccurrenceRelationBag otherBag, 
+										  Map<Tupple<Character>, SourceOccurrenceProbability<Character,Word>> optionalMap) {
+		super(otherBag.getDegree());
+		setSupressSourceOutput(otherBag.isSupressSourceOutput());
+		setTotalOccurrences(otherBag.getTotalOccurrences());
+		setMetricFunction(new TuppleWordDistanceMetric());
+		if(optionalMap != null) {
+			setSourceOccurrenceProbabilityMap(optionalMap);
+		}
+		recomputeProbabilities();
+	}
+	
 	public static void main(String...args) {
 		String[] filenames = {};
 		List<OutputStyle> outputStyles = new ArrayList<>();
 		String text = null;
 		boolean sorted = false;
+		boolean reverseSorted = false;
 		String orderstring = null;
 		boolean ignoreCase = false;
 		boolean supressSources = false;
@@ -53,6 +71,10 @@ public class CharacterOccurrenceRelationBag extends OccurrenceRelationBag<Charac
 			}
 			else if(args[i].startsWith("-sort")) {
 				sorted = args[++i].equalsIgnoreCase("true") ? true : false;
+				if(args[i].startsWith("rev")) {
+					reverseSorted = true;
+					sorted = true;
+				}
 			}
 			else if(args[i].equalsIgnoreCase("-trace")) {
 				trace = true;
@@ -90,6 +112,7 @@ public class CharacterOccurrenceRelationBag extends OccurrenceRelationBag<Charac
 		int order = orderList.get(0);
 		CharacterOccurrenceRelationBag occurrenceRelationBag = new CharacterOccurrenceRelationBag(order);
 		occurrenceRelationBag.setSupressSourceOutput(supressSources);
+		occurrenceRelationBag.setMetricFunction(new TuppleWordDistanceMetric());
 		CharacterOccurrenceRelationBag targetoccurrenceRelationBag = occurrenceRelationBag;
 		
 		if(text != null && text.length() > 0) {
@@ -115,12 +138,8 @@ public class CharacterOccurrenceRelationBag extends OccurrenceRelationBag<Charac
 		 * Display the results according to specified style(s)
 		 */
 		if(sorted) {
-			sortedMap = occurrenceRelationBag.sortByValue();
-			targetoccurrenceRelationBag = new CharacterOccurrenceRelationBag(order);
-			targetoccurrenceRelationBag.setSupressSourceOutput(supressSources);
-			targetoccurrenceRelationBag.setSourceOccurrenceProbabilityMap(sortedMap);
-			targetoccurrenceRelationBag.setTotalOccurrences(occurrenceRelationBag.getTotalOccurrences());
-			targetoccurrenceRelationBag.recomputeProbabilities();
+			sortedMap = occurrenceRelationBag.sortByValue(reverseSorted);
+			targetoccurrenceRelationBag = new CharacterOccurrenceRelationBag(occurrenceRelationBag, sortedMap);
 		}
 		for(OutputStyle style : outputStyles) {
 			switch(style) {
@@ -157,9 +176,12 @@ public class CharacterOccurrenceRelationBag extends OccurrenceRelationBag<Charac
 		for(SourceOccurrenceProbability<Character, Word> sop : 	sourceOccurrenceProbabilityMap.values()) {
 			sb.append("    \"" + sop.getKey().toString(false) + "\" : {\n");
 			sb.append(sop.getOccurrenceProbability().toJson(indent));
+			String avgDistance = indent + "\"averageDistance\" : " + sop.getAverageDistanceText();
+			sb.append(",\n" + avgDistance );
 			if(!isSupressSourceOutput()) {
 				sb.append(",\n");
-				sb.append(indent);				sb.append("\"sources\" : [");
+				sb.append(indent);				
+				sb.append("\"sources\" : [");
 				int nsources = sop.getSources().size();
 				int i = 0;
 				for(Word word : sop.getSources()) {

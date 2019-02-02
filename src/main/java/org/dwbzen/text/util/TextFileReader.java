@@ -46,6 +46,7 @@ public class TextFileReader {
 	/**
 	 * Gets the contents of a text file as a single String.
 	 * Appends the set delim Character and eolString (if not null) after trimming the line.
+	 * Skips lines having "#" as the first character
 	 * @param inputFile the file to read. If null, reads from STDIN.
 	 * @return String text of the entire file, lines separated by configured delimiter (normally SPACE)
 	 * @throws FileNotFoundException 
@@ -55,7 +56,9 @@ public class TextFileReader {
 		readFileLines();
 		StringBuilder sb = new StringBuilder();
 		for(String line : lines) {
-			sb.append(line);
+			if(!line.startsWith("#")) {
+				sb.append(line);
+			}
 		}
 		return sb.toString();
 	}
