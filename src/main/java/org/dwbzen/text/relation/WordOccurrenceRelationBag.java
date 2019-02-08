@@ -26,7 +26,9 @@ public class WordOccurrenceRelationBag extends OccurrenceRelationBag<Word, Sente
 		String text = null;
 		boolean sorted = false;
 		String orderstring = null;
+		boolean reverseSorted = false;
 		boolean ignoreCase = false;
+		boolean supressSources = false;
 		Sentence sentence = null;
 		List<Integer> orderList = new ArrayList<Integer>();
 		
@@ -43,9 +45,16 @@ public class WordOccurrenceRelationBag extends OccurrenceRelationBag<Word, Sente
 			}
 			else if(args[i].startsWith("-sort")) {
 				sorted = args[++i].equalsIgnoreCase("true") ? true : false;
+				if(args[i].startsWith("rev")) {
+					reverseSorted = true;
+					sorted = true;
+				}
 			}
 			else if(args[i].equalsIgnoreCase("-trace")) {
 				trace = true;
+			}
+			else if(args[i].startsWith("-nos")) {	// Suppress sources in output
+				supressSources = true;
 			}
 			else if(args[i].equalsIgnoreCase("-output")) {
 				String[] outputFormats = args[++i].split(",");

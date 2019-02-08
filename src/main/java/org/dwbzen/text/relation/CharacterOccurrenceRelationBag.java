@@ -39,7 +39,7 @@ public class CharacterOccurrenceRelationBag extends OccurrenceRelationBag<Charac
 		super(otherBag.getDegree());
 		setSupressSourceOutput(otherBag.isSupressSourceOutput());
 		setTotalOccurrences(otherBag.getTotalOccurrences());
-		setMetricFunction(new TuppleWordDistanceMetric());
+		setMetricFunction(new TuppleCharacterDistanceMetric());
 		if(optionalMap != null) {
 			setSourceOccurrenceProbabilityMap(optionalMap);
 		}
@@ -112,7 +112,7 @@ public class CharacterOccurrenceRelationBag extends OccurrenceRelationBag<Charac
 		int order = orderList.get(0);
 		CharacterOccurrenceRelationBag occurrenceRelationBag = new CharacterOccurrenceRelationBag(order);
 		occurrenceRelationBag.setSupressSourceOutput(supressSources);
-		occurrenceRelationBag.setMetricFunction(new TuppleWordDistanceMetric());
+		occurrenceRelationBag.setMetricFunction(new TuppleCharacterDistanceMetric());
 		CharacterOccurrenceRelationBag targetoccurrenceRelationBag = occurrenceRelationBag;
 		
 		if(text != null && text.length() > 0) {
