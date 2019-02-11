@@ -23,10 +23,10 @@ public class CharacterOccurrenceRelationBag extends OccurrenceRelationBag<Charac
 	static boolean trace = false;
 	public static final String indent = "      ";
 	public final static String[] CONFIG_FILES = {"/config.properties"};
-	private boolean supressSourceOutput = false;
 	
 	public CharacterOccurrenceRelationBag(int degree) {
 		super(degree);
+		setMetricFunction(new TuppleCharacterDistanceMetric());
 	}
 	
 	/**
@@ -112,7 +112,6 @@ public class CharacterOccurrenceRelationBag extends OccurrenceRelationBag<Charac
 		int order = orderList.get(0);
 		CharacterOccurrenceRelationBag occurrenceRelationBag = new CharacterOccurrenceRelationBag(order);
 		occurrenceRelationBag.setSupressSourceOutput(supressSources);
-		occurrenceRelationBag.setMetricFunction(new TuppleCharacterDistanceMetric());
 		CharacterOccurrenceRelationBag targetoccurrenceRelationBag = occurrenceRelationBag;
 		
 		if(text != null && text.length() > 0) {
@@ -155,14 +154,6 @@ public class CharacterOccurrenceRelationBag extends OccurrenceRelationBag<Charac
 				break;
 			}
 		}
-	}
-
-	public boolean isSupressSourceOutput() {
-		return supressSourceOutput;
-	}
-
-	public void setSupressSourceOutput(boolean supressSourceOutput) {
-		this.supressSourceOutput = supressSourceOutput;
 	}
 
 	@Override

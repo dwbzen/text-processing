@@ -15,7 +15,7 @@ import org.dwbzen.text.util.exception.InvalidDataSourceException;
  * cacheContent:true (the default) or false<br>
  * wordDelimiter: specify if other than a space<br>
  * eol: specify if other than an empty String ""<br>
- * 
+ * Use getNext() to retrieve file content line at a time.
  * @author DBacon
  *
  */
@@ -31,7 +31,7 @@ public class TextFileDataSource implements IDataSource<String> {
 	private String fileText = null;
 	private List<String> lines = null;;
 	
-	public TextFileDataSource(DataSourceDescription description) {
+	public TextFileDataSource(DataSourceDescription description) throws FileNotFoundException {
 		dataSourceDescription = description;
 		if(dataSourceDescription.getProperties() == null 
 			|| !dataSourceDescription.getProperties().containsKey("filename")) {
@@ -75,6 +75,15 @@ public class TextFileDataSource implements IDataSource<String> {
 			throw new InvalidDataSourceException("IOException. Here's the details: " + e2.getMessage());
 		}
 		return lines;
+	}
+
+	@Override
+	/**
+	 * Gets the line of the Text file.
+	 * @return String line or null if no more lines.
+	 */
+	public String getNext() {
+		return reader.getNextLine();
 	}
 
 	@Override

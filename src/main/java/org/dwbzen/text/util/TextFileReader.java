@@ -10,7 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Stateless text file reader.
+ * Text file reader. Can be used to get the entire file contents
+ * or to iterate by line.
  * 
  * @author don_bacon
  *
@@ -22,24 +23,32 @@ public class TextFileReader {
 	private String fileName = null;
 	private int minimumLength = 1;
 	private int maximumLength = 20;
+	private BufferedReader inputFileReader = null;
+	private Reader reader = null;
 	
 	static Character delim = ' ';
 	static String eolString = "";
 	
-	protected TextFileReader(String inputFile, Character cdelim, String eol) {
+	protected TextFileReader(String inputFile, Character cdelim, String eol) throws FileNotFoundException {
 		setDelimiter(cdelim);
 		setEndOfLine(eol);
 		fileName = inputFile;
+		try {
+			openFile();
+		} catch (FileNotFoundException e) {
+			System.err.println("File not found: " + inputFile);
+			throw(e);
+		}
 	}
 	
-	public static TextFileReader getInstance(String inputFile, Character cdelim, String eol) {
+	public static TextFileReader getInstance(String inputFile, Character cdelim, String eol) throws FileNotFoundException {
 		return new TextFileReader(inputFile, cdelim, eol);
 	}
 	
-	public static TextFileReader getInstance(String inputFile, String eol) {
+	public static TextFileReader getInstance(String inputFile, String eol) throws FileNotFoundException {
 		return new TextFileReader(inputFile, delim, eol);
 	}
-	public static TextFileReader getInstance(String inputFile) {
+	public static TextFileReader getInstance(String inputFile) throws FileNotFoundException {
 		return new TextFileReader(inputFile, delim, eolString);
 	}
 
@@ -77,23 +86,53 @@ public class TextFileReader {
 		return lines;
 	}
 	
-	private void readFileLines() throws FileNotFoundException, IOException {
+	/**
+	 * Gets the next line from the previously opened file.
+	 * This does not check for minimum length, it just gets the next line.
+	 * It does not append the delimiter character at the end (typically a space),
+	 * but will append the endOfLine string if there is one.
+	 * The line is trimmed of extra spaces.
+	 * @return String the next line or null if no more lines
+	 */
+	public String getNextLine() {
+		String line = null;
 		StringBuilder sb = null;
-		Reader in = (fileName == null || fileName.equalsIgnoreCase("System.in") || fileName.equalsIgnoreCase("stdin")) 
-				?  new InputStreamReader(System.in) : new FileReader(fileName);
-		try(BufferedReader inputFileReader = new BufferedReader(in)) {
-			String line;
-			while((line = inputFileReader.readLine()) != null) {
-				if(line.length() >= minimumLength) { 
-					sb = new StringBuilder(line.trim());
-					sb.append(delimiter);
-					if(endOfLine != null) {
-						sb.append(endOfLine);
-					}
-					lines.add(sb.toString()); 
+		try {
+			if((line = inputFileReader.readLine()) != null) {
+				sb = new StringBuilder(line.trim());
+				if(endOfLine != null && endOfLine.length()>0) {
+					sb.append(endOfLine);
 				}
 			}
+			else {
+				inputFileReader.close();
+			}
+		} catch (IOException e) {
+			System.err.println("Could not getNextLine from file");
 		}
+		return (sb != null) ? sb.toString() : null;
+	}
+	
+	private void readFileLines() throws IOException {
+		StringBuilder sb = null;
+		String line;
+		while((line = inputFileReader.readLine()) != null) {
+			if(line.length() >= minimumLength) { 
+				sb = new StringBuilder(line.trim());
+				sb.append(delimiter);
+				if(endOfLine != null) {
+					sb.append(endOfLine);
+				}
+				lines.add(sb.toString()); 
+			}
+		}
+		inputFileReader.close();
+	}
+	
+	private void openFile() throws FileNotFoundException {
+		reader = (fileName == null || fileName.equalsIgnoreCase("System.in") || fileName.equalsIgnoreCase("stdin")) 
+					?  new InputStreamReader(System.in) : new FileReader(fileName);
+		inputFileReader = new BufferedReader(reader);
 	}
 	
 	public static void main(String... args) throws IOException {
@@ -115,6 +154,14 @@ public class TextFileReader {
 			System.out.println(lnum + ". " + line);
 			lnum++;
 		}
+		TextFileReader reader3 = TextFileReader.getInstance(filename, "\n");
+		String line;
+		lnum = 1;
+		while((line = reader3.getNextLine()) != null) {
+			System.out.println(lnum + ". " + line);
+			lnum++;
+		}
+		
 	}
 
 	public List<String> getLines() {

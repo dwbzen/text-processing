@@ -72,10 +72,10 @@ public class WordCollectorRunner {
 				dataSourceDescription.getProperties().setProperty("eol", (type.equals(ContentType.VERSE)) ? "\n" : "");
 				schemaName = theschema.isPresent() ? theschema.get() : "text";
 				dataSourceDescription.setSchema(schemaName);
-				dataSource = new TextFileDataSource(dataSourceDescription);
 				try {
+					dataSource = new TextFileDataSource(dataSourceDescription);
 					sourceText = dataSource.getData();
-				} catch(InvalidDataSourceException e) {
+				} catch(Exception e) {
 					System.err.println(e.getMessage());
 					log.error(e.getMessage());
 					System.exit(1);

@@ -8,6 +8,8 @@ public interface IDataSource<T extends Serializable> {
 	
 	T getData();
 	
+	T getNext();
+	
 	DataSourceDescription getDataSourceDescription();
 	
 	/**

@@ -12,6 +12,7 @@ import mathlib.relation.OccurrenceRelation;
 
 public class WordOccurranceRelation extends OccurrenceRelation<Word, Sentence, Book> {
 	
+	private static final long serialVersionUID = -72193910166450859L;
 	private boolean ignoreCase = true;
 
 	protected WordOccurranceRelation() {
@@ -24,7 +25,8 @@ public class WordOccurranceRelation extends OccurrenceRelation<Word, Sentence, B
 	
 	public WordOccurranceRelation(Sentence unit, int degree, boolean ignoreCaseFlag) {
 		ignoreCase = ignoreCaseFlag;
-		Sentence sentence = ignoreCase ? unit.toLowerCase() : unit;
+		this.unit = ignoreCase ? unit.toLowerCase() : unit;
+		Sentence sentence = new Sentence(this.unit);
 		super.partition(sentence, degree);
 	}
 	

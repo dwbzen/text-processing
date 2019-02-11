@@ -337,4 +337,8 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 		return dataSource;
 	}
 
+	public Configuration getConfiguration() {
+		return configuration;
+	}
+
 }

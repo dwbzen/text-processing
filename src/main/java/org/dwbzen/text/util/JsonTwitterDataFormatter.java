@@ -1,5 +1,6 @@
 package org.dwbzen.text.util;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import org.dwbzen.text.util.domain.model.TwitterTweet;
@@ -56,18 +57,18 @@ public class JsonTwitterDataFormatter  implements IDataFormatter<String>  {
 	
 	public String cleanText(String text) {
 		// deal with special characters 
-		// convert single quote (â€™) to '
-		// convert fancy double quote (â€œ) and (â€?) to a normal "
-		// convert em- (â€”) and en- (â€“) dashes to just a dash
-		// convert elipsis (â€¦) to "..."
-		// convert â€˜ â€œ
+		// convert single quote (Ã¢â‚¬â„¢) to '
+		// convert fancy double quote (Ã¢â‚¬Å“) and (Ã¢â‚¬?) to a normal "
+		// convert em- (Ã¢â‚¬â€�) and en- (Ã¢â‚¬â€œ) dashes to just a dash
+		// convert elipsis (Ã¢â‚¬Â¦) to "..."
+		// convert Ã¢â‚¬Ëœ Ã¢â‚¬Å“
 		// &amp; to &
-		String cleanedText = text.replace("â€™", "'");
-		text = cleanedText.replace("â€œ", "\"");
-		text = text.replace("â€�", "\"");
-		text = text.replace("â€“", "-");
-		text = text.replace("â€”", "-");
-		text = text.replace("â€¦", "...");
+		String cleanedText = text.replace("Ã¢â‚¬â„¢", "'");
+		text = cleanedText.replace("Ã¢â‚¬Å“", "\"");
+		text = text.replace("Ã¢â‚¬ï¿½", "\"");
+		text = text.replace("Ã¢â‚¬â€œ", "-");
+		text = text.replace("Ã¢â‚¬â€�", "-");
+		text = text.replace("Ã¢â‚¬Â¦", "...");
 		text = text.replace("&amp;", "&");
 		if(removeUrls) {
 			text = removeString(text, "https:");
@@ -90,7 +91,7 @@ public class JsonTwitterDataFormatter  implements IDataFormatter<String>  {
 		return text.trim();
 	}
 
-	public static void main(String...args) {
+	public static void main(String...args) throws FileNotFoundException {
 		String inputFile = args[0];
 		DataSourceDescription dataSourceDescription = new DataSourceDescription(DataSourceType.TextFile);
 		dataSourceDescription.getProperties().setProperty("filename", inputFile);
