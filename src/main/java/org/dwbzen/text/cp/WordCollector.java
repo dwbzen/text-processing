@@ -65,7 +65,6 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 	private String schema = "text";
 	private Map<String, String> variantMap = null;
 	private IDataSource<String> dataSource = null;
-	private List<String> sourceTextLines = null;
 	private boolean trace = false;
 	public static Map<Book.ContentType, String> contentTypes = new HashMap<>();
 	
@@ -87,7 +86,6 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 		this.contentType = type;
 		configure();
 		if(dataSource != null) {
-			sourceTextLines = dataSource.getDataList();
 			this.dataSource = dataSource;
 		}
 	}
@@ -235,6 +233,7 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 	/**
 	 * Sets the text string after filtering out words to ignore in filterWords<br>
 	 * and substituting word variants if so configured.<br>
+	 * Also filters punctuation if configured for this type.<br>
 	 * If ignoreCase is set, text is converted to lower case first.<br>
 	 * Substituting word variants is configured by type. The defaults are:<br>
 	 * substituteWordVariants.TECHNICAL=true<br>
@@ -254,7 +253,7 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 	public Book setText(String sourceText) {
 		String convertedText = (dataFormatter != null) ? dataFormatter.format(sourceText) : sourceText;
 		convertedText = ignoreCase ? convertedText.toLowerCase() : convertedText;
-		if(isFilteringInputText && filterWords.size() > 0) {
+		if((isFilteringInputText && filterWords.size() > 0) || isFilteringPunctuation) {
 			StringBuilder sb = new StringBuilder();
 			BreakIterator wordBoundry = BreakIterator.getWordInstance(Locale.US);
 			BreakIterator sentenceBoundry = BreakIterator.getSentenceInstance();
@@ -270,6 +269,9 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 					if(!filterWords.contains(variant)) {
 						sb.append(variant + " ");
 					}
+				}
+				else if((isFilteringPunctuation && filterPunctuation.contains(temp)) || (isFilteringInputText && filterWords.contains(temp))  ) {
+						// do nothing
 				}
 				else {
 					sb.append(temp + " ");
