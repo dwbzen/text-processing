@@ -9,8 +9,12 @@ import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dwbzen.text.util.TextFileReader;
+import org.dwbzen.text.util.DataSourceDescription;
+import org.dwbzen.text.util.DataSourceType;
+import org.dwbzen.text.util.TextFileDataSource;
 import org.dwbzen.text.util.Util;
+import org.dwbzen.text.util.model.Book;
+import org.dwbzen.text.util.model.Book.ContentType;
 import org.dwbzen.text.util.model.Sentence;
 import org.dwbzen.text.util.model.Word;
 
@@ -42,18 +46,55 @@ public class WordOccurrenceRelationBagRunner {
 	 * 
 	 */	
 	public static class WordOccurrenceRelationBagBuilder {
+		
+		public static WordOccurrenceRelationBag build(int degree, boolean ignorecaseflag, boolean supressSources, ContentType type, Optional<String> theschema, String... args) {
+			String sourceText = null;
+			String inputFile = null;
+			DataSourceDescription dataSourceDescription = null;
+			TextFileDataSource dataSource = null;
+			String schemaName = null;
+			
+			for(int i=0; i<args.length; i++) {
+				if(args[i].startsWith("file:")) {
+					inputFile = args[i].substring(args[i].indexOf(':') + 1);
+				}
+				else {
+					dataSourceDescription = new DataSourceDescription(DataSourceType.Text);
+					sourceText = args[i];
+				}
+			}
+			if(inputFile != null) {
+				String inputFilename = Util.getInputFilename(inputFile);
+				dataSourceDescription = new DataSourceDescription(inputFilename, DataSourceType.TextFile);
+				dataSourceDescription.getProperties().setProperty("eol", (type.equals(ContentType.VERSE)) ? "\n" : "");
+				schemaName = theschema.isPresent() ? theschema.get() : "text";
+				dataSourceDescription.setSchema(schemaName);
+				try {
+					dataSource = new TextFileDataSource(dataSourceDescription);
+					sourceText = dataSource.getData();
+				} catch(Exception e) {
+					System.err.println(e.getMessage());
+					log.error(e.getMessage());
+					System.exit(1);
+				}
+			}
+			WordOccurrenceRelationBag occurrenceRelationBag = new WordOccurrenceRelationBag(degree);
+			occurrenceRelationBag.setSupressSourceOutput(supressSources);
+			
+			return occurrenceRelationBag;
+		}
 
 	}
 	 
 	 
 		public static void main(String...args) {
-			String[] filenames = {};
+			String inputFile = null;
 			List<OutputStyle> outputStyles = new ArrayList<>();
 			String text = null;
 			boolean sorted = false;
 			String orderstring = null;
 			boolean reverseSorted = false;
-			boolean ignoreCase = false;
+			boolean ignoreCaseFlag = false;
 			boolean supressSources = false;
 			Sentence sentence = null;
 			String schema = "none";
@@ -62,14 +103,13 @@ public class WordOccurrenceRelationBagRunner {
 			
 			for(int i=0; i<args.length; i++) {
 				if(args[i].startsWith("-file")) {
-					// comma-separated list of files
-					filenames = args[++i].split(",");
+					inputFile = args[++i];
 				}
 				else if(args[i].equalsIgnoreCase("-schema")) {
 					schema = args[++i];
 				}
 				else if(args[i].equalsIgnoreCase("-ignoreCase")) {
-					ignoreCase = true;
+					ignoreCaseFlag = true;
 				}
 				else if(args[i].equalsIgnoreCase("-order")) {
 					orderstring = args[++i];
@@ -105,6 +145,13 @@ public class WordOccurrenceRelationBagRunner {
 					text = args[i];
 				}
 			}
+			Book.ContentType type = ContentType.PROSE;
+			if(textType.equalsIgnoreCase("verse")) {
+				type = ContentType.VERSE;
+			}
+			else if(textType.equalsIgnoreCase("technical")) {
+				type = ContentType.TECHNICAL;
+			}
 			if(outputStyles.size() == 0) {
 				// default output style if not set
 				outputStyles.add(OutputStyle.PRETTY_JSON);
@@ -117,31 +164,15 @@ public class WordOccurrenceRelationBagRunner {
 					orderList.add(Integer.parseInt(order));
 				}
 			}
-			int order = orderList.get(0);
+			int degree = orderList.get(0);
+			String[] builderArgs = new String[1];
+			builderArgs[0] = (inputFile != null) ? "file:" + inputFile : text;
 			Optional<String> optionalSchema = Optional.ofNullable(schema);
-			// TODO - use the builder instead
-			WordOccurrenceRelationBag occurrenceRelationBag = new WordOccurrenceRelationBag(order);
+
+			WordOccurrenceRelationBag occurrenceRelationBag = WordOccurrenceRelationBagBuilder.build(degree, ignoreCaseFlag, supressSources, type, optionalSchema, builderArgs);
 			
-			occurrenceRelationBag.setSupressSourceOutput(supressSources);
 			WordOccurrenceRelationBag  targetoccurrenceRelationBag = occurrenceRelationBag;
-			if(text != null && text.length() > 0) {
-				sentence = new Sentence(text);
-				addSentence(sentence, occurrenceRelationBag, order, ignoreCase);
-			}
-			if(filenames.length > 0) {
-				//TODO use optional schema
-				try {
-					for(String inputFile : filenames) {
-						String inputFilename = Util.getInputFilename(inputFile);
-						TextFileReader reader = TextFileReader.getInstance(inputFilename);
-						reader.setMinimumLength(order);
-						String fileText = ignoreCase ? reader.getFileText().toLowerCase() : reader.getFileText();
-						sentence = new Sentence(fileText);
-						addSentence(sentence, occurrenceRelationBag, order, ignoreCase);
-					}
-				}
-				catch(Exception ex) { System.err.println("Something went wrong " +  ex.toString()); }
-			}
+
 			occurrenceRelationBag.close();
 			Map<Tupple<Word>, SourceOccurrenceProbability<Word, Sentence>> sortedMap = null;
 			/*

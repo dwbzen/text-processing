@@ -13,14 +13,14 @@ import org.dwbzen.text.util.DataSourceDescription;
 import org.dwbzen.text.util.DataSourceType;
 import org.dwbzen.text.util.TextFileDataSource;
 import org.dwbzen.text.util.Util;
-import org.dwbzen.text.util.exception.InvalidDataSourceException;
 import org.dwbzen.text.util.model.Book;
 import org.dwbzen.text.util.model.Book.ContentType;
 import org.dwbzen.text.util.model.Sentence;
 import org.dwbzen.text.util.model.Word;
-import mathlib.cp.*;
 
+import mathlib.cp.CollectorStats;
 import mathlib.cp.MarkovChain;
+import mathlib.cp.OutputStyle;
 
 /**
  * WordCollectorRunner -display <displayFormats> -json <prettyFlag> 

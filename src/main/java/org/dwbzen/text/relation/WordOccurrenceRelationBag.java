@@ -1,15 +1,8 @@
 package org.dwbzen.text.relation;
 
 
-import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
 
-import org.dwbzen.text.util.TextFileReader;
-import org.dwbzen.text.util.Util;
 import org.dwbzen.text.util.model.Book;
 import org.dwbzen.text.util.model.Sentence;
 import org.dwbzen.text.util.model.Word;
