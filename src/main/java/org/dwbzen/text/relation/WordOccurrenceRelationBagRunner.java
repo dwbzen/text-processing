@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -83,15 +82,13 @@ public class WordOccurrenceRelationBagRunner {
 					System.exit(1);
 				}
 			}
-			WordOccurrenceRelationBag occurrenceRelationBag = new WordOccurrenceRelationBag(degree);
+			WordOccurrenceRelationBag occurrenceRelationBag = new WordOccurrenceRelationBag(degree, ignorecaseflag, schemaName, type, dataSource);
 			occurrenceRelationBag.setSupressSourceOutput(supressSources);
-			textConfigurator = new TextConfigurator(schemaName, type, ignorecaseflag);
-			configuration = textConfigurator.configure();
+			occurrenceRelationBag.setText(sourceText);
 			return occurrenceRelationBag;
 		}
 
 	}
-	 
 	 
 		public static void main(String...args) {
 			String inputFile = null;
@@ -102,7 +99,6 @@ public class WordOccurrenceRelationBagRunner {
 			boolean reverseSorted = false;
 			boolean ignoreCaseFlag = false;
 			boolean supressSources = false;
-			Sentence sentence = null;
 			String schema = "none";
 			String textType = "technical";
 			List<Integer> orderList = new ArrayList<Integer>();
@@ -175,19 +171,26 @@ public class WordOccurrenceRelationBagRunner {
 			builderArgs[0] = (inputFile != null) ? "file:" + inputFile : text;
 			Optional<String> optionalSchema = Optional.ofNullable(schema);
 
-			WordOccurrenceRelationBag occurrenceRelationBag = WordOccurrenceRelationBagBuilder.build(degree, ignoreCaseFlag, supressSources, type, optionalSchema, builderArgs);
-			
-			WordOccurrenceRelationBag  targetoccurrenceRelationBag = occurrenceRelationBag;
-
-			occurrenceRelationBag.close();
-			Map<Tupple<Word>, SourceOccurrenceProbability<Word, Sentence>> sortedMap = null;
 			/*
-			 * Display the results according to specified style(s)
+			 * This creates and configures a WordOccurrenceRelationBag instance
+			 * which includes loading and formatting the data
+			 * and adding WordOccurrenceRelations for each Sentence in the data (Book)
 			 */
+			WordOccurrenceRelationBag occurrenceRelationBag = WordOccurrenceRelationBagBuilder.build(degree, ignoreCaseFlag, supressSources, type, optionalSchema, builderArgs);
+			WordOccurrenceRelationBag  targetoccurrenceRelationBag = occurrenceRelationBag;
+			/*
+			 * Closes the WordOccurrenceRelationBag and recomputes the probabilities and ranges.
+			 */
+			occurrenceRelationBag.close();
+			
+			Map<Tupple<Word>, SourceOccurrenceProbability<Word, Sentence>> sortedMap = null;
 			if(sorted) {
 				sortedMap = occurrenceRelationBag.sortByValue(reverseSorted);
 				targetoccurrenceRelationBag = new WordOccurrenceRelationBag(occurrenceRelationBag, sortedMap);
 			}
+			/*
+			 * Display the results according to specified style(s)
+			 */
 			for(OutputStyle style : outputStyles) {
 				switch(style) {
 				case TEXT:
@@ -209,15 +212,6 @@ public class WordOccurrenceRelationBagRunner {
 			for(SourceOccurrenceProbability<Word, Sentence> sop : 	orb.getSourceOccurrenceProbabilityMap().values()) {
 				out.println(sop.getKey().toString(true) + ": " + sop.getOccurrenceProbability().getOccurrence());
 			}
-		}
-		
-		private static void addSentence(Sentence sentence, WordOccurrenceRelationBag occurrenceRelationBag, int degree, boolean ignoreCase) {
-			WordOccurranceRelation occurrenceRelation = new WordOccurranceRelation(sentence, degree, ignoreCase);
-			if(trace) {
-				Set<Tupple<Word>> partitions = occurrenceRelation.getPartitions();
-				System.out.println(sentence + "\n" + partitions);
-			}
-			occurrenceRelationBag.addOccurrenceRelation(occurrenceRelation);
 		}
 
 }

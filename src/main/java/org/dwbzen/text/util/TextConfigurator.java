@@ -1,8 +1,10 @@
 package org.dwbzen.text.util;
 
+import java.text.BreakIterator;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 
@@ -20,7 +22,7 @@ public class TextConfigurator {
 	protected static final Logger log = LogManager.getLogger(TextConfigurator.class);
 	private Configuration configuration = null;
 	private Properties configProperties = null;
-	private String schema = null;
+	private String schemaName = null;
 	private boolean ignoreCase = false; 
 	private boolean isFilteringInputText = false;
 	private boolean isFilteringPunctuation = false;
@@ -34,6 +36,10 @@ public class TextConfigurator {
 	private List<String> filterWords = new ArrayList<String>();
 	private List<String> filterPunctuation = new ArrayList<String>();
 	private Map<String, String> variantMap = null;
+	
+	private String formattedText = null;	// formatted text
+	private Book book = null;	// formatted text as a Book instance
+	
 	
 	public static Map<Book.ContentType, String> contentTypes = new HashMap<>();
 	public static final String[] punctuation = {",", "“", "”" };		// additions to configured PUNCTUATION
@@ -53,7 +59,7 @@ public class TextConfigurator {
 	}
 	
 	public TextConfigurator(String schemaName, ContentType contentType, boolean ignoreCase) {
-		schema = schemaName;
+		this.schemaName = schemaName;
 		this.contentType = contentType;
 		this.ignoreCase = ignoreCase;
 	}
@@ -74,9 +80,10 @@ public class TextConfigurator {
 			ignoreWordsContainingNumbers = getBooleanProperty("ignoreWordsContainingNumbers");
 			ignoreWordsInUppercase = getBooleanProperty("ignoreWordsInUppercase");
 			ignoreInternetAndFileAddresses = getBooleanProperty("ignoreInternetAndFileAddresses");
-			
-			dataFormatterClassName = configProperties.getProperty("dataFormatterClass." + schema);
-			if(dataFormatterClassName != null && !dataFormatterClassName.equalsIgnoreCase("none") && !schema.equalsIgnoreCase("none")) {
+			// for example: dataFormatterClass.ticket=org.dwbzen.text.util.TicketDataFormatter
+			// schema name is "ticket"
+			dataFormatterClassName = configProperties.getProperty("dataFormatterClass." + schemaName);
+			if(dataFormatterClassName != null && !dataFormatterClassName.equalsIgnoreCase("none") && !schemaName.equalsIgnoreCase("none")) {
 				try {
 					Class<IDataFormatter<String>> formatterClass = (Class<IDataFormatter<String>>)Class.forName(dataFormatterClassName);
 					this.dataFormatter = formatterClass.getDeclaredConstructor().newInstance();
@@ -118,6 +125,74 @@ public class TextConfigurator {
 			value = configProperties.getProperty(baseName + "." + contentTypes.get(ContentType.ANY), FALSE).equalsIgnoreCase(TRUE);
 		}
 		return value;
+	}
+
+	 /**
+	 * Sets the text string after filtering out words to ignore in filterWords<br>
+	 * and substituting word variants if so configured.<br>
+	 * Also filters punctuation if configured for this type.<br>
+	 * If ignoreCase is set, text is converted to lower case first.<br>
+	 * Substituting word variants is configured by type. The defaults are:<br>
+	 * substituteWordVariants.TECHNICAL=true<br>
+	 * substituteWordVariants.PROSE=false<br>
+	 * substituteWordVariants.VERSE=false</p>
+	 * 
+	 * The Sentence structure is preserved for TECHNICAL and PROSE content types.<br>
+	 * For TECHNCIAL, each line (defined as ending in "\n") is a Sentence.<br>
+	 * For PROSE, a SentenceInstance BreakIterator delimits sentences.<br>
+	 * For VERSE the words are all delivered as a single sentence.<br>
+	 * 
+	 * <b>NOTE - invoke configure() first.</b>
+	 * <br>
+	 * @param text
+	 * @return Book instance
+	 */
+	public Book formatText(String sourceText) {
+		String convertedText = (getDataFormatter() != null) ? getDataFormatter().format(sourceText) : sourceText;
+		convertedText = isIgnoreCase() ? convertedText.toLowerCase() : convertedText;
+		if((isFilteringInputText() && getFilterWords().size() > 0) || isFilteringPunctuation()) {
+			List<String> filterWords = getFilterWords();
+			List<String> filterPunctuation = getFilterPunctuation();
+			
+			StringBuilder sb = new StringBuilder();
+			BreakIterator wordBoundry = BreakIterator.getWordInstance(Locale.US);
+			BreakIterator sentenceBoundry = BreakIterator.getSentenceInstance();
+
+			int start = 0;
+			int end = 0;
+			sentenceBoundry.setText(convertedText);
+			wordBoundry.setText(convertedText);
+			while((end=wordBoundry.next()) != BreakIterator.DONE) {
+				String temp = convertedText.substring(start, end).trim();
+				if(isSubstituteWordVariants() && getVariantMap().containsKey(temp)) {
+					String variant = getVariantMap().get(temp);
+					if(!filterWords.contains(variant)) {
+						sb.append(variant + " ");
+					}
+				}
+				else if((isFilteringPunctuation() && filterPunctuation.contains(temp)) || (isFilteringInputText() && filterWords.contains(temp))  ) {
+						// do nothing
+				}
+				else {
+					sb.append(temp + " ");
+				}
+				start = end;
+			}
+			this.formattedText = sb.toString();
+		}
+		else {
+			this.formattedText = convertedText;
+		}
+		book = new Book(formattedText, contentType);
+		return book;
+	}
+
+	public String getFormattedText() {
+		return formattedText;
+	}
+
+	public Book getBook() {
+		return book;
 	}
 
 	public boolean isIgnoreCase() {
@@ -176,8 +251,8 @@ public class TextConfigurator {
 		return configProperties;
 	}
 
-	public String getSchema() {
-		return schema;
+	public String getSchemaName() {
+		return schemaName;
 	}
 
 	public boolean isSubstituteWordVariants() {

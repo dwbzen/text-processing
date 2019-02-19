@@ -1,7 +1,5 @@
 package org.dwbzen.text.cp;
-import java.text.BreakIterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
@@ -40,8 +38,8 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 	protected static final Logger log = LogManager.getLogger(WordCollector.class);
 	
 	private int order;
-	private String text = null;
 	private MarkovChain<Word, Sentence, Book> markovChain;
+	private String text = null;
 	private Book book = null;
 	private Book.ContentType contentType = ContentType.PROSE;	// default
 	private Configuration configuration = null;
@@ -172,62 +170,13 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 	}
 
 	/**
-	 * Sets the text string after filtering out words to ignore in filterWords<br>
-	 * and substituting word variants if so configured.<br>
-	 * Also filters punctuation if configured for this type.<br>
-	 * If ignoreCase is set, text is converted to lower case first.<br>
-	 * Substituting word variants is configured by type. The defaults are:<br>
-	 * substituteWordVariants.TECHNICAL=true<br>
-	 * substituteWordVariants.PROSE=false<br>
-	 * substituteWordVariants.VERSE=false</p>
-	 * 
-	 * The Sentence structure is preserved for TECHNICAL and PROSE content types.<br>
-	 * For TECHNCIAL, each line (defined as ending in "\n") is a Sentence.<br>
-	 * For PROSE, a SentenceInstance BreakIterator delimits sentences.<br>
-	 * For VERSE the words are all delivered as a single sentence.<br>
-	 * 
-	 * TODO: make preserving sentence structure configurable.
-	 * 
-	 * @param text
+	 * Uses current TextConfigurator to format raw text.
+	 * @param text raw String to be formatted (or not, depending on the configuration)
 	 * @return Book instance
 	 */
 	public Book setText(String sourceText) {
-		String convertedText = (textConfigurator.getDataFormatter() != null) ? textConfigurator.getDataFormatter().format(sourceText) : sourceText;
-		convertedText = ignoreCase ? convertedText.toLowerCase() : convertedText;
-		if((textConfigurator.isFilteringInputText() && textConfigurator.getFilterWords().size() > 0) || textConfigurator.isFilteringPunctuation()) {
-			List<String> filterWords = textConfigurator.getFilterWords();
-			List<String> filterPunctuation = textConfigurator.getFilterPunctuation();
-			
-			StringBuilder sb = new StringBuilder();
-			BreakIterator wordBoundry = BreakIterator.getWordInstance(Locale.US);
-			BreakIterator sentenceBoundry = BreakIterator.getSentenceInstance();
-
-			int start = 0;
-			int end = 0;
-			sentenceBoundry.setText(convertedText);
-			wordBoundry.setText(convertedText);
-			while((end=wordBoundry.next()) != BreakIterator.DONE) {
-				String temp = convertedText.substring(start, end).trim();
-				if(textConfigurator.isSubstituteWordVariants() && textConfigurator.getVariantMap().containsKey(temp)) {
-					String variant = textConfigurator.getVariantMap().get(temp);
-					if(!filterWords.contains(variant)) {
-						sb.append(variant + " ");
-					}
-				}
-				else if((textConfigurator.isFilteringPunctuation() && filterPunctuation.contains(temp)) || (textConfigurator.isFilteringInputText() && filterWords.contains(temp))  ) {
-						// do nothing
-				}
-				else {
-					sb.append(temp + " ");
-				}
-				start = end;
-			}
-			this.text = sb.toString();
-		}
-		else {
-			this.text = convertedText;
-		}
-		book = new Book(text, contentType);
+		book = textConfigurator.formatText(sourceText);
+		this.text = textConfigurator.getFormattedText();
 		return book;
 	}
 
