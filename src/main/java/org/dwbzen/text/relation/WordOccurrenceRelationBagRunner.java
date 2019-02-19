@@ -9,8 +9,10 @@ import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.dwbzen.text.util.Configuration;
 import org.dwbzen.text.util.DataSourceDescription;
 import org.dwbzen.text.util.DataSourceType;
+import org.dwbzen.text.util.TextConfigurator;
 import org.dwbzen.text.util.TextFileDataSource;
 import org.dwbzen.text.util.Util;
 import org.dwbzen.text.util.model.Book;
@@ -31,6 +33,9 @@ public class WordOccurrenceRelationBagRunner {
 
 	static OutputStyle outputStyle = OutputStyle.TEXT;
 	static boolean trace = false;
+	
+	static TextConfigurator textConfigurator = null;
+	static Configuration configuration = null;
 	
 	/**
 	 * Builds a ordOccurrenceRelationBag. Uses default Book TYPE of PROSE
@@ -80,7 +85,8 @@ public class WordOccurrenceRelationBagRunner {
 			}
 			WordOccurrenceRelationBag occurrenceRelationBag = new WordOccurrenceRelationBag(degree);
 			occurrenceRelationBag.setSupressSourceOutput(supressSources);
-			
+			textConfigurator = new TextConfigurator(schemaName, type, ignorecaseflag);
+			configuration = textConfigurator.configure();
 			return occurrenceRelationBag;
 		}
 

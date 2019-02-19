@@ -41,7 +41,7 @@ public class Book implements Supplier<Sentence>, IJson, INameable {
 	 * @author don_bacon
 	 *
 	 */
-	public static enum ContentType  {PROSE, VERSE, TECHNICAL, OTHER };
+	public static enum ContentType  {PROSE, VERSE, TECHNICAL, OTHER, ANY };
 	public static enum ContentFormat {PLAIN_TEXT, JSON, XML };
 	
 	
