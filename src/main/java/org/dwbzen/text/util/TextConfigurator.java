@@ -12,9 +12,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dwbzen.text.util.model.Book;
 import org.dwbzen.text.util.model.Book.ContentType;
+import org.dwbzen.text.util.model.Sentence;
 
 /**
- * Encapsulates config.properties
+ * Encapsulates config.properties.</br>
+ * Formats source text using configured values. This includes case sensitivity,
+ * sentence structure, word substitution and filtering.
  * @author DBacon
  *
  */
@@ -37,7 +40,6 @@ public class TextConfigurator {
 	private List<String> filterPunctuation = new ArrayList<String>();
 	private Map<String, String> variantMap = null;
 	
-	private String formattedText = null;	// formatted text
 	private Book book = null;	// formatted text as a Book instance
 	
 	
@@ -148,8 +150,45 @@ public class TextConfigurator {
 	 * @return Book instance
 	 */
 	public Book formatText(String sourceText) {
-		String convertedText = (getDataFormatter() != null) ? getDataFormatter().format(sourceText) : sourceText;
-		convertedText = isIgnoreCase() ? convertedText.toLowerCase() : convertedText;
+		IDataFormatter<String> dataFormatter = getDataFormatter();
+		book = new Book(this.schemaName);
+		if(dataFormatter != null) {
+			// format each line of sourceText
+			// create a Sentence for each and add to the Book
+			int start = 0;
+			int end;
+			String line = null;
+			while((end = sourceText.indexOf('\n', start)) > 0) {
+				line = sourceText.substring(start, end);
+				String formattedText = dataFormatter.format(line);
+				String convertedText = convertTextLine(formattedText);
+				Sentence sentence = new Sentence(convertedText);
+				sentence.setId(dataFormatter.getKey());
+				book.add(sentence);
+				start = end + 1;
+			}
+			if(start < sourceText.length()) {
+				// check if there's a trailing line AND it has content
+				line = sourceText.substring(start);
+				if(line.length() > 2 ) {
+					Sentence sentence = dataFormatter.formatAsSentence(line);
+					book.add(sentence);
+				}
+			}
+		}
+		else {
+			book = new Book(sourceText);
+		}
+		return book;
+	}
+	
+	/*
+	 * Filter punctuation
+	 * Convert to LC if ignoring case
+	 * Substitute word variants if configured
+	 */
+	private String convertTextLine(String sourceText) {
+		String convertedText = isIgnoreCase() ? sourceText.toLowerCase() : sourceText;
 		if((isFilteringInputText() && getFilterWords().size() > 0) || isFilteringPunctuation()) {
 			List<String> filterWords = getFilterWords();
 			List<String> filterPunctuation = getFilterPunctuation();
@@ -178,17 +217,9 @@ public class TextConfigurator {
 				}
 				start = end;
 			}
-			this.formattedText = sb.toString();
+			convertedText = sb.toString();
 		}
-		else {
-			this.formattedText = convertedText;
-		}
-		book = new Book(formattedText, contentType);
-		return book;
-	}
-
-	public String getFormattedText() {
-		return formattedText;
+		return convertedText;
 	}
 
 	public Book getBook() {

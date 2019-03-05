@@ -69,9 +69,16 @@ public class WordOccurrenceRelationBagRunner {
 			}
 			if(inputFile != null) {
 				String inputFilename = Util.getInputFilename(inputFile);
-				dataSourceDescription = new DataSourceDescription(inputFilename, DataSourceType.TextFile);
-				dataSourceDescription.getProperties().setProperty("eol", (type.equals(ContentType.VERSE)) ? "\n" : "");
-				schemaName = theschema.isPresent() ? theschema.get() : "text";
+				if(theschema.isPresent()) {
+					dataSourceDescription = new DataSourceDescription(inputFilename, DataSourceType.JsonText);
+					schemaName = theschema.get();
+					dataSourceDescription.getProperties().setProperty("eol", "\n");
+				}
+				else {
+					schemaName = "text";		
+					dataSourceDescription = new DataSourceDescription(inputFilename, DataSourceType.TextFile);
+					dataSourceDescription.getProperties().setProperty("eol", (type.equals(ContentType.VERSE)) ? "\n" : "");
+				}
 				dataSourceDescription.setSchema(schemaName);
 				try {
 					dataSource = new TextFileDataSource(dataSourceDescription);

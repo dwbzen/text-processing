@@ -4,5 +4,6 @@ public enum DataSourceType {
 		Unknown,
 		TextFile,
 		Text,
+		JsonText,
 		S3Bucket
 }

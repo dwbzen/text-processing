@@ -45,9 +45,8 @@ public class SentenceTest extends TestCase {
 	@Test
 	public void test3_IgnoreWhiteSpace() {
 		System.out.println(testString);
-		Sentence sentence = new Sentence();
+		Sentence sentence = new Sentence(testString);
 		sentence.setIgnoreWhiteSpace(true);
-		sentence.setSource(testString);
 		Word w = null;
 		System.out.println("#words: " + sentence.size());
 		int i = 0;
@@ -60,10 +59,9 @@ public class SentenceTest extends TestCase {
 		@Test
 		public void test4_IgnorePunctuationAndWhiteSpace1() {
 		System.out.println(testString2);
-		Sentence sentence = new Sentence();
+		Sentence sentence = new Sentence(testString2);
 		sentence.setIgnoreWhiteSpace(true);
 		sentence.setIgnorePunctuation(true);
-		sentence.setSource(testString2);
 		Word w = null;
 		System.out.println("#words: " + sentence.size());
 		int i = 0;
@@ -75,10 +73,9 @@ public class SentenceTest extends TestCase {
 	@Test
 	public void test5_IgnorePunctuationAndWhiteSpace2() {
 		System.out.println(testString);
-		Sentence sentence = new Sentence();
+		Sentence sentence = new Sentence(testString);
 		sentence.setIgnoreWhiteSpace(true);
 		sentence.setIgnorePunctuation(true);
-		sentence.setSource(testString);
 		Word w = null;
 		System.out.println("#words: " + sentence.size());
 		int i = 0;
@@ -90,10 +87,9 @@ public class SentenceTest extends TestCase {
 	@Test
 	public void test6_IgnorePunctuationAndWhiteSpace3() {
 		System.out.println(testString3);
-		Sentence sentence = new Sentence();
+		Sentence sentence = new Sentence(testString3);
 		sentence.setIgnoreWhiteSpace(true);
 		sentence.setIgnorePunctuation(true);
-		sentence.setSource(testString3);
 		Word w = null;
 		System.out.println("#words: " + sentence.size());
 		int i = 0;

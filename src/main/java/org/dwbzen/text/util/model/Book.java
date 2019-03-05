@@ -49,7 +49,8 @@ public class Book implements Supplier<Sentence>, IJson, INameable {
 	@JsonProperty("author")	private String author = INameable.DEFAULT_NAME;
 	@JsonProperty			private List<Sentence> sentences = new ArrayList<>();		// ALL the sentences
 	@JsonProperty			private Map<String, Chapter> chapters = new HashMap<>();	// optional chapters
-	@JsonProperty			private String sourceText = "";
+	@JsonProperty			private String sourceText = null;
+	@JsonIgnore				private StringBuilder sb = new StringBuilder();
 	@JsonProperty			private Properties properties = new Properties();			// optional properties can be whatever
 	@JsonProperty("contentType")	private ContentType type = ContentType.PROSE;
 	@JsonIgnore 	private int currentIndex = -1;
@@ -82,6 +83,9 @@ public class Book implements Supplier<Sentence>, IJson, INameable {
 	}
 	
 	public String getSourceText() {
+		if(sourceText == null) {
+			sourceText = sb.toString();
+		}
 		return sourceText;
 	}
 
@@ -173,8 +177,9 @@ public class Book implements Supplier<Sentence>, IJson, INameable {
 	}
 
 
-	public boolean add(Sentence e) {
-		return sentences.add(e);
+	public boolean add(Sentence sentence) {
+		sb.append(sentence.toString());
+		return sentences.add(sentence);
 	}
 
 

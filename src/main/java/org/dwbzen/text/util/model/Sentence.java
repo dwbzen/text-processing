@@ -37,6 +37,8 @@ import mathlib.util.INameable;
  * For certain kinds of text, such as poetry or verse, it is appropriate to
  * treat the end of line characters (\r, \n) as a terminator.
  * 
+ * A Sentence has an optional unique id that is provided in the constructor.
+ * If null, then one is assigned to be the hash of the source (which cannot be null)
  * 
  * @see java.text.BreakIterator
  * @see java.util.regex.Pattern
@@ -52,14 +54,22 @@ public class Sentence extends ArrayList<Word>
 	static Word DELIM = new Word(".");
 	
 	private String source = null;
+	private String rawText = null;		// original, unaltered text
 	private BreakIterator boundary = null;
 	private int index = -1;
 	private boolean ignoreWhiteSpace = true;
 	private boolean ignorePunctuation = false;
 	/*
-	 * If not provided, defaults to "hash:<source hash code>" or "Unnamed"
+	 * If not provided, defaults to "hash:<source hash code>" or "Unnamed".
+	 * name is optional and does not need to be unique
 	 */
 	private String name = null;
+	
+	/*
+	 * Optional unique key, usually a property value depending on the context and source data.
+	 * If not provided, defaults to <source hash code>
+	 */
+	private String id = null;
 	
 	/** Used to represent a NULL key in a Map - since it can't really be a null */
 	public static Word NULL_VALUE = new Word(Word.NULL_VALUE);
@@ -77,17 +87,17 @@ public class Sentence extends ArrayList<Word>
 		DELIMITERS.add(new Word("?”"));		// and an end of a quote with question mark
 	}
 	
-	public Sentence() {
-		this(null, true, null, null, INameable.DEFAULT_NAME, false);
+	protected Sentence() {
+		this(null, true, null, null, INameable.DEFAULT_NAME, false, null);
 	}
 	
-	public Sentence(String string, boolean skipws, Sentence otherSentence, Word word, String aname, boolean skipPunctuation) {
+	public Sentence(String string, boolean skipws, Sentence otherSentence, Word word, String aname, boolean skipPunctuation, String anId) {
 		super();
+		assert(string != null);
 		ignoreWhiteSpace = skipws;
 		ignorePunctuation = skipPunctuation;
-		if(string != null) {
-			setSource(string);
-		}
+		setSource(string);
+		this.rawText = source;
 		if(otherSentence != null) {
 			for(Word w: otherSentence) {
 				add(w);
@@ -98,6 +108,7 @@ public class Sentence extends ArrayList<Word>
 			setSource();
 		}
 		this.name = (aname != null && aname.length()>0 && aname.length()<=20) ? aname : createName(aname);
+		this.id = (anId == null) ? createId() : anId;
 	}
 	
 	private String createName(String aname) {
@@ -110,25 +121,32 @@ public class Sentence extends ArrayList<Word>
 		}
 		return createdName;
 	}
+	
+	private String createId() {
+		String anid = (source != null) ? String.valueOf(source.hashCode()) : String.valueOf(serialVersionUID);
+		return anid;
+	}
 
 	public Sentence(String string) {
-		this(string, true, null, null, null, false);
+		this(string, true, null, null, null, false, null);
 	}
 	
 	public Sentence(String string, boolean skipws) {
-		this(string, skipws, null, null, null, false);
+		this(string, skipws, null, null, null, false, null);
 	}
 	
 	public Sentence(String string, boolean skipws, boolean skipPunctuation) {
-		this(string, skipws, null, null, null, skipPunctuation);
+		this(string, skipws, null, null, null, skipPunctuation, null);
 	}
 	
 	public Sentence(Sentence otherSentence) {
-		this(null, true, otherSentence, null, null, false);
+		this(otherSentence.rawText, true, otherSentence, null, null, false, null);
+		id = createId();
 	}
 	
 	public Sentence(Sentence otherSentence, Word word) {
-		this(null, true, otherSentence, word, null, false);
+		this(otherSentence.rawText, true, otherSentence, word, null, false,null);
+		id = createId();
 	}
 
 	private void breakIntoWords(String stringToExamine) {
@@ -298,6 +316,10 @@ public class Sentence extends ArrayList<Word>
 
 	}
 
+	public String getRawText() {
+		return rawText;
+	}
+
 	@Override
 	/** 
 	 * The sentence name is anything that can identify the sentence- an Id, summary whatever.
@@ -305,12 +327,19 @@ public class Sentence extends ArrayList<Word>
 	 */
 	public void setName(String name) {
 		this.name = name;
-		
 	}
 
 	@Override
 	public String getName() {
 		return name;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 
 }

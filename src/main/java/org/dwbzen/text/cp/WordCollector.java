@@ -176,7 +176,7 @@ public class WordCollector implements ICollector<Sentence, MarkovChain<Word, Sen
 	 */
 	public Book setText(String sourceText) {
 		book = textConfigurator.formatText(sourceText);
-		this.text = textConfigurator.getFormattedText();
+		this.text = textConfigurator.getBook().getSourceText();
 		return book;
 	}
 

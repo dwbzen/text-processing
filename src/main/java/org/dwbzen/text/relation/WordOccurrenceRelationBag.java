@@ -21,7 +21,7 @@ public class WordOccurrenceRelationBag extends OccurrenceRelationBag<Word, Sente
 	static OutputStyle outputStyle = OutputStyle.TEXT;
 	static boolean trace = true;
 	
-	private Book.ContentType contentType = ContentType.PROSE;	// default
+	private Book.ContentType contentType = ContentType.TECHNICAL;	// default
 	private Configuration configuration = null;
 	private boolean ignoreCase = false; 
 	private String schemaName = "text";
@@ -71,14 +71,18 @@ public class WordOccurrenceRelationBag extends OccurrenceRelationBag<Word, Sente
 	}
 
 
+	public String getText() {
+		return text;
+	}
+
 	/**
 	 * Uses current TextConfigurator to format raw text.
 	 * @param text raw String to be formatted (or not, depending on the configuration)
 	 * @return Book instance
 	 */
 	public Book setText(String sourceText) {
+		this.text = sourceText;
 		book = textConfigurator.formatText(sourceText);
-		this.text = textConfigurator.getFormattedText();
 		Sentence sentence = null;
 		while((sentence = book.get()) != null) {
 			WordOccurranceRelation wor = new WordOccurranceRelation(sentence, getDegree(), ignoreCase);
@@ -137,10 +141,6 @@ public class WordOccurrenceRelationBag extends OccurrenceRelationBag<Word, Sente
 
 	protected void setBook(Book book) {
 		this.book = book;
-	}
-
-	public String getText() {
-		return text;
 	}
 
 }

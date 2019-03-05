@@ -4,12 +4,13 @@ import java.io.IOException;
 
 import org.dwbzen.text.util.domain.model.ServiceTicket;
 import org.dwbzen.text.util.domain.model.ServiceTickets;
+import org.dwbzen.text.util.model.Sentence;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * Strips off and returns only the 'summary' portion of a JSON trouble ticket.<br>
+ * Strips off and returns only the 'summary' portion of a single JSON trouble ticket.<br>
  * Some examples:<br>
  * input:  <code><br>
 {'id': '9801816', 'summary': 'Workflow Rule> Add new Email Tokens', 'status': 'Dev-Assigned (Alpha)', 
@@ -21,7 +22,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 </code>
  * NOTE - Can use single or double quotes for field names - "id": or 'id': are both okay/<br>
  * If using single quotes any embedded quotes must be escaped, as in chuck\'s
- *
+ * 
+ * TODO - deserialize and format ServiceTickets (collection)
  * @author DBacon
  *
  */
@@ -34,6 +36,13 @@ public class TicketDataFormatter implements IDataFormatter<String> {
 	public TicketDataFormatter() {
 		mapper.configure(JsonParser.Feature.ALLOW_COMMENTS, true);
 		mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+	}
+	
+	public Sentence formatAsSentence(String rawData) {
+		String formattedData = format(rawData);
+		Sentence sentence = new Sentence(formattedData);
+		sentence.setId(serviceTicket.getId());
+		return sentence;
 	}
 	
 	/**
@@ -68,19 +77,28 @@ public class TicketDataFormatter implements IDataFormatter<String> {
 			start = end + 1;
 			end = rawData.indexOf('}', start);
 		}
-
 		return sb.toString();
+	}
+
+	public ServiceTicket getServiceTicket() {
+		return serviceTicket;
 	}
 
 	public ServiceTickets getServiceTickets() {
 		return serviceTickets;
 	}
 	
+	@Override
+	public String getKey() {
+		return serviceTicket != null ? serviceTicket.getId() : "";
+	}
+
 	public static void main(String...args) {
 		String text = args[0];
 		TicketDataFormatter formatter = new TicketDataFormatter();
 		String formattedText = formatter.format(text);
 		System.out.println(formattedText);
 	}
+
 
 }

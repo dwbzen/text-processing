@@ -26,8 +26,7 @@ public class WordOccurranceRelation extends OccurrenceRelation<Word, Sentence, B
 	public WordOccurranceRelation(Sentence unit, int degree, boolean ignoreCaseFlag) {
 		ignoreCase = ignoreCaseFlag;
 		this.unit = ignoreCase ? unit.toLowerCase() : unit;
-		Sentence sentence = new Sentence(this.unit);
-		super.partition(sentence, degree);
+		super.partition(unit, degree);
 	}
 	
 	public boolean isIgnoreCase() {

@@ -127,13 +127,15 @@ public class CharacterCollector implements ICollector<Word, MarkovChain<Characte
 		return markovChain;
 	}
 	
+	/**
+	 * the Supplier is just the Word we are currently working on as a Sentence whose name and id is the Word we are working on.
+	 * @param theWord
+	 * @param theChar
+	 * @param initial
+	 */
 	protected void addOccurrence(Word theWord, Character theChar, boolean initial) {
 		boolean terminal = theChar.equals(Word.NULL_VALUE);
-		/*
-		 *  the Supplier is just the Word we are currently working on - as a Sentence whose name is - 
-		 *  the Word we are working on.
-		 */
-		Sentence supplierSentence = new Sentence(null, true, null, word, word.getWordString(), false);
+		Sentence supplierSentence = new Sentence(null, true, null, word, word.getWordString(), false,  word.getWordString());
 		if(markovChain.containsKey(theWord)) {
 			CollectorStats<Character, Word, Sentence> collectorStats = markovChain.get(theWord);
 			collectorStats.addOccurrence(theChar, supplierSentence);
