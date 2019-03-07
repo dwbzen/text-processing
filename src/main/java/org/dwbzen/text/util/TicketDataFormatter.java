@@ -92,12 +92,17 @@ public class TicketDataFormatter implements IDataFormatter<String> {
 	public String getKey() {
 		return serviceTicket != null ? serviceTicket.getId() : "";
 	}
-
+	
 	public static void main(String...args) {
 		String text = args[0];
 		TicketDataFormatter formatter = new TicketDataFormatter();
 		String formattedText = formatter.format(text);
 		System.out.println(formattedText);
+	}
+
+	@Override
+	public String getId() {
+		return serviceTicket.getId();
 	}
 
 

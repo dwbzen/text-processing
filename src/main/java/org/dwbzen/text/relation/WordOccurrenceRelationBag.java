@@ -2,6 +2,7 @@ package org.dwbzen.text.relation;
 
 
 import java.util.Map;
+import java.util.function.Function;
 
 import org.dwbzen.text.util.Configuration;
 import org.dwbzen.text.util.IDataSource;
@@ -9,6 +10,10 @@ import org.dwbzen.text.util.TextConfigurator;
 import org.dwbzen.text.util.model.Book;
 import org.dwbzen.text.util.model.Sentence;
 import org.dwbzen.text.util.model.Word;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import org.dwbzen.text.util.model.Book.ContentType;
 
 import mathlib.SourceOccurrenceProbability;
@@ -21,25 +26,28 @@ public class WordOccurrenceRelationBag extends OccurrenceRelationBag<Word, Sente
 	static OutputStyle outputStyle = OutputStyle.TEXT;
 	static boolean trace = true;
 	
-	private Book.ContentType contentType = ContentType.TECHNICAL;	// default
-	private Configuration configuration = null;
-	private boolean ignoreCase = false; 
-	private String schemaName = "text";
-	private IDataSource<String> dataSource = null;
-	private TextConfigurator textConfigurator = null;
-	private String text = null;
-	private Book book = null;
+	@JsonProperty	private Book.ContentType contentType = ContentType.TECHNICAL;	// default
+	@JsonIgnore		private Configuration configuration = null;
+	@JsonIgnore		private boolean ignoreCase = false; 
+	@JsonProperty	private String schemaName = "text";
+	@JsonIgnore		private IDataSource<String> dataSource = null;
+	@JsonIgnore		private TextConfigurator textConfigurator = null;
+	@JsonIgnore		private String text = null;
+	@JsonIgnore		private Book book = null;
+	@JsonIgnore		private SentenceIdExtractor sentenceIdExtractor = new SentenceIdExtractor();
+	@JsonIgnore		private boolean supressIdOutput = false;
 	
 	public WordOccurrenceRelationBag(int degree, boolean ignorecaseflag, String schema, ContentType type, IDataSource<String> dataSource) {
 		super(degree);
 		setMetricFunction(new TuppleWordDistanceMetric());
-		this.ignoreCase = ignorecaseflag;
-		this.schemaName = schema;
-		this.contentType = type;
+		ignoreCase = ignorecaseflag;
+		schemaName = schema;
+		contentType = type;
 		if(dataSource != null) {
 			this.dataSource = dataSource;
 		}
 		configure();
+		setIdExtractorFunction(new SentenceIdExtractor());
 	}
 	
 	/**
@@ -54,6 +62,7 @@ public class WordOccurrenceRelationBag extends OccurrenceRelationBag<Word, Sente
 		setSupressSourceOutput(otherBag.isSupressSourceOutput());
 		setTotalOccurrences(otherBag.getTotalOccurrences());
 		setMetricFunction(new TuppleWordDistanceMetric());
+		setIdExtractorFunction(new SentenceIdExtractor());
 		if(optionalMap != null) {
 			setSourceOccurrenceProbabilityMap(optionalMap);
 		}
@@ -70,7 +79,6 @@ public class WordOccurrenceRelationBag extends OccurrenceRelationBag<Word, Sente
 		configuration = textConfigurator.configure();
 	}
 
-
 	public String getText() {
 		return text;
 	}
@@ -86,9 +94,59 @@ public class WordOccurrenceRelationBag extends OccurrenceRelationBag<Word, Sente
 		Sentence sentence = null;
 		while((sentence = book.get()) != null) {
 			WordOccurranceRelation wor = new WordOccurranceRelation(sentence, getDegree(), ignoreCase);
-			this.addOccurrenceRelation(wor);
+			addOccurrenceRelation(wor);
 		}
 		return book;
+	}
+	
+	@Override
+	public String toJson(boolean pretty) {
+		if(!pretty) {
+			return super.toJson();
+		}
+		StringBuilder sb = new StringBuilder("{\n  \"totalOccurrences\" : " + getTotalOccurrences() + "\n");
+		sb.append("  \"degree\" : " + this.getDegree() + "\n");
+		sb.append("  \"sourceOccurrenceProbabilityMap\" : {\n");
+		for(SourceOccurrenceProbability<Word, Sentence> sop : 	sourceOccurrenceProbabilityMap.values()) {
+			sb.append("    \"" + sop.getKey().toString(true) + "\" : {\n");
+			sb.append(sop.getOccurrenceProbability().toJson(indent));
+			String avgDistance = indent + "\"averageDistance\" : " + sop.getAverageDistanceText();
+			sb.append(",\n" + avgDistance );
+			if(!isSupressSourceOutput()) {
+				sb.append(",\n");
+				sb.append(indent);				
+				sb.append("\"sources\" : [");
+				int nsources = sop.getSources().size();
+				int i = 0;
+				for(Sentence sentence : sop.getSources()) {
+					sb.append("[" + sentence.toString() + "]");
+					if(++i < nsources) {sb.append(","); }
+				}
+				sb.append("],\n");
+			}
+			else {
+				sb.append(",");
+			}
+			if(!isSupressIdOutput()) {
+				//sb.append(",\n");
+				sb.append(indent);				
+				sb.append("\"ids\" : [");
+				int nids = sop.getIds().size();
+				int i = 0;
+				for(String id : sop.getIds()) {
+					sb.append("[" + id + "]");
+					if(++i < nids) {sb.append(","); }
+				}
+				sb.append("]\n");
+				sb.append("    },\n");			}
+			else {
+				sb.append("]\n");
+				sb.append("    },\n");
+			}
+		}
+		sb.deleteCharAt(sb.length()-2);
+		sb.append("}\n");
+		return sb.toString();
 	}
 	
 	public Book.ContentType getContentType() {
@@ -143,4 +201,20 @@ public class WordOccurrenceRelationBag extends OccurrenceRelationBag<Word, Sente
 		this.book = book;
 	}
 
+	public boolean isSupressIdOutput() {
+		return supressIdOutput;
+	}
+
+	public void setSupressIdOutput(boolean supressIdOutput) {
+		this.supressIdOutput = supressIdOutput;
+	}
+
+}
+
+class SentenceIdExtractor implements Function<Sentence, String> {
+
+	@Override
+	public String apply(Sentence sentence) {
+		return sentence != null && sentence.getId() != null ? sentence.getId() : "";
+	}
 }

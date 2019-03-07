@@ -163,7 +163,7 @@ public class TextConfigurator {
 				String formattedText = dataFormatter.format(line);
 				String convertedText = convertTextLine(formattedText);
 				Sentence sentence = new Sentence(convertedText);
-				sentence.setId(dataFormatter.getKey());
+				sentence.setId(dataFormatter.getId());
 				book.add(sentence);
 				start = end + 1;
 			}

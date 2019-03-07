@@ -113,4 +113,11 @@ public class JsonTwitterDataFormatter  implements IDataFormatter<String>  {
 	public String getKey() {
 		return twitterTweet != null ? twitterTweet.getId_str() : "";
 	}
+
+
+	@Override
+	public String getId() {
+		// TODO Auto-generated method stub
+		return twitterTweet.getId_str();
+	}
 }

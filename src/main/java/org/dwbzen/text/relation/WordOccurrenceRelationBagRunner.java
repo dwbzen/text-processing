@@ -51,7 +51,7 @@ public class WordOccurrenceRelationBagRunner {
 	 */	
 	public static class WordOccurrenceRelationBagBuilder {
 		
-		public static WordOccurrenceRelationBag build(int degree, boolean ignorecaseflag, boolean supressSources, ContentType type, Optional<String> theschema, String... args) {
+		public static WordOccurrenceRelationBag build(int degree, boolean ignorecaseflag, boolean supressSources, boolean supressIds, ContentType type, Optional<String> theschema, String... args) {
 			String sourceText = null;
 			String inputFile = null;
 			DataSourceDescription dataSourceDescription = null;
@@ -91,6 +91,7 @@ public class WordOccurrenceRelationBagRunner {
 			}
 			WordOccurrenceRelationBag occurrenceRelationBag = new WordOccurrenceRelationBag(degree, ignorecaseflag, schemaName, type, dataSource);
 			occurrenceRelationBag.setSupressSourceOutput(supressSources);
+			occurrenceRelationBag.setSupressIdOutput(supressIds);
 			occurrenceRelationBag.setText(sourceText);
 			return occurrenceRelationBag;
 		}
@@ -106,6 +107,7 @@ public class WordOccurrenceRelationBagRunner {
 			boolean reverseSorted = false;
 			boolean ignoreCaseFlag = false;
 			boolean supressSources = false;
+			boolean supressIds = false;
 			String schema = "none";
 			String textType = "technical";
 			List<Integer> orderList = new ArrayList<Integer>();
@@ -138,6 +140,9 @@ public class WordOccurrenceRelationBagRunner {
 				}
 				else if(args[i].startsWith("-nos")) {	// Suppress sources in output
 					supressSources = true;
+				}
+				else if(args[i].startsWith("-noids")) {	// Suppress ids in output
+					supressIds = true;
 				}
 				else if(args[i].equalsIgnoreCase("-output")) {
 					String[] outputFormats = args[++i].split(",");
@@ -183,7 +188,7 @@ public class WordOccurrenceRelationBagRunner {
 			 * which includes loading and formatting the data
 			 * and adding WordOccurrenceRelations for each Sentence in the data (Book)
 			 */
-			WordOccurrenceRelationBag occurrenceRelationBag = WordOccurrenceRelationBagBuilder.build(degree, ignoreCaseFlag, supressSources, type, optionalSchema, builderArgs);
+			WordOccurrenceRelationBag occurrenceRelationBag = WordOccurrenceRelationBagBuilder.build(degree, ignoreCaseFlag, supressSources, supressIds, type, optionalSchema, builderArgs);
 			WordOccurrenceRelationBag  targetoccurrenceRelationBag = occurrenceRelationBag;
 			/*
 			 * Closes the WordOccurrenceRelationBag and recomputes the probabilities and ranges.
@@ -220,5 +225,4 @@ public class WordOccurrenceRelationBagRunner {
 				out.println(sop.getKey().toString(true) + ": " + sop.getOccurrenceProbability().getOccurrence());
 			}
 		}
-
 }

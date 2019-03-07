@@ -21,7 +21,7 @@ public class CharacterOccurrenceRelationBag extends OccurrenceRelationBag<Charac
 	private static final long serialVersionUID = 8408003287349121596L;
 	static OutputStyle outputStyle = OutputStyle.TEXT;
 	static boolean trace = false;
-	public static final String indent = "      ";
+
 	public final static String[] CONFIG_FILES = {"/config.properties"};
 	
 	public CharacterOccurrenceRelationBag(int degree) {

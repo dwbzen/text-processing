@@ -23,6 +23,7 @@ public interface IDataFormatter<T extends Serializable>  {
 	}
 	
 	String getKey();
+	String getId();
 	
 	default List<T> formatAsList(T rawData) {
 		List<T> list = new ArrayList<T>();

@@ -14,6 +14,7 @@ public class WordOccurranceRelation extends OccurrenceRelation<Word, Sentence, B
 	
 	private static final long serialVersionUID = -72193910166450859L;
 	private boolean ignoreCase = true;
+	private String id = null;
 
 	protected WordOccurranceRelation() {
 		super();
@@ -26,6 +27,7 @@ public class WordOccurranceRelation extends OccurrenceRelation<Word, Sentence, B
 	public WordOccurranceRelation(Sentence unit, int degree, boolean ignoreCaseFlag) {
 		ignoreCase = ignoreCaseFlag;
 		this.unit = ignoreCase ? unit.toLowerCase() : unit;
+		id = unit.getId();
 		super.partition(unit, degree);
 	}
 	
@@ -42,7 +44,10 @@ public class WordOccurranceRelation extends OccurrenceRelation<Word, Sentence, B
 		return word.toString().trim().hashCode();
 	}
 	
-	
+	public String getId() {
+		return id;
+	}
+
 	@Override
 	public boolean isElement(Tupple<Word> tupple, Sentence unit) {
 		return getPartitionKeys().contains( tupple.getKey());

@@ -3,14 +3,20 @@ package org.dwbzen.text.util.model;
 import java.io.IOException;
 import java.text.BreakIterator;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import mathlib.cp.ICollectable;
+import mathlib.util.IJson;
 import mathlib.util.INameable;
 
 /**
@@ -45,31 +51,31 @@ import mathlib.util.INameable;
  * @author don_bacon
  *
  */
-public class Sentence extends ArrayList<Word> 
-		implements Comparable<Sentence>, List<Word>, Supplier<Word>, ICollectable<Word>, INameable {
+public class Sentence implements Comparable<Sentence>, List<Word>, Supplier<Word>, ICollectable<Word>, INameable, IJson {
 
 	private static final long serialVersionUID = 5982270956795205537L;
 	private static Pattern WHITE_SPACE = Pattern.compile("\\s+");	// white space
 	private static Pattern PUNCTUATION = Pattern.compile("\\p{Punct}", Pattern.UNICODE_CHARACTER_CLASS);
 	static Word DELIM = new Word(".");
 	
-	private String source = null;
-	private String rawText = null;		// original, unaltered text
-	private BreakIterator boundary = null;
-	private int index = -1;
-	private boolean ignoreWhiteSpace = true;
-	private boolean ignorePunctuation = false;
+	@JsonIgnore			private ArrayList<Word> words = new ArrayList<Word>();
+	@JsonIgnore			private String source = null;
+	@JsonProperty("text")	private String rawText = null;		// original, unaltered text
+	@JsonIgnore			private BreakIterator boundary = null;
+	@JsonIgnore			private int index = -1;
+	@JsonIgnore			private boolean ignoreWhiteSpace = true;
+	@JsonIgnore			private boolean ignorePunctuation = false;
 	/*
 	 * If not provided, defaults to "hash:<source hash code>" or "Unnamed".
 	 * name is optional and does not need to be unique
 	 */
-	private String name = null;
+	@JsonProperty		private String name = null;
 	
 	/*
 	 * Optional unique key, usually a property value depending on the context and source data.
 	 * If not provided, defaults to <source hash code>
 	 */
-	private String id = null;
+	@JsonProperty		private String id = null;
 	
 	/** Used to represent a NULL key in a Map - since it can't really be a null */
 	public static Word NULL_VALUE = new Word(Word.NULL_VALUE);
@@ -87,7 +93,7 @@ public class Sentence extends ArrayList<Word>
 		DELIMITERS.add(new Word("?”"));		// and an end of a quote with question mark
 	}
 	
-	protected Sentence() {
+	public Sentence() {
 		this(null, true, null, null, INameable.DEFAULT_NAME, false, null);
 	}
 	
@@ -140,8 +146,7 @@ public class Sentence extends ArrayList<Word>
 	}
 	
 	public Sentence(Sentence otherSentence) {
-		this(otherSentence.rawText, true, otherSentence, null, null, false, null);
-		id = createId();
+		this(otherSentence.rawText, true, otherSentence, null, null, false, otherSentence.getId());
 	}
 	
 	public Sentence(Sentence otherSentence, Word word) {
@@ -211,7 +216,9 @@ public class Sentence extends ArrayList<Word>
 	 * @return Sentence in lower case
 	 */
 	public Sentence toLowerCase() {
-		return new Sentence(this.toString().toLowerCase());
+		Sentence lc = new Sentence(this.toString().toLowerCase());
+		lc.setId(this.id);
+		return lc;
 	}
 	
 	public String getSource() {
@@ -219,8 +226,10 @@ public class Sentence extends ArrayList<Word>
 	}
 
 	public void setSource(String sourceString) {
-		source = sourceString;
-		breakIntoWords(sourceString);
+		if(sourceString != null) {
+			source = sourceString;
+			breakIntoWords(sourceString);	
+		}
 	}
 	
 	/**
@@ -294,26 +303,28 @@ public class Sentence extends ArrayList<Word>
 
 	public static void main(String... args) throws IOException {
 		String text = args[0];
-		Sentence sentence = new Sentence();
+		Sentence sentence = new Sentence(text);
 		sentence.setIgnorePunctuation(false);
 		sentence.setIgnoreWhiteSpace(true);
-		sentence.setSource(text);
-		Word w = null;
+		sentence.setId("1234929");
+		Word word = null;
 		System.out.println(text);
 		System.out.println("#words: " + sentence.size());
 		int i = 0;
-		while((w = sentence.get()) != null) {
-			System.out.println((++i)+ ": "+ w.toString());
+		while((word = sentence.get()) != null) {
+			System.out.println((++i)+ ": "+ word.toString());
 		}
 				
 		System.out.println(sentence.toString());
+		System.out.println(sentence.toJson(true));
 		
-		Sentence sub = sentence.subset(0, 8);
+		Sentence sub = sentence.subset(0, 3);
 		System.out.println("subset: " + sub.toString());
-		while((w = sub.get()) != null) {
-			System.out.println((++i)+ ": "+ w.toString());
+		while((word = sub.get()) != null) {
+			System.out.println((++i)+ ": "+ word.toString());
 		}
-
+		ConcreteSentence concreteSentence = new ConcreteSentence(text);
+		System.out.println(concreteSentence.toJson());
 	}
 
 	public String getRawText() {
@@ -340,6 +351,124 @@ public class Sentence extends ArrayList<Word>
 
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	@Override
+	public int size() {
+		return words.size();
+	}
+
+	@Override
+	public boolean isEmpty() {
+		return words.isEmpty();
+	}
+
+	@Override
+	public boolean contains(Object o) {
+		return words.contains(o);
+	}
+
+	@Override
+	public Iterator<Word> iterator() {
+		return words.iterator();
+	}
+
+	@Override
+	public Object[] toArray() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public <T> T[] toArray(T[] a) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean add(Word e) {
+		return words.add(e);
+	}
+
+	@Override
+	public boolean remove(Object o) {
+		return words.remove(o);
+	}
+
+	@Override
+	public boolean containsAll(Collection<?> c) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean addAll(Collection<? extends Word> c) {
+		return words.addAll(c);
+	}
+
+	@Override
+	public boolean addAll(int index, Collection<? extends Word> c) {
+		return words.addAll(index, c);
+	}
+
+	@Override
+	public boolean removeAll(Collection<?> c) {
+		return words.removeAll(c);
+	}
+
+	@Override
+	public boolean retainAll(Collection<?> c) {
+		return words.retainAll(c);
+	}
+
+	@Override
+	public void clear() {
+		words.clear();
+	}
+
+	@Override
+	public Word get(int index) {
+		return words.get(index);
+	}
+
+	@Override
+	public Word set(int index, Word element) {
+		return words.set(index, element);
+	}
+
+	@Override
+	public void add(int index, Word element) {
+		words.add(index, element);
+	}
+
+	@Override
+	public Word remove(int index) {
+		return words.remove(index);
+	}
+
+	@Override
+	public int indexOf(Object o) {
+		return words.indexOf(o);
+	}
+
+	@Override
+	public int lastIndexOf(Object o) {
+		return words.lastIndexOf(o);
+	}
+
+	@Override
+	public ListIterator<Word> listIterator() {
+		return words.listIterator();
+	}
+
+	@Override
+	public ListIterator<Word> listIterator(int index) {
+		return words.listIterator(index);
+	}
+
+	@Override
+	public List<Word> subList(int fromIndex, int toIndex) {
+		return words.subList(fromIndex, toIndex);
 	}
 
 }
