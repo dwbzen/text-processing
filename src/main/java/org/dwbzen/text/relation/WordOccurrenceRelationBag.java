@@ -119,13 +119,13 @@ public class WordOccurrenceRelationBag extends OccurrenceRelationBag<Word, Sente
 				int nsources = sop.getSources().size();
 				int i = 0;
 				for(Sentence sentence : sop.getSources()) {
-					sb.append("[" + sentence.toString() + "]");
+					sb.append("[" + sentence.toString(true) + "]");	// show the source as formatted but not converted
 					if(++i < nsources) {sb.append(","); }
 				}
 				sb.append("],\n");
 			}
 			else {
-				sb.append(",");
+				sb.append(",\n");
 			}
 			if(!isSupressIdOutput()) {
 				//sb.append(",\n");
@@ -134,8 +134,8 @@ public class WordOccurrenceRelationBag extends OccurrenceRelationBag<Word, Sente
 				int nids = sop.getIds().size();
 				int i = 0;
 				for(String id : sop.getIds()) {
-					sb.append("[" + id + "]");
-					if(++i < nids) {sb.append(","); }
+					sb.append( id );
+					if(++i < nids) {sb.append(", "); }
 				}
 				sb.append("]\n");
 				sb.append("    },\n");			}

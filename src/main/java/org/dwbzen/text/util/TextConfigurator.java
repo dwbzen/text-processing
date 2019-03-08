@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -36,8 +38,6 @@ public class TextConfigurator {
 	private String dataFormatterClassName = null;
 	private IDataFormatter<String> dataFormatter = null;
 	private ContentType contentType = null;
-	private List<String> filterWords = new ArrayList<String>();
-	private List<String> filterPunctuation = new ArrayList<String>();
 	private Map<String, String> variantMap = null;
 	
 	private Book book = null;	// formatted text as a Book instance
@@ -47,6 +47,9 @@ public class TextConfigurator {
 	public static final String[] punctuation = {",", "“", "”" };		// additions to configured PUNCTUATION
 	public final static String TRUE = "true";
 	public final static String FALSE = "false";
+	public static final Pattern numberPattern = Pattern.compile("^[0-9]+\\.?[0-9]*$");
+	private static List<String> filterWords = new ArrayList<String>();
+	private static List<String> filterPunctuation = new ArrayList<String>();
 	
 	static {
 		contentTypes.put(ContentType.PROSE, "PROSE");
@@ -162,7 +165,7 @@ public class TextConfigurator {
 				line = sourceText.substring(start, end);
 				String formattedText = dataFormatter.format(line);
 				String convertedText = convertTextLine(formattedText);
-				Sentence sentence = new Sentence(convertedText);
+				Sentence sentence = new Sentence(convertedText, formattedText);
 				sentence.setId(dataFormatter.getId());
 				book.add(sentence);
 				start = end + 1;
@@ -182,16 +185,14 @@ public class TextConfigurator {
 		return book;
 	}
 	
-	/*
-	 * Filter punctuation
-	 * Convert to LC if ignoring case
-	 * Substitute word variants if configured
+	/**
+	 * Filter punctuation. Convert to LC if ignoring case. Substitute word variants if configured.</br>
+	 * Filter numbers, internet addresses, words in UPPER CASE if configured.
 	 */
-	private String convertTextLine(String sourceText) {
+	public String convertTextLine(String sourceText) {
 		String convertedText = isIgnoreCase() ? sourceText.toLowerCase() : sourceText;
-		if((isFilteringInputText() && getFilterWords().size() > 0) || isFilteringPunctuation()) {
-			List<String> filterWords = getFilterWords();
-			List<String> filterPunctuation = getFilterPunctuation();
+		boolean isFiltering = isFilteringPunctuation() || isIgnoreWordsContainingNumbers() || isIgnoreWordsInUppercase() || isIgnoreInternetAndFileAddresses();
+		if((isFilteringInputText() && getFilterWords().size() > 0) || isFiltering) {
 			
 			StringBuilder sb = new StringBuilder();
 			BreakIterator wordBoundry = BreakIterator.getWordInstance(Locale.US);
@@ -202,18 +203,27 @@ public class TextConfigurator {
 			sentenceBoundry.setText(convertedText);
 			wordBoundry.setText(convertedText);
 			while((end=wordBoundry.next()) != BreakIterator.DONE) {
+				boolean saveWord = true;	// if true, save temp
 				String temp = convertedText.substring(start, end).trim();
-				if(isSubstituteWordVariants() && getVariantMap().containsKey(temp)) {
-					String variant = getVariantMap().get(temp);
-					if(!filterWords.contains(variant)) {
-						sb.append(variant + " ");
+				if(temp.length() > 0) {
+					if(isSubstituteWordVariants() && getVariantMap().containsKey(temp)) {
+						String variant = getVariantMap().get(temp);
+						saveWord = false;
+						if(!filterWords.contains(variant)) {
+							sb.append(variant + " ");
+						}
 					}
-				}
-				else if((isFilteringPunctuation() && filterPunctuation.contains(temp)) || (isFilteringInputText() && filterWords.contains(temp))  ) {
-						// do nothing
-				}
-				else {
-					sb.append(temp + " ");
+					else if((isFilteringPunctuation() && filterPunctuation.contains(temp)) || (isFilteringInputText() && filterWords.contains(temp))  ) {
+							// skip the punctuation
+						saveWord = false;
+					}
+					else if(isIgnoreWordsContainingNumbers()) {
+						Matcher m = numberPattern.matcher(temp);
+						saveWord = !m.matches();
+					}
+					if(saveWord) {
+						sb.append(temp + " ");
+					}
 				}
 				start = end;
 			}

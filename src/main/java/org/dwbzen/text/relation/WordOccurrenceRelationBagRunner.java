@@ -4,6 +4,7 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
@@ -106,8 +107,8 @@ public class WordOccurrenceRelationBagRunner {
 			String orderstring = null;
 			boolean reverseSorted = false;
 			boolean ignoreCaseFlag = false;
-			boolean supressSources = false;
-			boolean supressIds = false;
+			boolean showSources = false;
+			boolean showIds = true;
 			String schema = "none";
 			String textType = "technical";
 			List<Integer> orderList = new ArrayList<Integer>();
@@ -138,11 +139,11 @@ public class WordOccurrenceRelationBagRunner {
 				else if(args[i].equalsIgnoreCase("-trace")) {
 					trace = true;
 				}
-				else if(args[i].startsWith("-nos")) {	// Suppress sources in output
-					supressSources = true;
+				else if(args[i].startsWith("-sources")) {	// Show sources in output defaults to false
+					showSources =  args[++i].equalsIgnoreCase("true") ? true : false;
 				}
-				else if(args[i].startsWith("-noids")) {	// Suppress ids in output
-					supressIds = true;
+				else if(args[i].startsWith("-ids")) {	// Show ids in output defaults to true
+					showIds = args[++i].equalsIgnoreCase("true") ? true : false;;
 				}
 				else if(args[i].equalsIgnoreCase("-output")) {
 					String[] outputFormats = args[++i].split(",");
@@ -188,7 +189,7 @@ public class WordOccurrenceRelationBagRunner {
 			 * which includes loading and formatting the data
 			 * and adding WordOccurrenceRelations for each Sentence in the data (Book)
 			 */
-			WordOccurrenceRelationBag occurrenceRelationBag = WordOccurrenceRelationBagBuilder.build(degree, ignoreCaseFlag, supressSources, supressIds, type, optionalSchema, builderArgs);
+			WordOccurrenceRelationBag occurrenceRelationBag = WordOccurrenceRelationBagBuilder.build(degree, ignoreCaseFlag, !showSources, !showIds, type, optionalSchema, builderArgs);
 			WordOccurrenceRelationBag  targetoccurrenceRelationBag = occurrenceRelationBag;
 			/*
 			 * Closes the WordOccurrenceRelationBag and recomputes the probabilities and ranges.
@@ -197,6 +198,14 @@ public class WordOccurrenceRelationBagRunner {
 			
 			Map<Tupple<Word>, SourceOccurrenceProbability<Word, Sentence>> sortedMap = null;
 			if(sorted) {
+				// check first
+				if(trace) {
+					for(Entry<Tupple<Word>, SourceOccurrenceProbability<Word, Sentence>> entry : occurrenceRelationBag.getSourceOccurrenceProbabilityMap().entrySet()) {
+						Tupple<Word> key = entry.getKey();
+						SourceOccurrenceProbability<Word, Sentence> value = entry.getValue();
+						System.out.println(key.toString(true) + " " + value.getOccurrenceProbability().getOccurrence());
+					}
+				}
 				sortedMap = occurrenceRelationBag.sortByValue(reverseSorted);
 				targetoccurrenceRelationBag = new WordOccurrenceRelationBag(occurrenceRelationBag, sortedMap);
 			}

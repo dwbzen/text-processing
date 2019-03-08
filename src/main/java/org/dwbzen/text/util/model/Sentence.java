@@ -133,10 +133,15 @@ public class Sentence implements Comparable<Sentence>, List<Word>, Supplier<Word
 		return anid;
 	}
 
-	public Sentence(String string) {
-		this(string, true, null, null, null, false, null);
+	public Sentence(String text) {
+		this(text, true, null, null, null, false, null);
 	}
 	
+	public Sentence(String text, String rawText) {
+		this(text, true, null, null, null, false, null);
+		this.rawText = rawText;
+	}
+
 	public Sentence(String string, boolean skipws) {
 		this(string, skipws, null, null, null, false, null);
 	}
@@ -208,6 +213,10 @@ public class Sentence implements Comparable<Sentence>, List<Word>, Supplier<Word
 				.map(w -> w.toString())
 				.collect(Collectors.joining(" "));
 		return sentenceString;
+	}
+	
+	public String toString(boolean useRawText) {
+		return useRawText ? rawText : toString();
 	}
 	
 	/**
@@ -469,6 +478,10 @@ public class Sentence implements Comparable<Sentence>, List<Word>, Supplier<Word
 	@Override
 	public List<Word> subList(int fromIndex, int toIndex) {
 		return words.subList(fromIndex, toIndex);
+	}
+
+	public void setRawText(String rawText) {
+		this.rawText = rawText;
 	}
 
 }
