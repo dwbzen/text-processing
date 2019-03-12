@@ -43,10 +43,9 @@ public class CharacterOccurrenceRelation extends OccurrenceRelation<Character, W
 		int degree = Integer.parseInt(strings[1]);
 		CharacterOccurrenceRelation relation = new CharacterOccurrenceRelation(word, degree, true);
 		Set<Tupple<Character>> partitions = relation.getPartitions();
-		System.out.println(word + "\n" + partitions);
-		
-		Tupple<Character> t1 = new Tupple<>(new Word("ao"));
-		System.out.println("'" + t1.toString() + "' key : " +  t1.getKey() + " isElement: " + relation.isElement(t1, word));
+		System.out.println("#of level " + degree + " partitions: " + partitions.size());
+		partitions.forEach(t -> System.out.println(t.toString(false)));
+		//System.out.println(word + "\n" + partitions);
 
 	}
 

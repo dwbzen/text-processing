@@ -332,8 +332,6 @@ public class Sentence implements Comparable<Sentence>, List<Word>, Supplier<Word
 		while((word = sub.get()) != null) {
 			System.out.println((++i)+ ": "+ word.toString());
 		}
-		ConcreteSentence concreteSentence = new ConcreteSentence(text);
-		System.out.println(concreteSentence.toJson());
 	}
 
 	public String getRawText() {
