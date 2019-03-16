@@ -4,8 +4,8 @@ import java.util.Properties;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import mathlib.util.IJson;
-import mathlib.util.INameable;
+import org.dwbzen.common.util.IJson;
+import org.dwbzen.common.util.INameable;
 
 public class DataSourceDescription implements INameable, IJson {
 

@@ -9,9 +9,9 @@ import org.apache.logging.log4j.Logger;
 import org.dwbzen.text.util.model.Sentence;
 import org.dwbzen.text.util.model.Word;
 
-import mathlib.cp.CollectorStats;
-import mathlib.cp.ICollector;
-import mathlib.cp.MarkovChain;
+import org.dwbzen.common.cp.CollectorStats;
+import org.dwbzen.common.cp.ICollector;
+import org.dwbzen.common.cp.MarkovChain;
 
 /**
  * Collects statistics on Characters within Words. The corresponding producer is WordProducer. </p>

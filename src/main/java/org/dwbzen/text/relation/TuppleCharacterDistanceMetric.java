@@ -6,8 +6,8 @@ import java.util.function.BiFunction;
 
 import org.dwbzen.text.util.model.Word;
 
-import mathlib.Tupple;
-import mathlib.relation.Partitions;
+import org.dwbzen.common.math.Tupple;
+import org.dwbzen.common.relation.Partitions;
 
 /**
  * Given a Tupple<Character>, and a Word instance, is computes the mean distance

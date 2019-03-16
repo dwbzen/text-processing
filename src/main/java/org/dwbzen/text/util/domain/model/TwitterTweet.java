@@ -2,7 +2,7 @@ package org.dwbzen.text.util.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import mathlib.util.IJson;
+import org.dwbzen.common.util.IJson;
 
 /**
  * Example:</p>

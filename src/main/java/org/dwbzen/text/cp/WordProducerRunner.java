@@ -14,10 +14,8 @@ import org.apache.logging.log4j.Logger;
 import org.dwbzen.text.util.model.Sentence;
 import org.dwbzen.text.util.model.Word;
 
-import mathlib.cp.CollectorStats;
-import mathlib.cp.MarkovChain;
-import mathlib.OccurrenceProbability;
-import mathlib.cp.OutputStyle;
+import org.dwbzen.common.cp.*;
+import org.dwbzen.common.math.OccurrenceProbability;
 
 /**
  * Produces made-up Words based on the MarkovChain result from a CharacterCollector.<br>

@@ -16,8 +16,7 @@ import org.dwbzen.text.util.TextFileReader;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import mathlib.util.IJson;
-import mathlib.util.INameable;
+import org.dwbzen.common.util.*;
 
 /**
  * A Book is a Supplier of Sentences.

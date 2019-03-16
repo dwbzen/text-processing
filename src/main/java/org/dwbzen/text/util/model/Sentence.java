@@ -15,9 +15,9 @@ import java.util.stream.Collectors;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import mathlib.cp.ICollectable;
-import mathlib.util.IJson;
-import mathlib.util.INameable;
+import org.dwbzen.common.cp.ICollectable;
+import org.dwbzen.common.util.IJson;
+import org.dwbzen.common.util.INameable;
 
 /**
  * A Sentence is a collection of Words separated by white space.

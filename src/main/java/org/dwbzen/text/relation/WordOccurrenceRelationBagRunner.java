@@ -20,9 +20,9 @@ import org.dwbzen.text.util.model.Book.ContentType;
 import org.dwbzen.text.util.model.Sentence;
 import org.dwbzen.text.util.model.Word;
 
-import mathlib.SourceOccurrenceProbability;
-import mathlib.Tupple;
-import mathlib.cp.OutputStyle;
+import org.dwbzen.common.math.SourceOccurrenceProbability;
+import org.dwbzen.common.math.Tupple;
+import org.dwbzen.common.cp.OutputStyle;
 
 public class WordOccurrenceRelationBagRunner {
 	protected static final Logger log = LogManager.getLogger(WordOccurrenceRelationBag.class);

@@ -11,8 +11,8 @@ import org.dwbzen.text.util.model.Sentence;
 import org.dwbzen.text.util.model.Word;
 import org.dwbzen.text.util.model.Book.ContentType;
 
-import mathlib.cp.CollectorStats;
-import mathlib.cp.MarkovChain;
+import org.dwbzen.common.cp.CollectorStats;
+import org.dwbzen.common.cp.MarkovChain;
 
 public class SentenceProducerRunner {
 

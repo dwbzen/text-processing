@@ -18,9 +18,9 @@ import org.dwbzen.text.util.model.Book.ContentType;
 import org.dwbzen.text.util.model.Sentence;
 import org.dwbzen.text.util.model.Word;
 
-import mathlib.cp.CollectorStats;
-import mathlib.cp.MarkovChain;
-import mathlib.cp.OutputStyle;
+import org.dwbzen.common.cp.CollectorStats;
+import org.dwbzen.common.cp.MarkovChain;
+import org.dwbzen.common.cp.OutputStyle;
 
 /**
  * WordCollectorRunner -display <displayFormats> -json <prettyFlag> 

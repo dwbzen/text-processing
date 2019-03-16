@@ -16,10 +16,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.dwbzen.text.util.model.Book.ContentType;
 
-import mathlib.SourceOccurrenceProbability;
-import mathlib.Tupple;
-import mathlib.cp.OutputStyle;
-import mathlib.relation.OccurrenceRelationBag;
+import org.dwbzen.common.math.SourceOccurrenceProbability;
+import org.dwbzen.common.math.Tupple;
+import org.dwbzen.common.cp.OutputStyle;
+import org.dwbzen.common.relation.OccurrenceRelationBag;
 
 public class WordOccurrenceRelationBag extends OccurrenceRelationBag<Word, Sentence, Book> {
 	private static final long serialVersionUID = 1L;

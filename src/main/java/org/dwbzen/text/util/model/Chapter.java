@@ -8,8 +8,7 @@ import java.util.function.Supplier;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import mathlib.util.IJson;
-import mathlib.util.INameable;
+import org.dwbzen.common.util.*;
 
 public class Chapter implements Supplier<Optional<Sentence>>, IJson, INameable {
 

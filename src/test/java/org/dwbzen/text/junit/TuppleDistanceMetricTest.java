@@ -5,7 +5,7 @@ import org.dwbzen.text.util.model.Word;
 import org.junit.Test;
 
 import junit.framework.TestCase;
-import mathlib.Tupple;
+import org.dwbzen.common.math.Tupple;
 
 public class TuppleDistanceMetricTest  extends TestCase {
 	

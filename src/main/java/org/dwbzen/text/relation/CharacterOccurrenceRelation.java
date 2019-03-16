@@ -5,8 +5,8 @@ import java.util.Set;
 import org.dwbzen.text.util.model.Sentence;
 import org.dwbzen.text.util.model.Word;
 
-import mathlib.Tupple;
-import mathlib.relation.OccurrenceRelation;
+import org.dwbzen.common.math.Tupple;
+import org.dwbzen.common.relation.OccurrenceRelation;
 
 /**
  * 

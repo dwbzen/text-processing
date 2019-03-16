@@ -12,9 +12,9 @@ import org.dwbzen.text.util.model.Book.ContentType;
 import org.dwbzen.text.util.model.Sentence;
 import org.dwbzen.text.util.model.Word;
 
-import mathlib.cp.CollectorStats;
-import mathlib.cp.ICollector;
-import mathlib.cp.MarkovChain;
+import org.dwbzen.common.cp.CollectorStats;
+import org.dwbzen.common.cp.ICollector;
+import org.dwbzen.common.cp.MarkovChain;
 
 /**
  * Analyzes word collections (Strings delimited by white space and/or punctuation) 

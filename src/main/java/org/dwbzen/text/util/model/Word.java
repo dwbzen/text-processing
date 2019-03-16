@@ -8,8 +8,8 @@ import java.util.function.Supplier;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import mathlib.cp.ICollectable;
-import mathlib.util.IJson;
+import org.dwbzen.common.cp.ICollectable;
+import org.dwbzen.common.util.IJson;
 
 /**
  * A Word is a String that has an underlying structure of List<Character>.

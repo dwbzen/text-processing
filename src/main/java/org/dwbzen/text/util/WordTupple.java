@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.dwbzen.text.util.model.Word;
 
-import mathlib.Tupple;
+import org.dwbzen.common.math.Tupple;
 
 public class WordTupple extends Tupple<Word> {
 

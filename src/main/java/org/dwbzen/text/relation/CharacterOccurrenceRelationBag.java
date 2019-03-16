@@ -11,10 +11,10 @@ import org.dwbzen.text.util.Util;
 import org.dwbzen.text.util.model.Sentence;
 import org.dwbzen.text.util.model.Word;
 
-import mathlib.SourceOccurrenceProbability;
-import mathlib.Tupple;
-import mathlib.cp.OutputStyle;
-import mathlib.relation.OccurrenceRelationBag;
+import org.dwbzen.common.math.SourceOccurrenceProbability;
+import org.dwbzen.common.math.Tupple;
+import org.dwbzen.common.cp.OutputStyle;
+import org.dwbzen.common.relation.OccurrenceRelationBag;
 
 public class CharacterOccurrenceRelationBag extends OccurrenceRelationBag<Character, Word, Sentence> {
 

@@ -18,11 +18,8 @@ import org.apache.logging.log4j.Logger;
 import org.dwbzen.text.util.model.Sentence;
 import org.dwbzen.text.util.model.Word;
 
-import mathlib.cp.CollectorStats;
-import mathlib.cp.CollectorStatsMap;
-import mathlib.cp.IProducer;
-import mathlib.cp.MarkovChain;
-import mathlib.OccurrenceProbability;
+import org.dwbzen.common.cp.*;
+import org.dwbzen.common.math.OccurrenceProbability;
 
 
 public class WordProducer implements IProducer<MarkovChain<Character, Word, Sentence>, Word > { 

@@ -7,8 +7,8 @@ import java.util.function.BiFunction;
 import org.dwbzen.text.util.model.Sentence;
 import org.dwbzen.text.util.model.Word;
 
-import mathlib.Tupple;
-import mathlib.relation.Partitions;
+import org.dwbzen.common.math.Tupple;
+import org.dwbzen.common.relation.Partitions;
 
 public class TuppleWordDistanceMetric implements  BiFunction<Tupple<Word>, Sentence, Double> {
 	private boolean ignoreCase = true;

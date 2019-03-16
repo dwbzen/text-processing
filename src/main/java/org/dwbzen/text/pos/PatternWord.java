@@ -7,7 +7,7 @@ import java.util.Random;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import mathlib.util.IJson;
+import org.dwbzen.common.util.IJson;
 
 /**
  * A PatternWord is a "compiled" version of a text pattern word template such as N{2,5}
