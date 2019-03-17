@@ -20,7 +20,7 @@ sourceCompatibility = 10
 targetCompatibility = 10
 version = '2.0'
 group = 'text-processing'
-description = "Text Processing Framework"
+description = "Text-Processing-Framework"
 project.tasks["sonarqube"].dependsOn "build"
 
 jar {
