@@ -5,5 +5,9 @@
 //!(!)[(he)|(she)]x (as I) t (my) A{1,2}[b|B](.)+
 //(That's no )[d|B](,) (that's my) A{1,2}[d|B](!)
 //
-!(!)[(he)|(she)]x (as I) t (my) A{1,2}[N|p](.)+
-(That's no )N(,) (that's my) A{1,2}[N|p](!)
+//!(!)[(he)|(she)]x (as I) t (my) A{1,2}[N|p](.)+
+//(That's no )N(,) (that's my) A{1,2}[N|p](!)
+MS(,) FS(and I traveled to)H(to see the)A p(\n)+
+(We we shocked at the)A{1,2}[N|p](we saw!)(\n)+
+(I raised my)A{1,2}B(and noticed)Ap(\n)+
+F(saw)Ap(on her) B (and)M(a)AN(on his) B (\n)
