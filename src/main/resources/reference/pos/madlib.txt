@@ -1,7 +1,8 @@
 // comments - (\n) is an embedded '\n'
 // a pattern can be spread across multiple lines
 // lines ending with '+' indicate this
-MS(,) FS(and I traveled to)H(to see the)A p(\n)+
-(We we shocked at the)A{1,2}[N|p](we saw!)(\n)+
-(I raised my)A{1,2}B(and noticed)Ap(\n)+
-F(saw)Ap(on her) d (and)M(a)AN(on his) b (\n)
+// Add punctuation as a one-character literal such as (,)
+$1=MS(,) $2=FS(and I traveled to)H(to see a)A N(.)(\n)+
+(We were shocked at the)A{1,2}[N|p](we saw!)(\n)+
+(I raised my)A{1,2}B(and noticed)Ap(.)(\n)+
+($1)(saw)Ap(on his) B (and)($2)(sported a)AN(on her) B(.)(\n)

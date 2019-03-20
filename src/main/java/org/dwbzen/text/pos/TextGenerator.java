@@ -317,8 +317,9 @@ public class TextGenerator implements ITextGenerator {
 				String s = generatedList.get(i);
 				log.debug("'" + s + "'");
 				int punctIndex = PUNCUTATION.indexOf(s);	// >=0 if the string is a single PUNCTUATION character
+				int blen = sb.length();
 				if(punctIndex >= 0) {
-					sb.append(s);
+					sb.replace(blen-1, blen, s);
 				}
 				else {
 					if(upperCase) {
