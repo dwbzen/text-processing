@@ -1,13 +1,7 @@
 // comments - (\n) is an embedded '\n'
 // a pattern can be spread across multiple lines
 // lines ending with '+' indicate this
-//
-//!(!)[(he)|(she)]x (as I) t (my) A{1,2}[b|B](.)+
-//(That's no )[d|B](,) (that's my) A{1,2}[d|B](!)
-//
-//!(!)[(he)|(she)]x (as I) t (my) A{1,2}[N|p](.)+
-//(That's no )N(,) (that's my) A{1,2}[N|p](!)
 MS(,) FS(and I traveled to)H(to see the)A p(\n)+
 (We we shocked at the)A{1,2}[N|p](we saw!)(\n)+
 (I raised my)A{1,2}B(and noticed)Ap(\n)+
-F(saw)Ap(on her) B (and)M(a)AN(on his) B (\n)
+F(saw)Ap(on her) d (and)M(a)AN(on his) b (\n)

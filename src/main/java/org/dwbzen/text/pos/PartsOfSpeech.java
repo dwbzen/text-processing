@@ -2,9 +2,11 @@ package org.dwbzen.text.pos;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -66,18 +68,13 @@ public class PartsOfSpeech {
 
 	private final static String POS_DIR = "/reference/pos/";
 	private final static String POS_FILE = "3eslpos.txt";
-	// EXTENDED_VOCAB_FILE = "5deskpos.txt";
-	// FIRSTNAMES = "firstNames.txt";
-	// LASTNAMES = "lastNames.txt";
-	// SLANG_FILE = "slangWordspos.txt";
-	// USER_FILE = "feedWordspos.txt";
-	
 	
     private static final Logger logger = LogManager.getLogger(PartsOfSpeech.class);
     
     private static String[] Zwords = {" in", " on", " over" };
     
     private String posDir = null;
+    private String userDir = null;
     private String posFile = null;
     private String firstNamesFile = null;
     private String lastNamesFile = null;
@@ -168,35 +165,36 @@ public class PartsOfSpeech {
 	 * Load all the configured pos file names to use
 	 */
 	private void configure()  {
-		this.configuration = Configuration.getInstance(CONFIG_FILENAME);
-		this.configProperties = configuration.getProperties();
+		configuration = Configuration.getInstance(CONFIG_FILENAME);
+		configProperties = configuration.getProperties();
 		// set file names & locations
-		this.posDir = configProperties.getProperty("POS_DIR", POS_DIR);		// mandatory
-		this.posFile = configProperties.getProperty("POS_FILE", POS_FILE);	// mandatory
+		posDir = configProperties.getProperty("POS_DIR", POS_DIR);		// mandatory
+		posFile = configProperties.getProperty("POS_FILE", POS_FILE);	// mandatory
 		addPosFileName(posDir + posFile);
 		/*
 		 * The other parts-of-speech files are all optional
 		 * There are no defaults
 		 */
 		if(configProperties.containsKey("EXTENDED_VOCAB_FILE")) {
-			this.extendedVocabFile = configProperties.getProperty("EXTENDED_VOCAB_FILE");
+			extendedVocabFile = configProperties.getProperty("EXTENDED_VOCAB_FILE");
 			addPosFileName(posDir + extendedVocabFile);
 		}
 		if(configProperties.containsKey("FIRSTNAMES")) {
-			this.firstNamesFile = configProperties.getProperty("FIRSTNAMES");
+			firstNamesFile = configProperties.getProperty("FIRSTNAMES");
 			addPosFileName(posDir + firstNamesFile);
 		}
 		if(configProperties.containsKey("LASTNAMES")) {
-			this.lastNamesFile = configProperties.getProperty("LASTNAMES");
+			lastNamesFile = configProperties.getProperty("LASTNAMES");
 			addPosFileName(posDir + lastNamesFile);
 		}
 		if(configProperties.containsKey("SLANG_FILE")) {
-			this.slangFile = configProperties.getProperty("SLANG_FILE");
+			slangFile = configProperties.getProperty("SLANG_FILE");
 			addPosFileName(posDir + slangFile);
 		}
+		userDir = configProperties.getProperty("USER_DIR", "C:/data/text/");
 		if(configProperties.containsKey("USER_FILE")) {
-			this.userFile = configProperties.getProperty("USER_FILE");
-			addPosFileName(posDir + userFile);
+			userFile = configProperties.getProperty("USER_FILE");
+			addPosFileName(userDir + userFile);
 		}
     }
     
@@ -260,13 +258,15 @@ public class PartsOfSpeech {
 		int nwords = 0;
 		int lwords = 0;
 		if(aPosFile == null) {
-			posFileReader = new BufferedReader(new InputStreamReader(System.in));
-			String line = null;
-			while((line = posFileReader.readLine()) != null) {
-				analyzeAndSaveWord(line, lwords);
-				nwords++;
+			nwords+= readFileLines(new InputStreamReader(System.in), lwords);
+		}
+		else if(aPosFile.contains(":")) {	// like C:/data/text/
+			try {
+				nwords+= readFileLines(new FileReader(aPosFile), lwords);
 			}
-			posFileReader.close();
+			catch(FileNotFoundException e) {
+				logger.error("File not found: " + aPosFile);
+			}
 		}
 		else {
 			InputStream is = this.getClass().getResourceAsStream(aPosFile);
@@ -293,6 +293,18 @@ public class PartsOfSpeech {
 			logger.debug(compoundWordsSkipped + " compound words skipped");
 	}
 
+	private int readFileLines(Reader reader, int lwords)  throws IOException {
+		int nwords = 0;
+		posFileReader = new BufferedReader(reader);
+		String line = null;
+		while((line = posFileReader.readLine()) != null) {
+			analyzeAndSaveWord(line, lwords);
+			nwords++;
+		}
+		posFileReader.close();
+		return nwords;
+	}
+	
 	private void analyzeAndSaveWord(String line, int count) {
 		int tab = line.indexOf('\t');
 		if(tab <= 0) return;
