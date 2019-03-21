@@ -48,6 +48,7 @@ import org.dwbzen.text.util.Configuration;
 	D	Definite Article
 	I	Indefinite Article
 	o	Nominative
+	c	Color
 	
 	Derived Forms
 	-------------
@@ -230,6 +231,7 @@ public class PartsOfSpeech {
 		partsOfSpeech.put("B", "Body part");
 		partsOfSpeech.put("b", "Male body part");
 		partsOfSpeech.put("d", "Female body part");
+		partsOfSpeech.put("c", "Color");
 		
 		loadedPartsOfSpeech = partsOfSpeech.keySet();
 	}
@@ -367,6 +369,7 @@ public class PartsOfSpeech {
 			case 'B':
 			case 'b':
 			case 'd':
+			case 'c':
 				addWord(word, c);
 				break;
 			case 'V':

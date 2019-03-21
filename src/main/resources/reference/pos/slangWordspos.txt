@@ -1,32 +1,35 @@
 about	P
 admire	Vt
-arms	pB
+arms	pBbd
 around	P
 ass	NB
+awesome	!A
 bed	N
 booger	N
 chains	p
 chew	Vt
-chin	NB
+chin	NBbd
 Damn	!
 disgusting	A
 ear	NB
-ears	pB
+ears	pBbd
 eat	Vt
 enormous	A
+eyes	Bbd
 face	NB
 far out	!
 fecund	A
 fetid	A
-finger	NBVt
+finger	NBbdVt
 food	N
+foot	Bbd
 for	P
 gigantic	A
 grab	Vt
 greedily	v
 groovy	A
 grope	Vi
-hair	NB
+hair	NBbd
 he	rN
 her	r
 his	Dr
@@ -37,8 +40,9 @@ in	P
 into	P
 it	rN
 Jell-O	N
-legs	pB
+legs	pBbd
 like	Vt
+lips	Bbd
 loudly	v
 love	Vt
 make whoopee	Vi
@@ -49,7 +53,7 @@ of	P
 oh my	!
 on	P
 over	P
-readilly	v
+readily	v
 revolting	A
 rub	Vt
 she	rN
@@ -61,8 +65,9 @@ them	rp
 they	rp
 tickle	Vti
 to	P
-toe	NB
-toes	pB
+toe	NBbd
+toes	pBbd
+tongue	Bbd
 us	rp
 used	A
 want	Vt
@@ -71,3 +76,17 @@ wet	A
 whip	N
 wildly	v
 with	P
+red	c
+orange	c
+yellow	c
+blue	c
+indigo	c
+violet	c
+puce	c
+shit-brindle brown	c
+brown	c
+gray	c
+white	c
+teal	c
+coldsore-red	c
+pink	c

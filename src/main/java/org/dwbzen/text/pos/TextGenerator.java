@@ -297,7 +297,7 @@ public class TextGenerator implements ITextGenerator {
 		return format(generatedList);
 	}
 	
-	public static final String PUNCUTATION = ".?!;:,";
+	public static final String PUNCUTATION = ".?!;:,\"";
 	/**
 	 * Formats a generated pattern instance for punctuation & post processing
 	 * @param generatedList a List<String> that is a generated pattern instance
