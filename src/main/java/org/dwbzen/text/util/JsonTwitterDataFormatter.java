@@ -32,6 +32,7 @@ public class JsonTwitterDataFormatter  implements IDataFormatter<String>  {
 	@JsonProperty	TwitterTweets twitterTweets = null;
 	@JsonProperty	TwitterTweet  twitterTweet = null;
 	@JsonProperty	boolean removeUrls = true;	// drop http://... and https://...
+	static char[] singleQuote = {0xC3,0xA2,0xE2,',',0xAC,0xE2,',', ',', 0xA2};
 	
 	public JsonTwitterDataFormatter() { 
 		mapper.configure(JsonParser.Feature.ALLOW_COMMENTS, true);
@@ -60,8 +61,8 @@ public class JsonTwitterDataFormatter  implements IDataFormatter<String>  {
 	}
 	
 	public String cleanText(String text) {
-		// deal with special characters 
-		// convert single quote (Ã¢â‚¬â„¢) to '
+		// deal with special characters https://www.ascii-code.com/
+		// convert single quote (Ã¢â‚¬â„¢) to '  [
 		// convert fancy double quote (Ã¢â‚¬Å“) and (Ã¢â‚¬?) to a normal "
 		// convert em- (Ã¢â‚¬â€�) and en- (Ã¢â‚¬â€œ) dashes to just a dash
 		// convert elipsis (Ã¢â‚¬Â¦) to "..."
@@ -96,16 +97,21 @@ public class JsonTwitterDataFormatter  implements IDataFormatter<String>  {
 	}
 
 	public static void main(String...args) throws FileNotFoundException {
-		String inputFile = args[0];
-		DataSourceDescription dataSourceDescription = new DataSourceDescription(DataSourceType.TextFile);
-		dataSourceDescription.getProperties().setProperty("filename", inputFile);
-		dataSourceDescription.getProperties().setProperty("eol", "\n");
-		TextFileDataSource dataSource = new TextFileDataSource(dataSourceDescription);
-		String sourceText = dataSource.getData();
-		
-		JsonTwitterDataFormatter formatter = new JsonTwitterDataFormatter();
-		String formattedText = formatter.format(sourceText);
-		System.out.println(formattedText);
+		/*
+		 * String inputFile = args[0]; DataSourceDescription dataSourceDescription = new
+		 * DataSourceDescription(DataSourceType.TextFile);
+		 * dataSourceDescription.getProperties().setProperty("filename", inputFile);
+		 * dataSourceDescription.getProperties().setProperty("eol", "\n");
+		 * TextFileDataSource dataSource = new
+		 * TextFileDataSource(dataSourceDescription); String sourceText =
+		 * dataSource.getData();
+		 * 
+		 * JsonTwitterDataFormatter formatter = new JsonTwitterDataFormatter(); String
+		 * formattedText = formatter.format(sourceText);
+		 * System.out.println(formattedText);
+		 */
+		String sq = new String(singleQuote);
+		System.out.println(sq);
 	}
 
 
