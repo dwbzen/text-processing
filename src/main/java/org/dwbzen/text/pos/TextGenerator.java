@@ -53,7 +53,7 @@ public class TextGenerator implements ITextGenerator {
 	public final static String QUOTE = "\"";
 	public final static String SPACE = " ";
 	
-	private PartsOfSpeech partsOfSpeech = null;
+	private PartsOfSpeechRunner partsOfSpeechRunner = null;
 	private Map<String, List<String>> wordMap = null;
 	private Map<String, Integer> posCount = new HashMap<String, Integer>();
 	private List<PartOfSpeechPattern> partOfSpeechPatterns = new ArrayList<PartOfSpeechPattern>();
@@ -148,9 +148,9 @@ public class TextGenerator implements ITextGenerator {
 	}
 	
 	public static TextGenerator newInstance() {
-		PartsOfSpeech pos = null;
+		PartsOfSpeechRunner pos = null;
 		try {
-				pos = PartsOfSpeech.newInstance();
+				pos = PartsOfSpeechRunner.newInstance();
 		}
 		catch(IOException ex)  {
 			System.err.println(ex.getMessage());
@@ -161,10 +161,10 @@ public class TextGenerator implements ITextGenerator {
 	
 	public TextGenerator() {}
 	
-	public TextGenerator(PartsOfSpeech pos) {
-		this.partsOfSpeech = pos;
-		wordMap = partsOfSpeech.getWordMap();
-		Set<String> loadedPOS = PartsOfSpeech.getLoadedPartsOfSpeech();
+	public TextGenerator(PartsOfSpeechRunner pos) {
+		partsOfSpeechRunner = pos;
+		wordMap = partsOfSpeechRunner.getWordMap();
+		Set<String> loadedPOS = PartsOfSpeechRunner.getLoadedPartsOfSpeech();
 		for(Iterator<String> it = loadedPOS.iterator(); it.hasNext(); ) {
 			String ps = it.next();
 			posCount.put(ps, wordMap.get(ps).size());
@@ -405,12 +405,12 @@ public class TextGenerator implements ITextGenerator {
 
 	}
 
-	public PartsOfSpeech getPartsOfSpeech() {
-		return partsOfSpeech;
+	public PartsOfSpeechRunner getPartsOfSpeech() {
+		return partsOfSpeechRunner;
 	}
 
-	public void setPartsOfSpeech(PartsOfSpeech partsOfSpeech) {
-		this.partsOfSpeech = partsOfSpeech;
+	public void setPartsOfSpeech(PartsOfSpeechRunner partsOfSpeech) {
+		this.partsOfSpeechRunner = partsOfSpeech;
 	}
 
 	public List<String> getPatternList() {
