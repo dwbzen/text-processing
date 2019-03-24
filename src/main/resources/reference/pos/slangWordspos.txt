@@ -2,9 +2,11 @@ about	P
 admire	Vt
 arms	pBbd
 around	P
-ass	NB
+ass	NBbd
 awesome	!A
+balls	b
 bed	N
+boobs	d
 booger	N
 chains	p
 chew	Vt
@@ -90,3 +92,7 @@ white	c
 teal	c
 coldsore-red	c
 pink	c
+flesh-colored	c
+off-white	c
+royal blue	c
+

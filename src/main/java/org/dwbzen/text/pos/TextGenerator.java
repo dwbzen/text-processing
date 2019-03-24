@@ -43,9 +43,9 @@ import org.dwbzen.text.util.ITextGenerator;
  *  	!(!)[(Will)|(Is)|(How)|(What)]ANrvtp(?) -  poetry
  *		ANp - simple example
  *
- * @author Don_Bacon
- * @see util.text.PartsOfSpeach for valid parts of speach
- * @see util.text.PartOfSpeachPattern for valid patterns.
+ * @author don_bacon
+ * @see org.dwbzen.text.pos.PartsOfSpeach for valid parts of speach
+ * @see org.dwbzen.text.pos.PartOfSpeachPattern for valid patterns.
  *
  */
 public class TextGenerator implements ITextGenerator {
