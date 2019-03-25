@@ -10,7 +10,6 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -22,7 +21,7 @@ import org.apache.logging.log4j.Logger;
 import org.dwbzen.text.util.Configuration;
 
 /**
-	The format of each POS entry is
+	The format of each legacy POS entry is
 	<word><tab><POS tag(s)><unix newline>
 	
 	Where the POS tag is one or more of the following:
@@ -116,7 +115,7 @@ public class PartsOfSpeechRunner {
 	 * 
 	 */
 	public static void main(String[] args) {
-		PartsOfSpeechRunner partsOfSpeech = null;
+		PartsOfSpeechRunner partsOfSpeechRunner = null;
 		List<String> posToIgnore = new ArrayList<String>();
 		List<String> wordsToInclude = new ArrayList<String>();
 		for(int i=0; i<args.length; i++) {
@@ -130,12 +129,12 @@ public class PartsOfSpeechRunner {
 			}
 		}
 		try {
-			partsOfSpeech = PartsOfSpeechRunner.newInstance();
+			partsOfSpeechRunner = PartsOfSpeechRunner.newInstance();
 		} catch(IOException ex) {
 			System.err.println(ex.getMessage());
 			System.exit(1);
 		}
-		System.out.println(partsOfSpeech.getStats());
+		System.out.println(partsOfSpeechRunner.getStats());
 	}
 	
 	/**
@@ -153,13 +152,13 @@ public class PartsOfSpeechRunner {
 	
 	protected PartsOfSpeechRunner() throws IOException {
 		initialize();	// set configuration and load wordMap
-		loadAllWords();	// loads POS files
 	}
 
 	protected void initialize() throws IOException {
 		configure();
 		wordMap = Collections.synchronizedMap(new HashMap<String, List<String>>());
-		initializeWordMap();
+		partsOfSpeech.keySet().forEach(s -> wordMap.put(s, new ArrayList<String>()));
+		posFiles.forEach(f -> loadWords(f));
 	}
 	
 	/**
@@ -199,42 +198,9 @@ public class PartsOfSpeechRunner {
 		}
     }
     
-	private static Map<String, String> partsOfSpeech = new HashMap<String, String>();	// parts of speech
-	private static Set<String> loadedPartsOfSpeech;	// partsOfSpeech key set 
-	static  {
-		partsOfSpeech.put("N", "Noun");
-		partsOfSpeech.put("L", "Proper Noun");
-		partsOfSpeech.put("M", "Male first name");
-		partsOfSpeech.put("H", "Place names");
-		partsOfSpeech.put("F", "Female first name");
-		partsOfSpeech.put("S", "Surname");
-		partsOfSpeech.put("l", "Improper Noun");
-		partsOfSpeech.put("p", "Plural");
-		partsOfSpeech.put("h", "Noun Phrase");
-		partsOfSpeech.put("V", "Verb (participle)");
-		partsOfSpeech.put("t", "Verb (transitive)");
-		partsOfSpeech.put("i", "Verb (intransitive)");
-		partsOfSpeech.put("A", "Adjective");
-		partsOfSpeech.put("v", "Adverb");
-		partsOfSpeech.put("C", "Conjunction");
-		partsOfSpeech.put("P", "Preposition");
-		partsOfSpeech.put("!", "Interjection");
-		partsOfSpeech.put("r", "Pronoun");
-		partsOfSpeech.put("D", "Definite Article");
-		partsOfSpeech.put("I", "Indefinite Article");
-		partsOfSpeech.put("o", "Nominative");
-		partsOfSpeech.put("G", "Gerund");
-		partsOfSpeech.put("Z", "Derrived noun");
-		partsOfSpeech.put("z", "Derrived plural noun");
-		partsOfSpeech.put("X", "Present tense verb");
-		partsOfSpeech.put("x", "Past tense verb");
-		partsOfSpeech.put("B", "Body part");
-		partsOfSpeech.put("b", "Male body part");
-		partsOfSpeech.put("d", "Female body part");
-		partsOfSpeech.put("c", "Color");
-		
-		loadedPartsOfSpeech = partsOfSpeech.keySet();
-	}
+	private static Map<String, String> partsOfSpeech = PartsOfSpeech.partsOfSpeechLegacy;
+	private static Set<String> loadedPartsOfSpeech = PartsOfSpeech.partsOfSpeechLegacy.keySet();
+
 	public static Set<String> getLoadedPartsOfSpeech() {
 		return loadedPartsOfSpeech;
 	}
@@ -243,44 +209,34 @@ public class PartsOfSpeechRunner {
 		return partsOfSpeech.keySet();
 	}
 	
-	protected void initializeWordMap() {
-		Iterator<String> it = partsOfSpeech.keySet().iterator();
-		while(it.hasNext()) {
-			wordMap.put(it.next(), new ArrayList<String>());
-		}
-	}
-	
-	protected void loadAllWords()  throws IOException {
-		for(Iterator<String> fit=posFiles.iterator(); fit.hasNext();) {
-			loadWords(fit.next());
-		}
-	}
-	
-	protected void loadWords(String aPosFile) throws IOException {
+	protected void loadWords(String aPosFile) {
 		int nwords = 0;
 		int lwords = 0;
-		if(aPosFile == null) {
-			nwords+= readFileLines(new InputStreamReader(System.in), lwords);
-		}
-		else if(aPosFile.contains(":")) {	// like C:/data/text/
-			try {
-				nwords+= readFileLines(new FileReader(aPosFile), lwords);
+		try {
+			if(aPosFile == null) {
+				nwords+= readFileLines(new InputStreamReader(System.in), lwords);
 			}
-			catch(FileNotFoundException e) {
-				logger.error("File not found: " + aPosFile);
-			}
-		}
-		else {
-			InputStream is = this.getClass().getResourceAsStream(aPosFile);
-			if(is != null) {
-				try(Stream<String> stream = new BufferedReader(new InputStreamReader(is)).lines()) {
-					stream.forEach(s -> analyzeAndSaveWord(s, lwords));
-					nwords++;
-				}
+			else if(aPosFile.contains(":")) {	// like C:/data/text/
+					nwords+= readFileLines(new FileReader(aPosFile), lwords);
 			}
 			else {
-				logger.error("Unable to open " + aPosFile);
+				InputStream is = this.getClass().getResourceAsStream(aPosFile);
+				if(is != null) {
+					try(Stream<String> stream = new BufferedReader(new InputStreamReader(is)).lines()) {
+						stream.forEach(s -> analyzeAndSaveWord(s, lwords));
+						nwords++;
+					}
+				}
+				else {
+					logger.error("Unable to open " + aPosFile);
+				}
 			}
+		}
+		catch(FileNotFoundException e) {
+			logger.error("File not found: " + aPosFile);
+		}
+		catch(IOException e) {
+			logger.error("Unable to read: " + aPosFile);
 		}
 		
 		logger.debug(nwords + " words analyzed " + aPosFile);
@@ -427,7 +383,7 @@ public class PartsOfSpeechRunner {
 	}
 	
 	private static String ALL_UPPER =  "^[A-Z]{2,}";	// at least 2 upper case chars
-	private static String PROPER_WORD = "^[A-Z][a-z]+";
+	private static String PROPER_WORD = "^[A-Z][a-z]+";	// Title case
 	private static String ALL_NUMERIC = "^[0-9]{2,}";
 	private static String COMPOUND_WORDS = "^\\w+\\s+.*";
 	private int upperWordsSkipped = 0;
@@ -436,17 +392,12 @@ public class PartsOfSpeechRunner {
 	private int compoundWordsSkipped = 0;
 	
 	/**
-	 * Creates a count of words by POS
+	 * Creates a count of words by part of speech
 	 * @return String the stats formatted
 	 */
 	public String getStats() {
 		StringBuffer sb = new StringBuffer();
-		Iterator<String> keys = wordMap.keySet().iterator();
-		while(keys.hasNext()) {
-			String key = keys.next();
-			sb.append(partsOfSpeech.get(key) + " : " );
-			sb.append(wordMap.get(key).size() + "\n");
-		}
+		wordMap.keySet().forEach(key -> sb.append(partsOfSpeech.get(key) + " (" + key + "): " ).append(wordMap.get(key).size() + "\n"));
 		return sb.toString();
 	}
 	

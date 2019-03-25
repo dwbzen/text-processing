@@ -12,12 +12,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * <dt>name</dt><dd>the unique name or key of this POS</dd>
  * <dt>category</dt><dd>one of the 9 parts of speech of English grammar.</dd>
  * <dt>partOfSpeechCode</dt><dd>legacy single-character code</dd>
- * <dt>parent</dt><dd>the name of the base POS if this inherits from (is a subtype of) that POS, or blank if not.</br>
- * For example a Proper Noun is a subtype of Noun.</dd>
- * <dt>qualifies</dt><dd>qualifies (is an instance of) this POS, for example color is an adjective instance but not a type of adjective.</dd>
+ * <dt>parent</dt><dd>the name of the base POS if this inherits from (is a subtype or instance of) that POS, or null if not.</br>
+ * Examples: a Proper Noun is a subtype of Noun;color is an adjective instance.</dd>
  * </dl>
- * A given POS can be child of and/or qualify a parent POS. For example place name qualifies proper noun which is a child of noun.</br>
- * The distinction between parent and qualifies is subjective and informational only.
  * 
  * @author don_bacon
  * @see https://en.wikipedia.org/wiki/Part_of_speech
@@ -30,21 +27,17 @@ public class PartOfSpeech implements IJson, INameable {
 	@JsonProperty	private String code = null;
 	@JsonProperty	private String description = null;
 	@JsonProperty	private String parent = null;
-	@JsonProperty	private String qualifies = null;
 	
-	public PartOfSpeech(String name, PosCategory category, String code, String description, String parent, String qualifies) {
+	public PartOfSpeech(String name, PosCategory category, String code, String description, String parent) {
 		this.category = category;
 		this.code = code;
 		this.name = name;
 		this.description = description;
 		this.parent = parent;
-		this.qualifies = qualifies;
 	}
-	public PartOfSpeech(String name, PosCategory category, String code, String description, String parent) {
-		this(name, category, code, description, parent, null);
-	}
+
 	public PartOfSpeech(String name, PosCategory category, String code, String description) {
-		this(name, category, code, description, null, null);
+		this(name, category, code, description, null);
 	}
 	public PartOfSpeech() {
 		
@@ -74,12 +67,7 @@ public class PartOfSpeech implements IJson, INameable {
 	public void setParent(String parent) {
 		this.parent = parent;
 	}
-	public String getQualifies() {
-		return qualifies;
-	}
-	public void setQualifies(String qualifies) {
-		this.qualifies = qualifies;
-	}
+
 	@Override
 	public void setName(String name) {
 		this.name = name;		
@@ -96,10 +84,7 @@ public class PartOfSpeech implements IJson, INameable {
 		  sb.append(prefix).append("\"description\":").append("\"" + description + "\"").append(eol); 
 		  if(parent != null) {
 			  sb.append(prefix).append("\"parent\":").append("\"" + parent +  "\"").append(eol); 
-		  } 
-		  if(qualifies != null) {
-			  sb.append(prefix).append("\"qualifies\":").append("\"" + qualifies + "\"").append(eol); 
-		  } 
+		  }  
 		  sb.deleteCharAt(sb.lastIndexOf(",")); 
 		  sb.append(pretty ? "  }" : "}"); 
 		  return sb.toString(); 
