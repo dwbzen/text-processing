@@ -6,6 +6,7 @@ ass	NBbd
 awesome	!A
 balls	b
 bed	N
+belly-button	Bdb
 boobs	d
 booger	N
 chains	p
@@ -18,6 +19,7 @@ ears	pBbd
 eat	Vt
 enormous	A
 eyes	Bbd
+eyes	pBbd
 face	NB
 far out	!
 fecund	A
@@ -32,6 +34,7 @@ greedily	v
 groovy	A
 grope	Vi
 hair	NBbd
+hand	Bbd
 he	rN
 her	r
 his	Dr
@@ -48,6 +51,7 @@ lips	Bbd
 loudly	v
 love	Vt
 make whoopee	Vi
+mouth	Bbd
 my God	!
 my	P
 noisilly	v
@@ -55,6 +59,8 @@ of	P
 oh my	!
 on	P
 over	P
+penis	b
+pinky	Bbd
 readily	v
 revolting	A
 rub	Vt
@@ -95,4 +101,4 @@ pink	c
 flesh-colored	c
 off-white	c
 royal blue	c
-
+purple	c
