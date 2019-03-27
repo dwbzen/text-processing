@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 /**
  *  (\n) is an embedded '\n'
  *  A pattern can be spread across multiple lines, lines ending with '+' indicate this
- *  Text enclosed in () are included literly, for example (I am) or (\n) for newline
+ *  Text enclosed in () are included literally, for example (I am) or (\n) for newline
  *  Choices are enclosed in brackets [] and separated by |, for example [p|h] which is 
  *  	a plural noun or a noun phrase. Literal text may also be included in choices elements
  *  	as in [(Where)|(Is)|(Why)|(What)]

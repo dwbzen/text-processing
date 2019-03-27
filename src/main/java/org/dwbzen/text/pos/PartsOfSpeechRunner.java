@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.stream.Stream;
 
 import org.apache.logging.log4j.LogManager;
@@ -105,27 +106,32 @@ public class PartsOfSpeechRunner {
 
 	/**
 	 * Command line arguments:
-	 * -include flag1,flag2...	TODO types of words to include (load) that are normally ignored
+	 * -include flag1,flag2...	types of words to include (load) that are normally ignored
 	 * 							uc  = words in all UPPER CASE
 	 * 							num = words entirely numeric chars
 	 * 							pn  = proper nouns, phrases
 	 * 							comp= compound words (phrases)
-	 * -filter pos1,pos2..		TODO parts of speech to ignore (see above list)
+	 * -filter pos1,pos2..		parts of speech to ignore (see above list)
+	 * -show pos1,pos2..		show words having these parts of speech
 	 * 
 	 * 
 	 */
 	public static void main(String[] args) {
 		PartsOfSpeechRunner partsOfSpeechRunner = null;
-		List<String> posToIgnore = new ArrayList<String>();
-		List<String> wordsToInclude = new ArrayList<String>();
+		List<String> posToIgnore = new ArrayList<>();
+		List<String> wordsToInclude = new ArrayList<>();
+		String[] posToShow = {};
 		for(int i=0; i<args.length; i++) {
-			if(args[i++].equalsIgnoreCase("-filter")) {
-				String[] sa = args[i].split(",");
+			if(args[i].equalsIgnoreCase("-filter")) {
+				String[] sa = args[++i].split(",");
 				for(int ind=0;ind<sa.length;ind++) { posToIgnore.add(sa[ind]); }
 			}
-			if(args[i++].equalsIgnoreCase("-include")) {
-				String[] sa = args[i].split(",");
+			if(args[i].equalsIgnoreCase("-include")) {
+				String[] sa = args[++i].split(",");
 				for(int ind=0;ind<sa.length;ind++) { wordsToInclude.add(sa[ind]); }
+			}
+			if(args[i].equalsIgnoreCase("-show")) {
+				posToShow = args[++i].split(",");
 			}
 		}
 		try {
@@ -135,6 +141,13 @@ public class PartsOfSpeechRunner {
 			System.exit(1);
 		}
 		System.out.println(partsOfSpeechRunner.getStats());
+		if(posToShow.length > 0) {
+			Map<String, List<String>> map = partsOfSpeechRunner.getWordsForPos(posToShow);
+			map.keySet().forEach(k -> {
+				System.out.println(PartsOfSpeech.partsOfSpeechLegacy.get(k));
+				System.out.println(map.get(k));
+			});
+		}
 	}
 	
 	/**
@@ -337,7 +350,7 @@ public class PartsOfSpeechRunner {
 				addDerrived(word, 'x');
 				break;
 			default: /* invalid character */
-				System.err.println("Invalid character: '" + c + "' " + word);
+				logger.debug("Warning Invalid character: '" + c + "' " + word + " ignored");
 			}
 		}
 	}
@@ -399,6 +412,15 @@ public class PartsOfSpeechRunner {
 		StringBuffer sb = new StringBuffer();
 		wordMap.keySet().forEach(key -> sb.append(partsOfSpeech.get(key) + " (" + key + "): " ).append(wordMap.get(key).size() + "\n"));
 		return sb.toString();
+	}
+	
+	public Map<String, List<String>> getWordsForPos(String[] poss) {
+		Map<String, List<String>> posWordMap = new TreeMap<>();
+		for(String key : poss) {
+			posWordMap.put(key, wordMap.get(key));
+		}
+		
+		return posWordMap;
 	}
 	
 	public String lookup(String word) {

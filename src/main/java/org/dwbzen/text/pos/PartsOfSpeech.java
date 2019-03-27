@@ -120,7 +120,7 @@ public class PartsOfSpeech implements IJson {
 		
 		/*
 		 * PartOfSpeech that have no standard legacy code, by convention they are assigned
-		 * a numeric code starting at "1"
+		 * a new numeric code starting at "1"
 		 */
 		legacyPosMapping.put("1", new PartOfSpeech("numberName", PosCategory.noun, "1", "cardinal number or word representing a number", "noun"));
 		legacyPosMapping.put("2", new PartOfSpeech("number", PosCategory.adjective, "2", "cardinal number as an adjective", "adjective"));

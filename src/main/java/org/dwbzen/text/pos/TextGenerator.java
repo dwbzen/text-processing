@@ -23,7 +23,7 @@ import org.dwbzen.text.util.ITextGenerator;
  * 	pattern1, pattern2...  :  POS pattern to use for text generation. 
  * Options:<br>
  * 	-pattern <text> : inline pattern to use<br>
- * 	-lib <filename>	: path to text file containing patterns to select from<br>
+ * 	-template <filename>   : path to text file containing patterns to select from<br>
  *  -n <number>		: number of strings to generate<br>
  *  -format			: output format(s) processing:<br>
  *  					UC = convert to UPPER CASE, <br>
@@ -95,7 +95,7 @@ public class TextGenerator implements ITextGenerator {
 			else if(args[i].equalsIgnoreCase("-pattern")) {
 				patternList.add(args[++i]);				
 			}
-			else if(args[i].equalsIgnoreCase("-lib")) {	// pattern library
+			else if(args[i].equalsIgnoreCase("-template")) {	// template library file
 				patternLib = args[++i];
 			}
 			else if(args[i].equalsIgnoreCase("-format")) {

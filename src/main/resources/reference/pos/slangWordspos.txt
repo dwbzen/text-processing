@@ -102,3 +102,53 @@ flesh-colored	c
 off-white	c
 royal blue	c
 purple	c
+Africa	H
+America	H5
+Antarctic	H
+Arabia	H5
+the Arctic Circle	H
+Asia	H
+the Atlantic Ocean	H
+Australia	H5
+Britain	H5
+Canada	H5
+the Capital	H
+the Caribbean	H
+China	H5
+Chinatown	H
+the Deep South	H
+Dixie	H
+England	H5
+an Episcopal Church	H
+Europe	H
+the Far East	H
+France	H5
+Germany	H5
+Great Britain	H5
+Greece	H5
+Hollywood	H
+the House of Representatives	H
+Iceland	H5
+India	H5
+the Indian Ocean	H
+Iran	H5
+Ireland	H5
+Italy	H5
+Japan	H5
+Jupiter	H
+Korea	H5
+Latin America	H
+the Laundromat	H
+Mars	H
+Mecca	H
+the Mediterranean	H
+the men's room	H
+Mercury	H
+Mexico	H5
+Middle America	H
+the Middle East	H
+the Midwest	H
+the Milky Way	H
+Mississippi	H
+the YMCA	H
+
