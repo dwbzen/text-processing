@@ -42,7 +42,6 @@ Bumetanide
 Bupropion
 Butalbital
 Bystolic
-Calibration
 CaroSpir
 Cartia
 Carvedilol
@@ -231,7 +230,6 @@ Strattera
 Sulfamethoxazole
 Sumatriptan
 Sumavel
-Suspension
 Taclonex
 Taltz
 Tamiflu

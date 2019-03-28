@@ -61,6 +61,8 @@ import org.dwbzen.text.util.Configuration;
 	B	body part
 	b	body part - male
 	d	body part - female
+	
+	Unused in legacy: E, J, K, O, Q, R, T, U, W, Y, a, e, f, g, j, k, m, n, q, s, u, w, y
 
 */
 public class PartsOfSpeechRunner {
@@ -106,12 +108,12 @@ public class PartsOfSpeechRunner {
 
 	/**
 	 * Command line arguments:
-	 * -include flag1,flag2...	types of words to include (load) that are normally ignored
+	 * -include flag1,flag2...	TODO: types of words to include (load) that are normally ignored
 	 * 							uc  = words in all UPPER CASE
 	 * 							num = words entirely numeric chars
 	 * 							pn  = proper nouns, phrases
 	 * 							comp= compound words (phrases)
-	 * -filter pos1,pos2..		parts of speech to ignore (see above list)
+	 * -filter pos1,pos2..		TODO: parts of speech to ignore (see above list)
 	 * -show pos1,pos2..		show words having these parts of speech
 	 * 
 	 * 
@@ -339,6 +341,12 @@ public class PartsOfSpeechRunner {
 			case 'b':
 			case 'd':
 			case 'c':
+			case 'E':
+			case 'J':
+			case 'K':
+			case 'Q':
+			case 'R':
+			case 'T':				
 				addWord(word, c);
 				break;
 			case 'V':
@@ -349,7 +357,7 @@ public class PartsOfSpeechRunner {
 				addDerrived(word, 'X');
 				addDerrived(word, 'x');
 				break;
-			default: /* invalid character */
+			default: /* invalid or non-legacy character */
 				logger.debug("Warning Invalid character: '" + c + "' " + word + " ignored");
 			}
 		}

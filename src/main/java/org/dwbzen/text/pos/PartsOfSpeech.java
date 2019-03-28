@@ -120,13 +120,23 @@ public class PartsOfSpeech implements IJson {
 		
 		/*
 		 * PartOfSpeech that have no standard legacy code, by convention they are assigned
-		 * a new numeric code starting at "1"
+		 * a new code from unused in legacy in alpha order (except O and o)
+		 * Unused in legacy: E, J, K, O, Q, R, T, U, W, Y, a, e, f, g, j, k, m, n, q, s, u, w, y
 		 */
-		legacyPosMapping.put("1", new PartOfSpeech("numberName", PosCategory.noun, "1", "cardinal number or word representing a number", "noun"));
-		legacyPosMapping.put("2", new PartOfSpeech("number", PosCategory.adjective, "2", "cardinal number as an adjective", "adjective"));
-		legacyPosMapping.put("3", new PartOfSpeech("ordinal", PosCategory.adjective, "3", "ordinal number or word", "adjective"));
-		legacyPosMapping.put("4", new PartOfSpeech("cityName", PosCategory.noun, "4",  "City name", "placeName"));
-		legacyPosMapping.put("5", new PartOfSpeech("countryName", PosCategory.noun, "5",  "Country name", "placeName"));
+		partsOfSpeechLegacy.put("E", "Number name");
+		partsOfSpeechLegacy.put("J", "Number adjective");
+		partsOfSpeechLegacy.put("K", "Ordinal number");
+		partsOfSpeechLegacy.put("Q", "City");
+		partsOfSpeechLegacy.put("R", "Country");
+		partsOfSpeechLegacy.put("T", "Food");
+
+		legacyPosMapping.put("E", new PartOfSpeech("numberName", PosCategory.noun, "E", "cardinal number or word representing a number", "noun"));
+		legacyPosMapping.put("J", new PartOfSpeech("number", PosCategory.adjective, "J", "cardinal number as an adjective", "adjective"));
+		legacyPosMapping.put("K", new PartOfSpeech("ordinal", PosCategory.adjective, "K", "ordinal number or word", "adjective"));
+		legacyPosMapping.put("Q", new PartOfSpeech("cityName", PosCategory.noun, "Q",  "City name", "placeName"));
+		legacyPosMapping.put("R", new PartOfSpeech("countryName", PosCategory.noun, "R",  "Country name", "placeName"));
+		legacyPosMapping.put("T", new PartOfSpeech("food", PosCategory.noun, "T",  "Food/beverage name", "noun"));
+
 		
 	}
 

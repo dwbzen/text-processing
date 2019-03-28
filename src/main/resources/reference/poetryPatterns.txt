@@ -6,11 +6,11 @@
 FXv(\n)+
 C(,)Mxv(\n)+
 (We are)G(the)AA[p|h](\n)+
-(My)NvV(\n)+
+(My)NvV(In)H(and)H(\n)+
 Ft(my)AN(while)FXv(\n)+
-ANX(me-)ApXF(\n)+
+ANX(me -)ApXF(\n)+
 !(!)[(Where)|(Is)|(Why)|(What)]ANvx(?)(\n)+
-Dhtv(,)Dhtv(!)
+Dhtv(,)Dhtv(!)(\n)
 // the next one is stand alone
 hiv+
-!(!)[(Will)|(Is)|(How)|(What)]ANrvtp(?)
+!(!)[(Will)|(Is)|(How)|(What)]ANrvtp(?)(\n)

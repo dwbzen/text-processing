@@ -14,16 +14,15 @@ chew	Vt
 chin	NBbd
 Damn	!
 disgusting	A
-ear	NB
-ears	pBbd
+ear	NBbd
+ears	pB
 eat	Vt
 enormous	A
-eyes	Bbd
+eye	Bbd
 eyes	pBbd
 face	NB
 far out	!
 fecund	A
-fetid	A
 finger	NBbdVt
 food	N
 foot	Bbd
@@ -71,7 +70,6 @@ soft	A
 the bomb	A
 them	rp
 they	rp
-tickle	Vti
 to	P
 toe	NBbd
 toes	pBbd
@@ -103,40 +101,41 @@ off-white	c
 royal blue	c
 purple	c
 Africa	H
-America	H5
+America	HR
 Antarctic	H
-Arabia	H5
+Arabia	HR
 the Arctic Circle	H
 Asia	H
 the Atlantic Ocean	H
-Australia	H5
-Britain	H5
-Canada	H5
+Australia	HR
+Britain	HR
+Canada	HR
 the Capital	H
 the Caribbean	H
-China	H5
+China	HR
 Chinatown	H
 the Deep South	H
 Dixie	H
-England	H5
+England	HR
 an Episcopal Church	H
 Europe	H
 the Far East	H
-France	H5
-Germany	H5
-Great Britain	H5
-Greece	H5
+France	HR
+Germany	HR
+Great Britain	HR
+Greece	HR
 Hollywood	H
 the House of Representatives	H
-Iceland	H5
-India	H5
+Iceland	HR
+India	HR
 the Indian Ocean	H
-Iran	H5
-Ireland	H5
-Italy	H5
-Japan	H5
+Iran	HR
+Ireland	HR
+Israel	HR
+Italy	HR
+Japan	HR
 Jupiter	H
-Korea	H5
+Korea	HR
 Latin America	H
 the Laundromat	H
 Mars	H
@@ -144,11 +143,43 @@ Mecca	H
 the Mediterranean	H
 the men's room	H
 Mercury	H
-Mexico	H5
+Mexico	HR
 Middle America	H
 the Middle East	H
 the Midwest	H
 the Milky Way	H
 Mississippi	H
+Syria	HR
 the YMCA	H
+USA	HR
+taco	T
+escargot	T
+spaghetti	T
+wine & cheese	T
+fried grasshopper	T
+chocolate ants	pT
+Cuban sandwich	T
+short ribs	T
+cupcakes	pT
+beer	T
+Diet Coke	T
+pizza	T
+blood pudding	T
+sushi	T
+Dr. Pepper	T
+fried rice	T
+pot roast	T
+Jell-O Salad	T
+Boston	Q
+London	Q
+Beijing	Q
+Buffalo	Q
+Rochester	Q
+Berlin	Q
+Rome	Q
+Moscow	Q
+Nairobi	Q
+Damascus	Q
+Sao Paolo	Q
+San Francisco	Q
 
