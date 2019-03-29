@@ -19,7 +19,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  *  	This is a shorthand for [0,1]
  *  	Choices may also be optional as in [M|F](?) which is an optional male first name
  *  	or female first name.
- *  Comment lines in pattern files (called libraries) start with //
+ *  Comment lines in pattern files (called templates) start with //
+ *  
+ *  It is possible to inject BiFunction<DataSourceType, String, String> function as a kind of lambda.
+ *  For example, this can be the result of a separate TextGenerator or WordProducer.
+ *  To use this feature, the lambda function is first declared in the pattern (or template)
+ *  
  *  Samples patterns:
  *  	[M|F|N](and)(the)A?p  - band name
  *  	!(where did you get that)A{1,3}[b|B](?) - insult

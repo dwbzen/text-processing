@@ -64,6 +64,7 @@ import org.dwbzen.text.util.Configuration;
 	
 	Unused in legacy: E, J, K, O, Q, R, T, U, W, Y, a, e, f, g, j, k, m, n, q, s, u, w, y
 
+	TODO refactor - rename to PartsOfSpeechManager
 */
 public class PartsOfSpeechRunner {
 

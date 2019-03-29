@@ -75,6 +75,7 @@ public class TextGenerator implements ITextGenerator {
 
 	/**
 	 * Generates text from pattern(s) using configured PartsOfSpeech files
+	 * TODO: refactor the main into a new Runner class
 	 * 
 	 * @param args
 	 * @throws Exception

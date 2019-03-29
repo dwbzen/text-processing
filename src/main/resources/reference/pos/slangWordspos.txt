@@ -9,6 +9,7 @@ bed	N
 belly-button	Bdb
 boobs	d
 booger	N
+brains	B
 chains	p
 chew	Vt
 chin	NBbd
@@ -115,6 +116,7 @@ the Caribbean	H
 China	HR
 Chinatown	H
 the Deep South	H
+a dingy cellar	H
 Dixie	H
 England	HR
 an Episcopal Church	H
@@ -130,6 +132,7 @@ Iceland	HR
 India	HR
 the Indian Ocean	H
 Iran	HR
+Iraq	HR
 Ireland	HR
 Israel	HR
 Italy	HR
@@ -149,10 +152,12 @@ the Middle East	H
 the Midwest	H
 the Milky Way	H
 Mississippi	H
+Northern Ireland	HR
 Syria	HR
+the women's room	H
 the YMCA	H
 USA	HR
-taco	T
+tacos	pT
 escargot	T
 spaghetti	T
 wine & cheese	T
@@ -170,6 +175,7 @@ Dr. Pepper	T
 fried rice	T
 pot roast	T
 Jell-O Salad	T
+Belfast	Q
 Boston	Q
 London	Q
 Beijing	Q

@@ -23,7 +23,7 @@ public class PartOfSpeechParser implements IPatternParser, IJson {
 	@JsonProperty("words")	private List<String> words = new ArrayList<String>();		// Sentence parsed into Words
 	@JsonProperty("valid")	private boolean valid = true;
 	@JsonProperty("error")	private String error = "";
-	@JsonIgnore				private List<PatternWord> patternWords = new ArrayList<PatternWord>();
+	@JsonProperty("patterns")	private List<PatternWord> patternWords = new ArrayList<PatternWord>();
 	@JsonProperty			private  Set<String> partsOfSpeechSet = PartsOfSpeechRunner.getLoadedPartsOfSpeech();
 
 	public static void main(String[] args) {
