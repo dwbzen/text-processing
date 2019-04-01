@@ -10,11 +10,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dwbzen.text.util.ITextGenerator;
+import org.dwbzen.text.util.DataSourceType;
+import org.dwbzen.text.util.ITextGenerator;;
 
 /**
  * Generates random text (words) from POS (part-of-speach) patterns.
@@ -48,7 +50,7 @@ import org.dwbzen.text.util.ITextGenerator;
  * @see org.dwbzen.text.pos.PartOfSpeachPattern for valid patterns.
  *
  */
-public class TextGenerator implements ITextGenerator, Function<Integer, String> {
+public class TextGenerator implements ITextGenerator, Function<Integer, String>, BiConsumer<DataSourceType, String[]> {
 	protected static final Logger log = LogManager.getLogger(TextGenerator.class);
 	public final static String QUOTE = "\"";
 	public final static String SPACE = " ";
@@ -86,7 +88,12 @@ public class TextGenerator implements ITextGenerator, Function<Integer, String> 
 	}
 	
 	public TextGenerator() {
-		
+		try {
+			setPartsOfSpeechManager(PartsOfSpeechManager.newInstance());
+		}
+		catch(IOException ex)  {
+			System.err.println("Could not create ParsOfSpeechManager because " + ex.getMessage());
+		}
 	}
 	
 	public TextGenerator(PartsOfSpeechManager pos) {
@@ -470,5 +477,39 @@ public class TextGenerator implements ITextGenerator, Function<Integer, String> 
 	public String apply(Integer t) {
 		generate(t);
 		return generatedText.stream().collect(StringBuilder::new, StringBuilder::append, StringBuilder::append).toString();
+	}
+
+	@Override
+	/**
+	 * Configures TextGenerator for a given DataSourceType using comma-delimited parameter arguments provided.</br>
+	 * The first parameter is either a path to a template file (TextFile) or a text pattern (Text)</br>
+	 * The second parameter is a valid post-processing specification: TC, UC, LC, etc.
+	 * @param dsType a valid DataSourceType  (TextFile or Text)
+	 * @param args comma-delimited String arguments
+	 * @throws IllegalArgumentException if any problems such as file not found, missing params, or invalid pattern.
+	 */
+	public void accept(DataSourceType dsType, String[] params) throws IllegalArgumentException {
+		if(params.length != 2) {
+			throw new IllegalArgumentException("Two arguments are required: pattern/file and post-processing code");
+		}
+		if(dsType == DataSourceType.TextFile) {
+			File f = new File(params[0]);
+			if(f.canRead()) {
+				int ret = setInputPatterns(f);
+				if(ret != 0) {
+					throw new IllegalArgumentException("Cannot read template file:" + params[0]);
+				}
+			}
+			else {
+				throw new IllegalArgumentException("Cannot read template file:" + params[0]);
+			}
+		}
+		else if(dsType == DataSourceType.Text) {
+			addPattern(params[0]);
+		}
+		else  {
+			throw new IllegalArgumentException("Unsupported DataSourceType: " + dsType);
+		}
+		this.setPostProcessing(params[1]);
 	}
 }

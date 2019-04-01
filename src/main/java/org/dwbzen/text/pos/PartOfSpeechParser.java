@@ -5,9 +5,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 import org.dwbzen.common.util.IJson;
+import org.dwbzen.text.util.DataSourceType;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -251,7 +253,8 @@ public class PartOfSpeechParser implements IPatternParser, IJson {
 
 	/**
 	 * example lambda string: %bands=org.dwbzen.text.pos.TextGenerator(TextFile,bin/main/reference/bandNamePatterns.txt,TC)</br>
-	 * Function references stored in functionMap, key is the name including the initial '%'.
+	 * Function references stored in functionMap, key is the name including the initial '%'.</br>
+	 * The class must implement BiConsumer<DataSourceType, String> for creation semantics and have a default constructor.
 	 * 
 	 * @param lambdaString
 	 */
@@ -261,9 +264,11 @@ public class PartOfSpeechParser implements IPatternParser, IJson {
 		String key = lambdaString.substring(0, endIndex);
 		int parenIndexOpen = lambdaString.indexOf('(');
 		int parenIndexClose = lambdaString.indexOf(')');
-		if(parenIndexOpen > 0 && parenIndexClose > parenIndexOpen) {
+		int commaIndex = lambdaString.indexOf(',', parenIndexOpen);
+		if(parenIndexOpen > 0 && parenIndexClose > parenIndexOpen && commaIndex > 0) {
 			String className = lambdaString.substring(endIndex+1, parenIndexOpen);
-			
+			String[] params = lambdaString.substring(commaIndex+1, parenIndexClose).split(",");
+			String dsType = lambdaString.substring(parenIndexOpen+1, commaIndex);
 		}
 		else {
 			valid = false;

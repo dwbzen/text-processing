@@ -45,8 +45,7 @@ public class TextGeneratorRunner {
 			}
 		}
 
-		PartsOfSpeechManager pos = PartsOfSpeechManager.newInstance();
-		generator = new TextGenerator(pos);
+		generator = new TextGenerator();
 		if(patternList.size() == 0 && patternLib == null) {
 			patternList.add(defaultPattern);
 		}
@@ -59,7 +58,7 @@ public class TextGeneratorRunner {
 				}
 			}
 			else {
-				throw new RuntimeException("Cannot read pattern library:" + patternLib);
+				throw new RuntimeException("Cannot read template file:" + patternLib);
 			}
 		}
 		else {
@@ -73,7 +72,7 @@ public class TextGeneratorRunner {
 		else {
 			generator.setPostProcessing("NC");	// no conversion
 		}
-		generator.generate(numberToGenerate);
+		generator.apply(numberToGenerate);	// functional interface
 		List<String> generatedText = generator.getGeneratedText();
 		
 		if(generatedText != null) {

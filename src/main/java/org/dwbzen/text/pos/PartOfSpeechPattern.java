@@ -34,7 +34,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  *  (We went to a)%bands;(concert in)Q(,)R(.) 
  *  </code></br>
  *  Note the use of % and ; delimeters. </br>
- *  Under the hood, the class must implement Function<Integer, String> - String apply(Integer n), where n=number of strings to generate.
+ *  Under the hood, the class must implement the interfaces:</br>
+ *  Function<Integer, String> - String apply(Integer n), where n=number of strings to generate.</br>
+ *  BiConsumer<DataSourceType, String> - for instance creation
  *  </p>
  *  Samples patterns:</br>
  *  	[M|F|N](and)(the)A?p  - band name</br>
