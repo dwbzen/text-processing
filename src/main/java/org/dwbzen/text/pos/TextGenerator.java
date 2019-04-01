@@ -11,9 +11,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.dwbzen.text.util.DataSourceType;
 import org.dwbzen.text.util.ITextGenerator;
 
 /**
@@ -48,12 +52,12 @@ import org.dwbzen.text.util.ITextGenerator;
  * @see org.dwbzen.text.pos.PartOfSpeachPattern for valid patterns.
  *
  */
-public class TextGenerator implements ITextGenerator {
+public class TextGenerator implements ITextGenerator, Function<Integer, String> {
 	protected static final Logger log = LogManager.getLogger(TextGenerator.class);
 	public final static String QUOTE = "\"";
 	public final static String SPACE = " ";
 	
-	private PartsOfSpeechRunner partsOfSpeechRunner = null;
+	private PartsOfSpeechManager partsOfSpeechRunner = null;
 	private Map<String, List<String>> wordMap = null;
 	private Map<String, Integer> posCount = new HashMap<String, Integer>();
 	private List<PartOfSpeechPattern> partOfSpeechPatterns = new ArrayList<PartOfSpeechPattern>();
@@ -72,100 +76,25 @@ public class TextGenerator implements ITextGenerator {
 	private String jsonFieldname = null;
 	private String delimiter = null;
 	private ThreadLocalRandom random = ThreadLocalRandom.current();
-
-	/**
-	 * Generates text from pattern(s) using configured PartsOfSpeech files
-	 * TODO: refactor the main into a new Runner class
-	 * 
-	 * @param args
-	 * @throws Exception
-	 */
-	public static void main(String[] args) throws Exception {
-		TextGenerator generator = null;
-		int numberToGenerate = 20;
-		String defaultPattern = "ANp";
-		List<String> patternList = new ArrayList<String>();
-		List<String>postProcessing = new ArrayList<String>();
-		String patternLib = null;
-		String delim = ",";	// for CSV output - field separator
-		
-		for(int i=0; i<args.length; i++) {
-			if(args[i].equalsIgnoreCase("-n")) {
-				numberToGenerate = Integer.parseInt(args[++i]);
-			}
-			else if(args[i].equalsIgnoreCase("-pattern")) {
-				patternList.add(args[++i]);				
-			}
-			else if(args[i].equalsIgnoreCase("-template")) {	// template library file
-				patternLib = args[++i];
-			}
-			else if(args[i].equalsIgnoreCase("-format")) {
-				// format processing
-				postProcessing.add(args[++i]);
-			}
-			else if(args[i].equalsIgnoreCase("-delim")) {
-				delim = args[++i];
-			}
-			else {
-				patternList.add(args[i]);
-			}
-		}
-
-		generator = TextGenerator.newInstance();
-		if(patternList.size() == 0 && patternLib == null) {
-			patternList.add(defaultPattern);
-		}
-		if(patternLib != null) {
-			File f = new File(patternLib);
-			if(f.canRead()) {
-				int ret = generator.setInputPatterns(f);
-				if(ret != 0) {
-					return;
-				}
-			}
-			else {
-				throw new RuntimeException("Cannot read pattern library:" + patternLib);
-			}
-		}
-		else {
-			generator.setPatternList(patternList);
-		}
-
-		if(postProcessing.size() > 0) {
-			generator.setPostProcessing(postProcessing);
-			generator.setDelimiter(delim);
-		}
-		else {
-			generator.setPostProcessing("NC");	// no conversion
-		}
-		generator.generate(numberToGenerate);
-		List<String> generatedText = generator.getGeneratedText();
-		
-		if(generatedText != null) {
-			for(Iterator<String> it=generatedText.iterator(); it.hasNext();) {
-				System.out.println(it.next());
-			}
-		}
-	}
 	
 	public static TextGenerator newInstance() {
-		PartsOfSpeechRunner pos = null;
+		PartsOfSpeechManager pos = null;
 		try {
-				pos = PartsOfSpeechRunner.newInstance();
+				pos =  PartsOfSpeechManager.newInstance();
 		}
 		catch(IOException ex)  {
 			System.err.println(ex.getMessage());
-			System.exit(1);
+			return null;
 		}
 		return new TextGenerator(pos);
 	}
 	
 	public TextGenerator() {}
 	
-	public TextGenerator(PartsOfSpeechRunner pos) {
+	public TextGenerator(PartsOfSpeechManager pos) {
 		partsOfSpeechRunner = pos;
 		wordMap = partsOfSpeechRunner.getWordMap();
-		Set<String> loadedPOS = PartsOfSpeechRunner.getLoadedPartsOfSpeech();
+		Set<String> loadedPOS = PartsOfSpeechManager.getLoadedPartsOfSpeech();
 		for(Iterator<String> it = loadedPOS.iterator(); it.hasNext(); ) {
 			String ps = it.next();
 			posCount.put(ps, wordMap.get(ps).size());
@@ -180,7 +109,7 @@ public class TextGenerator implements ITextGenerator {
 	 * @param pattern
 	 */
 	public void generate(int numberToGenerate, String pattern) {
-		this.addPattern(pattern);
+		addPattern(pattern);
 		generate(numberToGenerate);
 	}
 	
@@ -406,11 +335,11 @@ public class TextGenerator implements ITextGenerator {
 
 	}
 
-	public PartsOfSpeechRunner getPartsOfSpeech() {
+	public PartsOfSpeechManager getPartsOfSpeech() {
 		return partsOfSpeechRunner;
 	}
 
-	public void setPartsOfSpeech(PartsOfSpeechRunner partsOfSpeech) {
+	public void setPartsOfSpeech(PartsOfSpeechManager partsOfSpeech) {
 		this.partsOfSpeechRunner = partsOfSpeech;
 	}
 
@@ -537,5 +466,14 @@ public class TextGenerator implements ITextGenerator {
 		}
 		setPatternList(patterns);
 		return ret;
+	}
+
+	@Override
+	/**
+	 * Implements Function<Integer, String>
+	 */
+	public String apply(Integer t) {
+		generate(t);
+		return generatedText.stream().collect(StringBuilder::new, StringBuilder::append, StringBuilder::append).toString();
 	}
 }

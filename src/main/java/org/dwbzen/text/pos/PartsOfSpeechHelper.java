@@ -42,10 +42,10 @@ public class PartsOfSpeechHelper {
 	private String outputFileName = null;
 	private BufferedReader inputFileReader;
 	private PrintWriter outputFileWriter;
-	private PartsOfSpeechRunner partsOfSpeech = null;
+	private PartsOfSpeechManager partsOfSpeech = null;
 	
 	public PartsOfSpeechHelper() throws IOException {
-		this.partsOfSpeech = PartsOfSpeechRunner.newInstance();
+		this.partsOfSpeech = PartsOfSpeechManager.newInstance();
 	}
 	
 	public void createPartsOfSpeechFile(String inputFile, String outputFile)  throws IOException {

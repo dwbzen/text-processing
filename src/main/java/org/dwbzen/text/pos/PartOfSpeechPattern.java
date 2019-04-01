@@ -9,30 +9,42 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  *  (\n) is an embedded '\n'
- *  A pattern can be spread across multiple lines, lines ending with '+' indicate this
- *  Text enclosed in () are included literally, for example (I am) or (\n) for newline
- *  Choices are enclosed in brackets [] and separated by |, for example [p|h] which is 
- *  	a plural noun or a noun phrase. Literal text may also be included in choices elements
- *  	as in [(Where)|(Is)|(Why)|(What)]
- *  A repeat range is inclosed in curly brackets as in A{1,3} which indicates 1 to 3 adjectives.
- *  An optional POS element is indicated with a ? as in v? which is an optional adverb.
+ *  A pattern can be spread across multiple lines, lines ending with '+' indicate this</br>
+ *  Text enclosed in () are included literally, for example (I am) or (\n) for newline</br>
+ *  Choices are enclosed in brackets [] and separated by |, for example [p|h] which is a plural noun or a noun phrase. </br>
+ *  Literal text may also be included in choices elements as in [(Where)|(Is)|(Why)|(What)]</br>
+ *  A repeat range is inclosed in curly brackets as in A{1,3} which indicates 1 to 3 adjectives.</br>
+ *  An optional POS element is indicated with a ? as in v? which is an optional adverb.</br>
  *  	This is a shorthand for [0,1]
  *  	Choices may also be optional as in [M|F](?) which is an optional male first name
  *  	or female first name.
- *  Comment lines in pattern files (called templates) start with //
+ *  Comment lines in pattern files (called templates) start with //</p>
  *  
- *  It is possible to inject BiFunction<DataSourceType, String, String> function as a kind of lambda.
- *  For example, this can be the result of a separate TextGenerator or WordProducer.
- *  To use this feature, the lambda function is first declared in the pattern (or template)
- *  
- *  Samples patterns:
- *  	[M|F|N](and)(the)A?p  - band name
- *  	!(where did you get that)A{1,3}[b|B](?) - insult
- *  	hiv+
- *  	!(!)[(Will)|(Is)|(How)|(What)]ANrvtp(?) -  poetry
- *		ANp - simple example
- *	
- * @author Don_Bacon
+ *  It is possible to inject BiFunction<DataSourceType, String, String> function as a kind of lambda.</br>
+ *  For example, this can be the result of a separate TextGenerator or WordProducer.</br>
+ *  To use this feature, the lambda function is first declared in the pattern (or template)</br>
+ *  by giving the full class path with arguments assigning to a %name, for example:</p>
+ *  <code>
+ *  %bands=org.dwbzen.text.pos.TextGenerator(TextFile,bin/main/reference/bandNamePatterns.txt,TC);</code></p>
+ *  The first argument of TextGenerator is a valid DataSourceType.</br>
+ *  The second argument is an inline pattern or name of a template pattern file<br>
+ *  Third argument indicates post-processing: TC, LC, etc. </br>
+ *  To use, insert the %variable name in the pattern or template. For example:</p>
+ *  <code>
+ *  (We went to a)%bands;(concert in)Q(,)R(.) 
+ *  </code></br>
+ *  Note the use of % and ; delimeters. </br>
+ *  Under the hood, the class must implement Function<Integer, String> - String apply(Integer n), where n=number of strings to generate.
+ *  </p>
+ *  Samples patterns:</br>
+ *  	[M|F|N](and)(the)A?p  - band name</br>
+ *  	!(where did you get that)A{1,3}[b|B](?) - insult</br>
+ *  	hiv+</br>
+ *  	!(!)[(Will)|(Is)|(How)|(What)]ANrvtp(?) -  poetry</br>
+ *		ANp - simple example</br>
+ *
+ * @see org.dwbzen.text.pos.TextGenerator
+ * @author don_bacon
  *
  */
 public class PartOfSpeechPattern extends TextPattern {
@@ -51,14 +63,14 @@ public class PartOfSpeechPattern extends TextPattern {
 	public final static String errorMessage = "ERROR: invalid Part of Speech Pattern";
 	
 	public PartOfSpeechPattern(String sentence) {
-		setVocabulary(PartsOfSpeechRunner.getLoadedPartsOfSpeech());
+		setVocabulary(PartsOfSpeechManager.getLoadedPartsOfSpeech());
 		setSentence(sentence);
 		parse();
 	}
 	
 	
 	public PartOfSpeechPattern(String[] sentences) {
-		setVocabulary(PartsOfSpeechRunner.getLoadedPartsOfSpeech());
+		setVocabulary(PartsOfSpeechManager.getLoadedPartsOfSpeech());
 		setSentence(sentences.toString());
 		parse();
 	}

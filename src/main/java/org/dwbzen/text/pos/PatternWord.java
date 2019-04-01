@@ -10,10 +10,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.dwbzen.common.util.IJson;
 
 /**
- * A PatternWord is a "compiled" version of a text pattern word template such as N{2,5}
- * An instance is an actual pattern created at random from the template
- * For example, "NN", "NNN", "NNNN", and "NNNNN" are all instances of N{2,5}
- * Inline (not-interpreted) text can also be included in patterns
+ * A PatternWord is a "compiled" version of a text pattern word template such as N{2,5}</br>
+ * An instance is an actual pattern created at random from the template</br>
+ * For example, "NN", "NNN", "NNNN", and "NNNNN" are all instances of N{2,5}</br>
+ * Inline (not-interpreted) text can also be included in patterns</br>
  * For example. "[F|M](and)[F|M]"
  * @author don_bacon
  *

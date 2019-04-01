@@ -4,14 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import org.dwbzen.common.util.IJson;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
- * TODO: migrate to JavaCC
- * @author Don_Bacon
+ * 
+ * @author don_bacon
  *
  */
 public class PartOfSpeechParser implements IPatternParser, IJson {
@@ -24,24 +23,14 @@ public class PartOfSpeechParser implements IPatternParser, IJson {
 	@JsonProperty("valid")	private boolean valid = true;
 	@JsonProperty("error")	private String error = "";
 	@JsonProperty("patterns")	private List<PatternWord> patternWords = new ArrayList<PatternWord>();
-	@JsonProperty			private  Set<String> partsOfSpeechSet = PartsOfSpeechRunner.getLoadedPartsOfSpeech();
+	@JsonProperty			private  Set<String> partsOfSpeechSet = PartsOfSpeechManager.getLoadedPartsOfSpeech();
 
-	public static void main(String[] args) {
-
-	}
-	
 	/**
 	 * replacement variables: $1, ... $9
 	 * $1=x will save the value of 'x' in variable $1
 	 * ($1) uses that saved value
 	 * 
-	 * $1=x parses into the PatternWord:
-	 * (=1)x - This tells the generator to save the value of
-	 *  	   next generated word in $1, x  - a valid part of speech (V, t, N etc)
-	 *  
-	 * ($1) parses to ($1) to signal in-line text
 	 * @return true if pattern is valid, false otherwise
-	 * TODO: move to JavaCC grammar
 	 */
 	public boolean parse(String sentence) {
 
@@ -202,6 +191,25 @@ public class PartOfSpeechParser implements IPatternParser, IJson {
 					variable = 0;
 				}
 			}
+			else if(c=='%') {
+				// defining or using a lambda expression. Ending delimiter is ';'
+				// fast forward to the trailing ; delimiter and hand the whole
+				// thing off for processing
+				int ind = sentence.indexOf(';', parsePosition);
+				if(ind < 0) {
+					return false;
+				}
+				// substring retains the initial % but omits the trailing ';'
+				String lambdaString = sentence.substring(parsePosition-1, ind);
+				parsePosition = ind +1;
+				if(lambdaString.contains("=")) {
+					createFunctionReference(lambdaString);
+				}
+				else {
+					patternWord = new PatternWord(1, 1, lambdaString);
+					patternWords.add(patternWord);
+				}
+			}
 			else {
 				if(isChoice && !isText) {
 					choices.append(c);
@@ -234,6 +242,11 @@ public class PartOfSpeechParser implements IPatternParser, IJson {
 			}
 		}
 		return valid;
+	}
+
+	private void createFunctionReference(String lambdaString) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	public List<String> getWords() {

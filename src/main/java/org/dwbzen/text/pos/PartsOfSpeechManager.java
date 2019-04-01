@@ -64,9 +64,8 @@ import org.dwbzen.text.util.Configuration;
 	
 	Unused in legacy: E, J, K, O, Q, R, T, U, W, Y, a, e, f, g, j, k, m, n, q, s, u, w, y
 
-	TODO refactor - rename to PartsOfSpeechManager
 */
-public class PartsOfSpeechRunner {
+public class PartsOfSpeechManager {
 
 	public static final String CONFIG_FILENAME = "/config.properties";
 
@@ -120,7 +119,7 @@ public class PartsOfSpeechRunner {
 	 * 
 	 */
 	public static void main(String[] args) {
-		PartsOfSpeechRunner partsOfSpeechRunner = null;
+		PartsOfSpeechManager partsOfSpeechRunner = null;
 		List<String> posToIgnore = new ArrayList<>();
 		List<String> wordsToInclude = new ArrayList<>();
 		String[] posToShow = {};
@@ -138,7 +137,7 @@ public class PartsOfSpeechRunner {
 			}
 		}
 		try {
-			partsOfSpeechRunner = PartsOfSpeechRunner.newInstance();
+			partsOfSpeechRunner = PartsOfSpeechManager.newInstance();
 		} catch(IOException ex) {
 			System.err.println(ex.getMessage());
 			System.exit(1);
@@ -161,12 +160,12 @@ public class PartsOfSpeechRunner {
 	 * @return
 	 * @throws FileNotFoundException
 	 */
-	public static PartsOfSpeechRunner newInstance()throws IOException {
-		PartsOfSpeechRunner pos = new PartsOfSpeechRunner();
+	public static PartsOfSpeechManager newInstance()throws IOException {
+		PartsOfSpeechManager pos = new PartsOfSpeechManager();
 		return pos;
 	}
 	
-	protected PartsOfSpeechRunner() throws IOException {
+	protected PartsOfSpeechManager() throws IOException {
 		initialize();	// set configuration and load wordMap
 	}
 

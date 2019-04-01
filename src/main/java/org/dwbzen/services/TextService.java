@@ -42,12 +42,17 @@ public class TextService {
 	@Path("/pattern/{number}")
 	@Consumes(MediaType.TEXT_PLAIN)
 	public List<String> generateText(@PathParam("number") int num, String message) {
-		List<String> generatedText = null;
+		List<String> generatedText = new ArrayList<>();
 		TextGenerator generator = TextGenerator.newInstance();
-		List<String> patternList = new ArrayList<>();
-		patternList.add(message);
-		generator.setPatternList(patternList);
-		generatedText = generator.generateText(num);
+		if(generator == null) {
+			generatedText.add("There was a problem creating TextGenerator");
+		}
+		else {
+			List<String> patternList = new ArrayList<>();
+			patternList.add(message);
+			generator.setPatternList(patternList);
+			generatedText.addAll(generator.generateText(num));
+		}
 		return generatedText;
 	}
 	
@@ -61,9 +66,14 @@ public class TextService {
 	private List<String> generateInsults(int num) {
 		List<String> generatedText = new ArrayList<>();
 		TextGenerator generator = TextGenerator.newInstance();
-		String[] patterns = TextDao.getPatterns("insult");
-		generator.setPatternList(patterns);
-		generatedText = generator.generateText(num);
+		if(generator == null) {
+			generatedText.add("There was a problem creating TextGenerator");
+		}
+		else {
+			String[] patterns = TextDao.getPatterns("insult");
+			generator.setPatternList(patterns);
+			generatedText.addAll(generator.generateText(num));
+		}
 		return generatedText;
 	}
 
@@ -82,11 +92,17 @@ public class TextService {
 	 */
 	private List<String> generateBandNames(int num) {
 		TextGenerator generator = TextGenerator.newInstance();
-		String[] patterns = TextDao.getPatterns("band");
-		generator.setPatternList(patterns);
-		generator.setPostProcessing("TC");
-		generator.generate(num);
-		List<String> generatedText = generator.getGeneratedText();
+		List<String> generatedText = new ArrayList<>();
+		if(generator == null) {
+			generatedText.add("There was a problem creating TextGenerator");
+		}
+		else {
+			String[] patterns = TextDao.getPatterns("band");
+			generator.setPatternList(patterns);
+			generator.setPostProcessing("TC");
+			generator.generate(num);
+			generatedText.addAll(generator.getGeneratedText());
+		}
 		return generatedText;
 	}
 }
