@@ -2,10 +2,14 @@ package org.dwbzen.text.pos;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
+import java.util.function.Function;
 
 import org.dwbzen.common.util.IJson;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -24,6 +28,7 @@ public class PartOfSpeechParser implements IPatternParser, IJson {
 	@JsonProperty("error")	private String error = "";
 	@JsonProperty("patterns")	private List<PatternWord> patternWords = new ArrayList<PatternWord>();
 	@JsonProperty			private  Set<String> partsOfSpeechSet = PartsOfSpeechManager.getLoadedPartsOfSpeech();
+	@JsonIgnore				private Map<String, Function<Integer, String>>	functionMap = new TreeMap<>();
 
 	/**
 	 * replacement variables: $1, ... $9
@@ -244,9 +249,26 @@ public class PartOfSpeechParser implements IPatternParser, IJson {
 		return valid;
 	}
 
-	private void createFunctionReference(String lambdaString) {
-		// TODO Auto-generated method stub
-		
+	/**
+	 * example lambda string: %bands=org.dwbzen.text.pos.TextGenerator(TextFile,bin/main/reference/bandNamePatterns.txt,TC)</br>
+	 * Function references stored in functionMap, key is the name including the initial '%'.
+	 * 
+	 * @param lambdaString
+	 */
+	public boolean createFunctionReference(String lambdaString) {
+		boolean valid = true;
+		int endIndex = lambdaString.indexOf('=');
+		String key = lambdaString.substring(0, endIndex);
+		int parenIndexOpen = lambdaString.indexOf('(');
+		int parenIndexClose = lambdaString.indexOf(')');
+		if(parenIndexOpen > 0 && parenIndexClose > parenIndexOpen) {
+			String className = lambdaString.substring(endIndex+1, parenIndexOpen);
+			
+		}
+		else {
+			valid = false;
+		}
+		return valid;
 	}
 
 	public List<String> getWords() {

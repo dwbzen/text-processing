@@ -119,8 +119,8 @@ public class PartsOfSpeech implements IJson {
 		legacyPosMapping.put("d", new PartOfSpeech("femaleBodyPart", PosCategory.noun, "d",  "female body part", "bodyPart"));
 		
 		/*
-		 * PartOfSpeech that have no standard legacy code, by convention they are assigned
-		 * a new code from unused in legacy in alpha order (except O and o)
+		 * PartOfSpeech that have no standard legacy code, by convention new additions are assigned
+		 * a code from unused in legacy in alpha order (except O and o)
 		 * Unused in legacy: E, J, K, O, Q, R, T, U, W, Y, a, e, f, g, j, k, m, n, q, s, u, w, y
 		 */
 		partsOfSpeechLegacy.put("E", "Number name");
@@ -128,7 +128,7 @@ public class PartsOfSpeech implements IJson {
 		partsOfSpeechLegacy.put("K", "Ordinal number");
 		partsOfSpeechLegacy.put("Q", "City");
 		partsOfSpeechLegacy.put("R", "Country");
-		partsOfSpeechLegacy.put("T", "Food");
+		partsOfSpeechLegacy.put("T", "Food/Beveage");
 
 		legacyPosMapping.put("E", new PartOfSpeech("numberName", PosCategory.noun, "E", "cardinal number or word representing a number", "noun"));
 		legacyPosMapping.put("J", new PartOfSpeech("number", PosCategory.adjective, "J", "cardinal number as an adjective", "adjective"));

@@ -6,18 +6,14 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.function.BiFunction;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dwbzen.text.util.DataSourceType;
 import org.dwbzen.text.util.ITextGenerator;
 
 /**
@@ -57,7 +53,7 @@ public class TextGenerator implements ITextGenerator, Function<Integer, String> 
 	public final static String QUOTE = "\"";
 	public final static String SPACE = " ";
 	
-	private PartsOfSpeechManager partsOfSpeechRunner = null;
+	private PartsOfSpeechManager partsOfSpeechManager = null;
 	private Map<String, List<String>> wordMap = null;
 	private Map<String, Integer> posCount = new HashMap<String, Integer>();
 	private List<PartOfSpeechPattern> partOfSpeechPatterns = new ArrayList<PartOfSpeechPattern>();
@@ -83,22 +79,18 @@ public class TextGenerator implements ITextGenerator, Function<Integer, String> 
 				pos =  PartsOfSpeechManager.newInstance();
 		}
 		catch(IOException ex)  {
-			System.err.println(ex.getMessage());
+			System.err.println("Could not create ParsOfSpeechManager because " + ex.getMessage());
 			return null;
 		}
 		return new TextGenerator(pos);
 	}
 	
-	public TextGenerator() {}
+	public TextGenerator() {
+		
+	}
 	
 	public TextGenerator(PartsOfSpeechManager pos) {
-		partsOfSpeechRunner = pos;
-		wordMap = partsOfSpeechRunner.getWordMap();
-		Set<String> loadedPOS = PartsOfSpeechManager.getLoadedPartsOfSpeech();
-		for(Iterator<String> it = loadedPOS.iterator(); it.hasNext(); ) {
-			String ps = it.next();
-			posCount.put(ps, wordMap.get(ps).size());
-		}
+		setPartsOfSpeechManager(pos);
 	}
 		
 	/**
@@ -335,12 +327,15 @@ public class TextGenerator implements ITextGenerator, Function<Integer, String> 
 
 	}
 
-	public PartsOfSpeechManager getPartsOfSpeech() {
-		return partsOfSpeechRunner;
+	public PartsOfSpeechManager getPartsOfSpeechManager() {
+		return partsOfSpeechManager;
 	}
 
-	public void setPartsOfSpeech(PartsOfSpeechManager partsOfSpeech) {
-		this.partsOfSpeechRunner = partsOfSpeech;
+	public void setPartsOfSpeechManager(PartsOfSpeechManager partsOfSpeech) {
+		partsOfSpeechManager = partsOfSpeech;
+		wordMap = partsOfSpeechManager.getWordMap();
+		Set<String> loadedPos = PartsOfSpeechManager.getLoadedPartsOfSpeech();
+		loadedPos.forEach(ps -> posCount.put(ps, wordMap.get(ps).size()));
 	}
 
 	public List<String> getPatternList() {

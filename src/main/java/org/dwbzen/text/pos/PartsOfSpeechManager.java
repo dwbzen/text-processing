@@ -71,7 +71,11 @@ public class PartsOfSpeechManager {
 
 	private final static String POS_DIR = "/reference/pos/";
 	private final static String POS_FILE = "3eslpos.txt";
-	
+	private static String ALL_UPPER =  "^[A-Z]{2,}";	// at least 2 upper case chars
+	private static String PROPER_WORD = "^[A-Z][a-z]+";	// Title case
+	private static String ALL_NUMERIC = "^[0-9]{2,}";
+	private static String COMPOUND_WORDS = "^\\w+\\s+.*";
+
     private static final Logger logger = LogManager.getLogger(PartsOfSpeech.class);
     
     private static String[] Zwords = {" in", " on", " over" };
@@ -84,7 +88,11 @@ public class PartsOfSpeechManager {
     private String slangFile = null;
     private String extendedVocabFile = null;
     private String userFile = null;
-	
+	private int upperWordsSkipped = 0;
+	private int properWordsSkipped = 0;
+	private int numericWordsSkipped = 0;
+	private int compoundWordsSkipped = 0;
+	private int fileWords = 0;	// initialized for each POS file
 	/**
 	 * A Map<String, List<String>> of words keyed by part of speech
 	 */
@@ -119,7 +127,7 @@ public class PartsOfSpeechManager {
 	 * 
 	 */
 	public static void main(String[] args) {
-		PartsOfSpeechManager partsOfSpeechRunner = null;
+		PartsOfSpeechManager partsOfSpeechManager = null;
 		List<String> posToIgnore = new ArrayList<>();
 		List<String> wordsToInclude = new ArrayList<>();
 		String[] posToShow = {};
@@ -137,14 +145,14 @@ public class PartsOfSpeechManager {
 			}
 		}
 		try {
-			partsOfSpeechRunner = PartsOfSpeechManager.newInstance();
+			partsOfSpeechManager = PartsOfSpeechManager.newInstance();
 		} catch(IOException ex) {
 			System.err.println(ex.getMessage());
 			System.exit(1);
 		}
-		System.out.println(partsOfSpeechRunner.getStats());
+		System.out.println(partsOfSpeechManager.getStats());
 		if(posToShow.length > 0) {
-			Map<String, List<String>> map = partsOfSpeechRunner.getWordsForPos(posToShow);
+			Map<String, List<String>> map = partsOfSpeechManager.getWordsForPos(posToShow);
 			map.keySet().forEach(k -> {
 				System.out.println(PartsOfSpeech.partsOfSpeechLegacy.get(k));
 				System.out.println(map.get(k));
@@ -225,21 +233,19 @@ public class PartsOfSpeechManager {
 	}
 	
 	protected void loadWords(String aPosFile) {
-		int nwords = 0;
-		int lwords = 0;
+		fileWords = 0;
 		try {
 			if(aPosFile == null) {
-				nwords+= readFileLines(new InputStreamReader(System.in), lwords);
+				readFileLines(new InputStreamReader(System.in));
 			}
 			else if(aPosFile.contains(":")) {	// like C:/data/text/
-					nwords+= readFileLines(new FileReader(aPosFile), lwords);
+					readFileLines(new FileReader(aPosFile));
 			}
 			else {
 				InputStream is = this.getClass().getResourceAsStream(aPosFile);
 				if(is != null) {
 					try(Stream<String> stream = new BufferedReader(new InputStreamReader(is)).lines()) {
-						stream.forEach(s -> analyzeAndSaveWord(s, lwords));
-						nwords++;
+						stream.forEach(s -> analyzeAndSaveWord(s));
 					}
 				}
 				else {
@@ -254,8 +260,7 @@ public class PartsOfSpeechManager {
 			logger.error("Unable to read: " + aPosFile);
 		}
 		
-		logger.debug(nwords + " words analyzed " + aPosFile);
-		logger.debug(lwords + " loaded " + aPosFile);
+		logger.debug(fileWords + " words analyzed/saved " + aPosFile);
 		if(properWordsSkipped > 0)
 			logger.debug(properWordsSkipped + " proper words skipped");
 		if(upperWordsSkipped > 0)
@@ -266,19 +271,18 @@ public class PartsOfSpeechManager {
 			logger.debug(compoundWordsSkipped + " compound words skipped");
 	}
 
-	private int readFileLines(Reader reader, int lwords)  throws IOException {
-		int nwords = 0;
+	private int readFileLines(Reader reader)  throws IOException {
+		fileWords = 0;
 		posFileReader = new BufferedReader(reader);
 		String line = null;
 		while((line = posFileReader.readLine()) != null) {
-			analyzeAndSaveWord(line, lwords);
-			nwords++;
+			analyzeAndSaveWord(line);
 		}
 		posFileReader.close();
-		return nwords;
+		return fileWords;
 	}
 	
-	private void analyzeAndSaveWord(String line, int count) {
+	private void analyzeAndSaveWord(String line) {
 		int tab = line.indexOf('\t');
 		if(tab <= 0) return;
 		String word = line.substring(0,tab);
@@ -291,20 +295,25 @@ public class PartsOfSpeechManager {
 			compoundWordsSkipped++;
 			return; 
 		}
-		boolean isproper = word.matches(PROPER_WORD);
-		int nind = pos.indexOf('N');
-		if(nind >= 0) {
-			if(isproper) {
-				saveWord(word, pos + "L");
+		for(int i=0; i<pos.length();i++) {
+			// a word can have multiple parts of speech
+			String apos = String.valueOf(pos.charAt(i));
+			boolean isproper = word.matches(PROPER_WORD);
+			int nind = apos.indexOf('N');
+			if(nind >= 0) {
+				if(isproper) {
+					saveWord(word, apos + "L");
+				}
+				else {
+					saveWord(word, apos + "l");
+				}
 			}
 			else {
-				saveWord(word, pos + "l");
+				saveWord(word, apos);
 			}
+			fileWords++;
 		}
-		else {
-			saveWord(word, pos);
-		}
-		count++;
+		return;
 	}
 
 	private void saveWord(String word, String pos) {
@@ -403,14 +412,6 @@ public class PartsOfSpeechManager {
 		wordMap.get(String.valueOf(pos)).add(word);
 	}
 	
-	private static String ALL_UPPER =  "^[A-Z]{2,}";	// at least 2 upper case chars
-	private static String PROPER_WORD = "^[A-Z][a-z]+";	// Title case
-	private static String ALL_NUMERIC = "^[0-9]{2,}";
-	private static String COMPOUND_WORDS = "^\\w+\\s+.*";
-	private int upperWordsSkipped = 0;
-	private int properWordsSkipped = 0;
-	private int numericWordsSkipped = 0;
-	private int compoundWordsSkipped = 0;
 	
 	/**
 	 * Creates a count of words by part of speech
