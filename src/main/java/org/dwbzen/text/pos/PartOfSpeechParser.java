@@ -1,5 +1,6 @@
 package org.dwbzen.text.pos;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,7 @@ import java.util.function.Function;
 
 import org.dwbzen.common.util.IJson;
 import org.dwbzen.text.util.DataSourceType;
+import org.dwbzen.text.util.exception.ConfigurationException;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -258,17 +260,45 @@ public class PartOfSpeechParser implements IPatternParser, IJson {
 	 * 
 	 * @param lambdaString
 	 */
-	public boolean createFunctionReference(String lambdaString) {
+	@SuppressWarnings("unchecked")
+	public boolean createFunctionReference(String lambdaString) throws ConfigurationException {
 		boolean valid = true;
+		String className = null;
+		String[] params = null;
+		String dsType = null;
+		Class<BiConsumer<DataSourceType, String[]>> consumerClass = null;
+		BiConsumer<DataSourceType, String[]> consumer = null;
+		DataSourceType t = null;
+		Function<Integer, String> function = null;
+		
 		int endIndex = lambdaString.indexOf('=');
 		String key = lambdaString.substring(0, endIndex);
 		int parenIndexOpen = lambdaString.indexOf('(');
 		int parenIndexClose = lambdaString.indexOf(')');
 		int commaIndex = lambdaString.indexOf(',', parenIndexOpen);
 		if(parenIndexOpen > 0 && parenIndexClose > parenIndexOpen && commaIndex > 0) {
-			String className = lambdaString.substring(endIndex+1, parenIndexOpen);
-			String[] params = lambdaString.substring(commaIndex+1, parenIndexClose).split(",");
-			String dsType = lambdaString.substring(parenIndexOpen+1, commaIndex);
+			className = lambdaString.substring(endIndex+1, parenIndexOpen);
+			params = lambdaString.substring(commaIndex+1, parenIndexClose).split(",");
+			dsType = lambdaString.substring(parenIndexOpen+1, commaIndex);
+			try {
+				consumerClass = (Class<BiConsumer<DataSourceType, String[]>>)Class.forName(className);
+				consumer = (BiConsumer<DataSourceType, String[]>)consumerClass.getDeclaredConstructor().newInstance();
+				switch (dsType) {
+					case "TextFile": t = DataSourceType.TextFile;
+					break;
+					case "Text": t = DataSourceType.Text;
+					break;
+					case "JsonText": t = DataSourceType.JsonText;
+					break;
+				}
+				consumer.accept(t, params);
+				function = (Function<Integer, String>)consumer;
+				functionMap.put(key, function);
+			} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+				System.err.println("Configuration error: " + e.getMessage());
+				e.printStackTrace();
+				throw new ConfigurationException(e.getMessage() + " " + className);
+			}
 		}
 		else {
 			valid = false;
@@ -296,4 +326,24 @@ public class PartOfSpeechParser implements IPatternParser, IJson {
 		return partsOfSpeechSet;
 	}
 
+	/**
+	 * 
+	 * @param name The name of the function you want.
+	 * @return the Function<Integer, String> associated to the name, or null if no such function exists
+	 */
+	public Function<Integer, String> getFunction(String name) {
+		Function<Integer, String> function = null;
+		if(functionMap.containsKey(name)) {
+			function = functionMap.get(name);
+		}
+		return function;
+	}
+	
+	public static void main(String...strings ) {
+		// simple test
+		PartOfSpeechParser parser = new PartOfSpeechParser();
+		String lambdaString = strings[0];
+		boolean valid = parser.createFunctionReference(lambdaString);
+		System.out.println("valid: " + valid);
+	}
 }
