@@ -345,5 +345,9 @@ public class PartOfSpeechParser implements IPatternParser, IJson {
 		String lambdaString = strings[0];
 		boolean valid = parser.createFunctionReference(lambdaString);
 		System.out.println("valid: " + valid);
+		Function<Integer, String> function = parser.getFunction("%bands");
+		String bandName = function.apply(1);
+		System.out.println(bandName);
+		
 	}
 }
