@@ -76,8 +76,10 @@ public class TextGeneratorRunner {
 		List<String> generatedText = generator.getGeneratedText();
 		
 		if(generatedText != null) {
-			for(Iterator<String> it=generatedText.iterator(); it.hasNext();) {
-				System.out.println(it.next());
+			for(String text : generatedText) {
+				if(text.length()>0) {
+					System.out.println(text);
+				}
 			}
 		}
 	}
