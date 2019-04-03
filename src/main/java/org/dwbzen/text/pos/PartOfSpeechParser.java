@@ -3,17 +3,15 @@ package org.dwbzen.text.pos;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 import org.dwbzen.common.util.IJson;
 import org.dwbzen.text.util.DataSourceType;
+import org.dwbzen.text.util.FunctionManager;
 import org.dwbzen.text.util.exception.ConfigurationException;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -32,7 +30,6 @@ public class PartOfSpeechParser implements IPatternParser, IJson {
 	@JsonProperty("error")	private String error = "";
 	@JsonProperty("patterns")	private List<PatternWord> patternWords = new ArrayList<PatternWord>();
 	@JsonProperty			private  Set<String> partsOfSpeechSet = PartsOfSpeechManager.getLoadedPartsOfSpeech();
-	@JsonIgnore				private Map<String, Function<Integer, String>>	functionMap = new TreeMap<>();
 
 	/**
 	 * replacement variables: $1, ... $9
@@ -215,7 +212,8 @@ public class PartOfSpeechParser implements IPatternParser, IJson {
 					createFunctionReference(lambdaString);
 				}
 				else {
-					patternWord = new PatternWord(1, 1, lambdaString);
+					// PatternWord treat the lambda name (%aname) as in-line text, empty choices
+					patternWord = new PatternWord(1, 1, "", lambdaString);
 					patternWords.add(patternWord);
 				}
 			}
@@ -293,7 +291,8 @@ public class PartOfSpeechParser implements IPatternParser, IJson {
 				}
 				consumer.accept(t, params);
 				function = (Function<Integer, String>)consumer;
-				functionMap.put(key, function);
+				FunctionManager manager = FunctionManager.getInstance();
+				manager.addFunction(key, function);
 			} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
 				System.err.println("Configuration error: " + e.getMessage());
 				e.printStackTrace();
@@ -326,18 +325,6 @@ public class PartOfSpeechParser implements IPatternParser, IJson {
 		return partsOfSpeechSet;
 	}
 
-	/**
-	 * 
-	 * @param name The name of the function you want.
-	 * @return the Function<Integer, String> associated to the name, or null if no such function exists
-	 */
-	public Function<Integer, String> getFunction(String name) {
-		Function<Integer, String> function = null;
-		if(functionMap.containsKey(name)) {
-			function = functionMap.get(name);
-		}
-		return function;
-	}
 	
 	public static void main(String...strings ) {
 		// simple test
@@ -345,7 +332,7 @@ public class PartOfSpeechParser implements IPatternParser, IJson {
 		String lambdaString = strings[0];
 		boolean valid = parser.createFunctionReference(lambdaString);
 		System.out.println("valid: " + valid);
-		Function<Integer, String> function = parser.getFunction("%bands");
+		Function<Integer, String> function = FunctionManager.getInstance().getFunction("%band");
 		String bandName = function.apply(1);
 		System.out.println(bandName);
 		

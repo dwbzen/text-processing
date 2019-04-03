@@ -17,4 +17,5 @@ public interface IPatternParser {
 	boolean isValid();
 	
 	String getError();
+	
 }

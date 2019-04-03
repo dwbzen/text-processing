@@ -1,0 +1,3 @@
+// a test of lambda function in pattern
+%band=org.dwbzen.text.pos.TextGenerator(TextFile,src/main/resources/reference/bandNamePatterns.txt,TC);
+(In)H(for a concert with ')%band;(' and ')%band;(')(.)

@@ -187,7 +187,6 @@ public class PartOfSpeechPattern extends TextPattern {
 		return error;
 	}
 
-
 	@Override
 	public void forEachRemaining(Consumer<? super PatternWord> arg0) {
 		// TODO Auto-generated method stub

@@ -16,6 +16,7 @@ import java.util.function.Function;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dwbzen.text.util.DataSourceType;
+import org.dwbzen.text.util.FunctionManager;
 import org.dwbzen.text.util.ITextGenerator;;
 
 /**
@@ -164,6 +165,7 @@ public class TextGenerator implements ITextGenerator, Function<Integer, String>,
 		boolean isText = false;
 		boolean setVariable = false;
 		boolean useVariable = false;
+		boolean isLambda = false;
 		String variable = null;
 		for(int j=0; j<nwords; j++) {
 			String c = pattern.substring(j, j+1);
@@ -176,8 +178,22 @@ public class TextGenerator implements ITextGenerator, Function<Integer, String>,
 						generatedList.add(variables.get(sb.toString()));
 						useVariable = false;
 					}
-					else
-						generatedList.add(sb.toString());
+					else {
+						if(!isLambda) {
+							generatedList.add(sb.toString());
+						}
+						else {
+							// we have a lambda name
+							String lambdaKey = sb.toString();
+							Function<Integer, String> lambdaFunction = FunctionManager.getInstance().getFunction(lambdaKey);
+							if(lambdaFunction != null) {
+								String lambdaResult = lambdaFunction.apply(1);
+								generatedList.add(lambdaResult);
+							}
+							isLambda = false;
+						}
+						
+					}
 				}
 				else {
 					sb = new StringBuffer();
@@ -192,6 +208,10 @@ public class TextGenerator implements ITextGenerator, Function<Integer, String>,
 			else if(c.equals("=")) {	// set a variable
 				setVariable = true;
 				continue;
+			}
+			else if(c.equals("%") && isText) {
+				// the inline text is a lambda name and NOT literal text to insert
+				isLambda = true;
 			}
 			if(isText) {
 				sb.append(c);
@@ -475,6 +495,7 @@ public class TextGenerator implements ITextGenerator, Function<Integer, String>,
 	 * Implements Function<Integer, String>
 	 */
 	public String apply(Integer t) {
+		generatedText.clear();
 		generate(t);
 		return generatedText.stream().collect(StringBuilder::new, StringBuilder::append, StringBuilder::append).toString();
 	}
