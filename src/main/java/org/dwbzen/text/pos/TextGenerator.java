@@ -261,13 +261,14 @@ public class TextGenerator implements ITextGenerator, Function<Integer, String>,
 			String outputDelim = csvOutput ? "," : (tabSeparatedOutput? "\t" : (addDelimiter ? SPACE : ""));
 			int len = generatedList.size();
 			boolean startOfSentence = true;
-			
+			boolean startOfQuote = false;
 			for(int i=0; i<len; i++){
 				String s = generatedList.get(i);
 				log.debug("'" + s + "'");
 				int punctIndex = PUNCUTATION.indexOf(s);	// >=0 if the string is a single PUNCTUATION character
 				int blen = sb.length();
-				if(punctIndex >= 0) {
+				if(punctIndex >= 0 && sb.charAt(blen-1) == ' ') {
+					// substitute the final character only if it's a blank
 					sb.replace(blen-1, blen, s);
 				}
 				else {
@@ -296,7 +297,8 @@ public class TextGenerator implements ITextGenerator, Function<Integer, String>,
 					}
 				}
 				startOfSentence = (s.endsWith(".") || s.endsWith("?") || s.endsWith("!"));
-				if(i <len-1) {
+				startOfQuote = s.length() == 1 && ( s.startsWith("\"") || s.startsWith("'"));
+				if(i <len-1 && !startOfQuote) {
 					sb.append(outputDelim);
 				}
 			}
