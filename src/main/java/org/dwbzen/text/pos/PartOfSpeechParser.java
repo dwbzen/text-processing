@@ -272,7 +272,7 @@ public class PartOfSpeechParser implements IPatternParser, IJson {
 		int endIndex = lambdaString.indexOf('=');
 		String key = lambdaString.substring(0, endIndex);
 		int parenIndexOpen = lambdaString.indexOf('(');
-		int parenIndexClose = lambdaString.indexOf(')');
+		int parenIndexClose = lambdaString.lastIndexOf(')');
 		int commaIndex = lambdaString.indexOf(',', parenIndexOpen);
 		if(parenIndexOpen > 0 && parenIndexClose > parenIndexOpen && commaIndex > 0) {
 			className = lambdaString.substring(endIndex+1, parenIndexOpen);

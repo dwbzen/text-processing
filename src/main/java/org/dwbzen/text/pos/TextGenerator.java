@@ -58,11 +58,11 @@ public class TextGenerator implements ITextGenerator, Function<Integer, String>,
 	
 	private PartsOfSpeechManager partsOfSpeechManager = null;
 	private Map<String, List<String>> wordMap = null;
-	private Map<String, Integer> posCount = new HashMap<String, Integer>();
+	private Map<String, Integer> posCount = new HashMap<>();
 	private List<PartOfSpeechPattern> partOfSpeechPatterns = new ArrayList<PartOfSpeechPattern>();
-	private List<String> patternList = new ArrayList<String>();	// raw patterns
-	private List<String>generatedText = new ArrayList<String>();
-	private List<String>postProcessing = new ArrayList<String>();
+	private List<String> patternList = new ArrayList<>();	// raw patterns
+	private List<String>generatedText = new ArrayList<>();
+	private List<String>postProcessing = new ArrayList<>();
 	private boolean upperCase = false;
 	private boolean sentenceCase = false;
 	private boolean titleCase = false;
@@ -120,7 +120,8 @@ public class TextGenerator implements ITextGenerator, Function<Integer, String>,
 	public void generate(int numberToGenerate) {
 		int len = partOfSpeechPatterns.size();
 		String text = null;
-		for(int i=0; i< numberToGenerate; i++) {
+		int counter = 0;
+		while(counter < numberToGenerate) {
 			int patInd = random.nextInt(len);
 			PartOfSpeechPattern posPattern = partOfSpeechPatterns.get(patInd);
 			if(!posPattern.isValid()) {
@@ -129,9 +130,15 @@ public class TextGenerator implements ITextGenerator, Function<Integer, String>,
 			else {
 				text = generateText(posPattern);
 			}
-			generatedText.add(text);
 			if(text.startsWith("ERROR")) {
 				break;
+			}
+			else if(text.length() > 0) {
+				/*
+				 * generateText returns an empty String if the pattern is a lambda definition
+				 */
+				generatedText.add(text);
+				counter++;
 			}
 		}
 		return;
@@ -153,8 +160,10 @@ public class TextGenerator implements ITextGenerator, Function<Integer, String>,
 	}
 	
 	/**
-	 * Generates a text String from a given PartOfSpeechPattern
-	 * @return a String that starts with "ERROR" if any errors encountered.
+	 * Generates a text String from a given PartOfSpeechPattern.
+	 * A PartOfSpeechPattern that defines a lambda function (%name=..) has
+	 * a length of 0. The resulting generated text will be an empty String.
+	 * @return generated text String or blank, A String that starts with "ERROR" if any errors encountered. 
 	 */
 	public String generateText(PartOfSpeechPattern posPattern) {
 		StringBuffer sb = new StringBuffer();

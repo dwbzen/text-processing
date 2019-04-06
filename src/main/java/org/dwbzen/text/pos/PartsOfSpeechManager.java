@@ -58,9 +58,9 @@ import org.dwbzen.text.util.Configuration;
 	X	present tense verb (V, t)
 	x	past tense verb (V, t)
 	
-	B	body part
-	b	body part - male
-	d	body part - female
+	B	body part 
+	b	body part - male    (optional tagged) added automatically for B
+	d	body part - female  (optional tagged) added automatically for B
 	
 	Unused in legacy: E, J, K, O, Q, R, T, U, W, Y, a, e, f, g, j, k, m, n, q, s, u, w, y
 
@@ -297,10 +297,9 @@ public class PartsOfSpeechManager {
 		}
 		for(int i=0; i<pos.length();i++) {
 			// a word can have multiple parts of speech
-			String apos = String.valueOf(pos.charAt(i));
+			char apos = pos.charAt(i);
 			boolean isproper = word.matches(PROPER_WORD);
-			int nind = apos.indexOf('N');
-			if(nind >= 0) {
+			if(apos == 'N') {
 				if(isproper) {
 					saveWord(word, apos + "L");
 				}
@@ -308,8 +307,11 @@ public class PartsOfSpeechManager {
 					saveWord(word, apos + "l");
 				}
 			}
+			else if(apos == 'B') {
+				saveWord(word, apos + "db");
+			}
 			else {
-				saveWord(word, apos);
+				saveWord(word, String.valueOf(apos));
 			}
 			fileWords++;
 		}

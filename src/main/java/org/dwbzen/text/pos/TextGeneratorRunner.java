@@ -2,7 +2,6 @@ package org.dwbzen.text.pos;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class TextGeneratorRunner {

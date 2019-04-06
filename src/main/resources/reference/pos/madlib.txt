@@ -1,11 +1,16 @@
-// comments - (\n) is an embedded '\n'
-// a pattern can be spread across multiple lines
-// lines ending with '+' indicate this
-// Add punctuation as a one-character literal such as (,)
+// Sample pattern - (\n) is an embedded '\n'
+// a pattern can be spread across multiple lines. Lines ending with '+' continue on the next line
+// Add punctuation as a one-character literal such as (,) (.) (") etc.
+// first line is a lambda definition.
+%band=org.dwbzen.text.pos.TextGenerator(TextFile,src/main/resources/reference/bandNamePatterns.txt,TC);
+%band2=org.dwbzen.text.pos.TextGenerator(Text,[M|F](and)(the)p,TC);
 $1=MS(,) $2=FS(and I traveled to)H(to see a)A N(.)(\n)+
 (We were shocked at the)A{1,2}[N|p](we saw!)(\n)+
 (I raised my)A{1,2}B(and noticed)Ap(.)(\n)+
 ($1)(saw)cp(on his) B (and)($2)(sported a)cN(on her) B(.)(\n)+
 ("Where did you get that)A{1,2}[b|B|d](")(?)(I asked)($2)(\n)+
 [("At)|("In)]H(")(,)(replied)($1)v(.)(\n)+
-(So we all went to)Q(,)R(where we enjoyed a fine meal of)T(and)T(.)(\n)
+(So we all went to)Q(,)R(where we enjoyed a fine meal of)T(and)T(,)(\n)+
+// next line invokes the lambda defined above
+(and a concert with )(")%band;(")( and )(")%band2;(")(.)(\n)
+

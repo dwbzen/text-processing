@@ -1,191 +1,190 @@
-about	P
-admire	Vt
-arms	pBbd
-around	P
-ass	NBbd
-awesome	!A
-balls	b
-bed	N
-belly-button	Bdb
-boobs	d
-booger	N
-brains	B
-chains	p
-chew	Vt
-chin	NBbd
-Damn	!
-disgusting	A
-ear	NBbd
-ears	pB
-eat	Vt
-enormous	A
-eye	Bbd
-eyes	pBbd
-face	NB
-far out	!
-fecund	A
-finger	NBbdVt
-food	N
-foot	Bbd
-for	P
-gigantic	A
-grab	Vt
-greedily	v
-groovy	A
-grope	Vi
-hair	NBbd
-hand	Bbd
-he	rN
-her	r
-his	Dr
-Holy crap	!
-hot	A
-I'd	N
-in	P
-into	P
-it	rN
-Jell-O	N
-legs	pBbd
-like	Vt
-lips	Bbd
-loudly	v
-love	Vt
-make whoopee	Vi
-mouth	Bbd
-my God	!
-my	P
-noisilly	v
-of	P
-oh my	!
-on	P
-over	P
-penis	b
-pinky	Bbd
-readily	v
-revolting	A
-rub	Vt
-she	rN
-slimy	A
-sloppy	A
-soft	A
-the bomb	A
-them	rp
-they	rp
-to	P
-toe	NBbd
-toes	pBbd
-tongue	Bbd
-us	rp
-used	A
-want	Vt
-we	rp
-wet	A
-whip	N
-wildly	v
-with	P
-red	c
-orange	c
-yellow	c
-blue	c
-indigo	c
-violet	c
-puce	c
-shit-brindle brown	c
-brown	c
-gray	c
-white	c
-teal	c
-coldsore-red	c
-pink	c
-flesh-colored	c
-off-white	c
-royal blue	c
-purple	c
 Africa	H
 America	HR
 Antarctic	H
 Arabia	HR
-the Arctic Circle	H
 Asia	H
-the Atlantic Ocean	H
 Australia	HR
+Beijing	Q
+Belfast	Q
+Berlin	Q
+Boston	Q
 Britain	HR
+Buffalo	Q
 Canada	HR
-the Capital	H
-the Caribbean	H
 China	HR
 Chinatown	H
-the Deep South	H
-a dingy cellar	H
+Cuban sandwich	T
+Damascus	Q
+Damn	!
+Diet Coke	T
 Dixie	H
+Dr. Pepper	T
 England	HR
-an Episcopal Church	H
 Europe	H
-the Far East	H
 France	HR
 Germany	HR
 Great Britain	HR
 Greece	HR
 Hollywood	H
-the House of Representatives	H
+Holy crap	!
+I'd	N
 Iceland	HR
 India	HR
-the Indian Ocean	H
 Iran	HR
 Iraq	HR
 Ireland	HR
 Israel	HR
 Italy	HR
 Japan	HR
+Jell-O	N
+Jell-O Salad	T
 Jupiter	H
 Korea	HR
 Latin America	H
-the Laundromat	H
+London	Q
 Mars	H
 Mecca	H
-the Mediterranean	H
-the men's room	H
 Mercury	H
 Mexico	HR
 Middle America	H
+Mississippi	H
+Moscow	Q
+Nairobi	Q
+Northern Ireland	HR
+Rochester	Q
+Rome	Q
+San Francisco	Q
+Sao Paolo	Q
+Syria	HR
+USA	HR
+a dingy cellar	H
+about	P
+admire	Vt
+an Episcopal Church	H
+arms	pB
+around	P
+ass	NB
+awesome	!A
+balls	b
+bed	N
+beer	T
+belly-button	B
+blood pudding	T
+blue	c
+boobs	d
+booger	N
+brains	B
+brown	c
+chains	p
+chew	Vt
+chin	NB
+chocolate ants	pT
+coldsore-red	c
+cupcakes	pT
+disgusting	A
+ear	NB
+ears	pB
+eat	Vt
+enormous	A
+escargot	T
+eye	Bbd
+eyes	pB
+face	NB
+far out	!A
+fecund	A
+finger	NBVt
+flesh-colored	c
+food	N
+foot	B
+for	P
+fried grasshopper	T
+fried rice	T
+gigantic	A
+grab	Vt
+gray	c
+greedily	v
+groovy	A!
+grope	Vi
+hair	B
+hand	B
+he	rN
+her	r
+his	Dr
+hot	A
+in	P
+indigo	c
+into	P
+it	rN
+legs	pB
+like	Vt
+lips	B
+loudly	v
+love	Vt
+make whoopee	Vi
+mouth	B
+my	P
+my God	!
+noisilly	v
+of	P
+off-white	c
+oh my	!
+on	P
+orange	c
+over	P
+penis	b
+pink	c
+pinky	B
+pizza	T
+pot roast	T
+puce	c
+purple	c
+readily	v
+red	c
+revolting	A
+royal blue	c
+rub	Vt
+she	rN
+shit-brindle brown	c
+short ribs	T
+slimy	A
+sloppy	A
+soft	A
+spaghetti	T
+sushi	T
+tacos	pT
+teal	c
+the Arctic Circle	H
+the Atlantic Ocean	H
+the Capital	H
+the Caribbean	H
+the Deep South	H
+the Far East	H
+the House of Representatives	H
+the Indian Ocean	H
+the Laundromat	H
+the Mediterranean	H
 the Middle East	H
 the Midwest	H
 the Milky Way	H
-Mississippi	H
-Northern Ireland	HR
-Syria	HR
-the women's room	H
 the YMCA	H
-USA	HR
-tacos	pT
-escargot	T
-spaghetti	T
+the bomb	A
+the men's room	H
+the women's room	H
+them	rp
+they	rp
+to	P
+toe	NB
+toes	pB
+tongue	B
+us	rp
+used	A
+violet	c
+want	Vt
+we	rp
+wet	A
+whip	N
+white	c
+wildly	v
 wine & cheese	T
-fried grasshopper	T
-chocolate ants	pT
-Cuban sandwich	T
-short ribs	T
-cupcakes	pT
-beer	T
-Diet Coke	T
-pizza	T
-blood pudding	T
-sushi	T
-Dr. Pepper	T
-fried rice	T
-pot roast	T
-Jell-O Salad	T
-Belfast	Q
-Boston	Q
-London	Q
-Beijing	Q
-Buffalo	Q
-Rochester	Q
-Berlin	Q
-Rome	Q
-Moscow	Q
-Nairobi	Q
-Damascus	Q
-Sao Paolo	Q
-San Francisco	Q
-
+with	P
+yellow	c
