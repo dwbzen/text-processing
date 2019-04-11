@@ -24,15 +24,15 @@ public class TextService {
 		List<String> generatedText = null;
 		String theType = typeid.toLowerCase();
 		if(theType.startsWith("band")) {
-			// generate band names
+			// http://localhost:8080/text-service/rest/TextService/bands/20
 			generatedText = generateBandNames(num);
 		}
 		else if(theType.startsWith("drug")) {
-			// generate drug names
+			// http://localhost:8080/text-service/rest/TextService/drugs/20
 			generatedText = generateDrugNames(num);
 		}
 		else if(theType.startsWith("insult")) {
-			// generate insults
+			// http://localhost:8080/text-service/rest/TextService/insults/20
 			generatedText = generateInsults(num);
 		}
 		return generatedText;

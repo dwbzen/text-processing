@@ -16,11 +16,11 @@ public class TextDao {
 	};
 	
 	public static String[] insultPatterns = {
-			"(Why don't you just come over here and)v?[V|t](my)A{1,2}[b|B](?)"
+			"!(Where did you get that)A{1,3}[b|B](?)"
 	};
 	
 	public static String[] defaultPatterns = {
-			"(That's no )N(,) (that's my) A{1,2}[N|p](!)"
+			"(We are)G(the)AA[p|h](\\n)"
 	};
 	
 	public static String[] getPatterns(String theType) {
