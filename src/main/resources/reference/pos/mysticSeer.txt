@@ -1,0 +1,16 @@
+// Ask a question - get an answer from the Mystic Seer
+// Adopted from the Twilight Zone episode, "Nick of Time"
+[(Please)|(Don't)](Try Again)
+(There's no question about it)
+(It)[(has)|(has not)](been decided in your favor)
+(If you move)[(soon)|(now)|(tomorrow)|(next week)]
+(You dare risk finding out)(?)
+(That makes a good deal of sense)
+(You may never know)
+(What do you think)(?)
+(Your chances are)[(good)|(bad)|(vanishingly small)|(excellent)|(zero)]
+(It)[(has already been)|(hasn't been)|(never will be)](taken care of)
+(If that's what you really want)
+(That's up to you to)[(find out)|(discover)|(ignore)]
+(It all depends on your point of view)
+(Consult with)[M|F](to find out)
