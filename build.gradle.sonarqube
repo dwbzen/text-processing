@@ -16,8 +16,8 @@ apply plugin: 'eclipse'
 apply plugin: 'maven'
 apply plugin: 'war'
 
-sourceCompatibility = 10
-targetCompatibility = 10
+sourceCompatibility = 11
+targetCompatibility = 11
 version = '2.0'
 project.group = 'text-processing'
 project.description = "Text Processing Framework"
