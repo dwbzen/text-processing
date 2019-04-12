@@ -1,6 +1,7 @@
 A{1,2}[N|h|p]
 [M|F|N](and)(the)A?p
 NV(and)G
+[M|F|N](the)[NH]
 [M|F](and)(the)p
 A?Gp
 (The)A?p

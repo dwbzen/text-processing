@@ -145,7 +145,7 @@ public class PartOfSpeechParser implements IPatternParser, IJson {
 				variable = 0;
 				continue;
 			}
-			else if(c == '?') {
+			else if(c == '?' && !isText) {		// (?) punctuation
 				words.add(word);
 				patternWord = new PatternWord(0, 1, word);
 				patternWords.add(patternWord);				

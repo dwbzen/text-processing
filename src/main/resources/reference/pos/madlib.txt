@@ -8,9 +8,8 @@ $1=MS(,) $2=FS(and I traveled to)H(to see a)A N(.)(\n)+
 (We were shocked at the)A{1,2}[N|p](we saw!)(\n)+
 (I raised my)A{1,2}B(and noticed)Ap(.)(\n)+
 ($1)(saw)cp(on his) B (and)($2)(sported a)cN(on her) B(.)(\n)+
-("Where did you get that)A{1,2}[b|B|d](")(?)(I asked)($2)(\n)+
+("Where did you get that)A{1,2}[b|B|d](?)(")( I asked)($2)(.)(\n)+
 [("At)|("In)]H(")(,)(replied)($1)v(.)(\n)+
 (So we all went to)Q(,)R(where we enjoyed a fine meal of)T(and)T(,)(\n)+
 // next line invokes the lambda defined above
 (and a concert with )(")%band;(")( and )(")%band2;(")(.)(\n)
-
