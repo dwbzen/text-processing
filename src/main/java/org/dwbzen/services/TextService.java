@@ -16,16 +16,18 @@ import org.dwbzen.text.pos.TextGenerator;
 @Path("/TextService") 
 public class TextService {
 
+	private TextDao textDao = new TextDao();
+	
 	@GET 
 	@Path("/{typeid}/{number}") 
 	@Produces(MediaType.APPLICATION_JSON) 
 	public List<String> generateText(@PathParam("typeid") String typeid, @PathParam("number") int num) {
-		// typeid = bands | drugs | insults
+		// typeid = bands | drugs | insult | fortune | madlib
 		List<String> generatedText = null;
 		String theType = typeid.toLowerCase();
 		if(theType.startsWith("band")) {
 			// http://localhost:8080/text-service/rest/TextService/bands/20
-			generatedText = generateBandNames(num);
+			generatedText = generateFromPatternFile("bands", "TC", num);
 		}
 		else if(theType.startsWith("drug")) {
 			// http://localhost:8080/text-service/rest/TextService/drugs/20
@@ -33,7 +35,15 @@ public class TextService {
 		}
 		else if(theType.startsWith("insult")) {
 			// http://localhost:8080/text-service/rest/TextService/insults/20
-			generatedText = generateInsults(num);
+			generatedText = generateFromPatternFile("insults", "NC", num);
+		}
+		else if(theType.startsWith("fortune")) {
+			// http://localhost:8080/text-service/rest/TextService/fortune/1
+			generatedText = generateFromPatternFile("fortune", "NC", 1);
+		}
+		else if(theType.startsWith("madlib")) {
+			// http://localhost:8080/text-service/rest/TextService/madlib/10
+			generatedText = generateFromPatternFile("madlib", "NC", num);
 		}
 		return generatedText;
 	}
@@ -60,21 +70,7 @@ public class TextService {
 	@Path("/bands") 
 	@Produces(MediaType.APPLICATION_JSON) 
 	public List<String> generateText(@PathParam("typeid") String typeid) {
-		return generateBandNames(50);
-	}
-
-	private List<String> generateInsults(int num) {
-		List<String> generatedText = new ArrayList<>();
-		TextGenerator generator = TextGenerator.newInstance();
-		if(generator == null) {
-			generatedText.add("There was a problem creating TextGenerator");
-		}
-		else {
-			String[] patterns = TextDao.getPatterns("insult");
-			generator.setPatternList(patterns);
-			generatedText.addAll(generator.generateText(num));
-		}
-		return generatedText;
+		return generateFromPatternFile("bands", "TC", 50);
 	}
 
 	private List<String> generateDrugNames(int num) {
@@ -84,25 +80,22 @@ public class TextService {
 		
 		return generatedText;
 	}
-
-	/*
-	 * -lib  "build/resources/main/reference/bandNamePatterns.txt" -n num -format TC
-	 * @param num
-	 * @return
-	 */
-	private List<String> generateBandNames(int num) {
+	
+	private List<String> generateFromPatternFile(String type, String postProcessing, int num) {
 		TextGenerator generator = TextGenerator.newInstance();
 		List<String> generatedText = new ArrayList<>();
 		if(generator == null) {
 			generatedText.add("There was a problem creating TextGenerator");
 		}
 		else {
-			String[] patterns = TextDao.getPatterns("band");
+			String[] patterns = textDao.getPatterns(type);
 			generator.setPatternList(patterns);
-			generator.setPostProcessing("TC");
+			generator.setPostProcessing(postProcessing);
 			generator.generate(num);
 			generatedText.addAll(generator.getGeneratedText());
 		}
 		return generatedText;
 	}
+
+
 }
