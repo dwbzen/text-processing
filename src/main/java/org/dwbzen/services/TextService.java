@@ -42,8 +42,30 @@ public class TextService {
 			generatedText = generateFromPatternFile("fortune", "NC", 1);
 		}
 		else if(theType.startsWith("madlib")) {
-			// http://localhost:8080/text-service/rest/TextService/madlib/10
-			generatedText = generateFromPatternFile("madlib", "NC", num);
+			// http://localhost:8080/text-service/rest/TextService/madlib/2
+			List<String> temp = generateFromPatternFile("madlib", "NC", num);
+			generatedText = breakUpLines(temp, "\n");
+		}
+		else if(theType.startsWith("poem")) {
+			// http://localhost:8080/text-service/rest/TextService/poem/1
+			List<String> temp = generateFromPatternFile("poem", "SC", num);
+			generatedText = breakUpLines(temp, "\n");
+		}
+		return generatedText;
+	}
+	
+	private List<String> breakUpLines(List<String> temp, String delim) {
+		List<String> generatedText = new ArrayList<>();
+		/*
+		 * Break up each string into lines delimited by "\n"
+		 */
+		for(String text : temp) {
+			String[] lines = text.split(delim);
+			for(String s : lines) {
+				generatedText.add(s);
+			}
+			// add a blank line
+			generatedText.add("");
 		}
 		return generatedText;
 	}
@@ -73,7 +95,7 @@ public class TextService {
 		return generateFromPatternFile("bands", "TC", 50);
 	}
 
-	private List<String> generateDrugNames(int num) {
+	public List<String> generateDrugNames(int num) {
 		List<String> generatedText = new ArrayList<>();
 		
 		generatedText.add("ingenzomin");
@@ -81,21 +103,23 @@ public class TextService {
 		return generatedText;
 	}
 	
-	private List<String> generateFromPatternFile(String type, String postProcessing, int num) {
-		TextGenerator generator = TextGenerator.newInstance();
+	public List<String> generateFromPatternFile(String type, String postProcessing, int num) {
+		TextGenerator generator = new TextGenerator();
 		List<String> generatedText = new ArrayList<>();
-		if(generator == null) {
-			generatedText.add("There was a problem creating TextGenerator");
-		}
-		else {
-			String[] patterns = textDao.getPatterns(type);
-			generator.setPatternList(patterns);
-			generator.setPostProcessing(postProcessing);
-			generator.generate(num);
-			generatedText.addAll(generator.getGeneratedText());
-		}
+		String[] patterns = textDao.getPatterns(type);
+		generator.setPatternList(patterns);
+		generator.setPostProcessing(postProcessing);
+		generator.apply(num);
+		generatedText.addAll(generator.getGeneratedText());
 		return generatedText;
 	}
 
-
+	public static void main(String...strings ) {
+		TextService service = new TextService();
+		String gentype = strings != null ? strings[0] : "fortune";
+		List<String> textList = service.generateText(gentype, 1);
+		for(String text : textList) {
+			System.out.println(text);
+		}
+	}
 }

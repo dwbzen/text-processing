@@ -11,27 +11,12 @@ public class TextDao {
 		
 	}
 	
-	static String mysticSeerFile = "/reference/pos/mysticSeer.txt";
-	static String madlibFile = "/reference/pos/madLib.txt";
-	static String bandPatternsFile = "/reference/pos/bandNamePatterns.txt";
-	static String insultPatternsFile = "/reference/pos/insultPatterns.txt";
-
-	public static String[] bandPatterns = {
-			"A{1,2}[N|h|p]", 
-			"[M|F|N](and)(the)A?p",
-			"NV(and)G",
-			"[M|F](and)(the)p",
-			"A?Gp",
-			"(The)A?p",
-			"(A)N[(in)|(with)|(around)|(without)]A?p",
-			"A?Gp",
-			"N{1,2}p",
-			"[N|p]G[N|p]"
-	};
-	
-	public static String[] insultPatterns = {
-			"!(Where did you get that)A{1,3}[b|B](?)"
-	};
+	public static String mysticSeerFile = "/reference/pos/mysticSeer.txt";
+	public static String madlibFile = "/reference/pos/madlib.txt";
+	public static String bandPatternsFile = "/reference/pos/bandNamePatterns.txt";
+	public static String insultPatternsFile = "/reference/pos/insultPatterns.txt";
+	public static String drugNamesFile = "/reference/drugNames.txt";
+	public static String poetryPatternsFile = "/reference/pos/poetryPatterns.txt";
 	
 	public static String[] defaultPatterns = {
 			"(We are)G(the)AA[p|h](\\n)"
@@ -58,8 +43,14 @@ public class TextDao {
 			lines.toArray(patterns);
 		}
 		else if(theType.startsWith("madlib")) {
-			// invoke the mystic seer
+			// fill in a mad lib
 			List<String> lines = loadFile(madlibFile);
+			patterns = new String[lines.size()];
+			lines.toArray(patterns);
+		}
+		else if(theType.startsWith("poem")) {
+			//  create beat poem
+			List<String> lines = loadFile(poetryPatternsFile);
 			patterns = new String[lines.size()];
 			lines.toArray(patterns);
 		}
@@ -69,8 +60,13 @@ public class TextDao {
 		return patterns;
 	}
 	
+	/**
+	 * Loads a File as a resource
+	 * @param filename a resource text file
+	 * @return List<String> pattern lines
+	 */
 	public List<String>  loadFile(String filename) {
-		List<String> lineList = new ArrayList<>();
+		List<String> patterns = new ArrayList<>();
         URL url = getClass().getResource(filename);
         if(url == null) {
             throw new IllegalArgumentException("Could not load resource: \"" + filename + "\"");
@@ -83,16 +79,26 @@ public class TextDao {
         	}
         	String s = sb.toString();
         	String[] lines = s.split("\r\n");		// Windows
-        	for(String l : lines) {
-        		if(!l.startsWith("//")) {
-        			lineList.add(l);
-        		}
+			sb = new StringBuilder();
+        	for(String line : lines) {
+				if(line.startsWith("//"))
+					continue;
+				if(line.endsWith("+")) {
+					sb.append(line.substring(0, line.length() - 1));
+				}
+				else if(sb.length() > 0 ) {
+					sb.append(line);
+					patterns.add(sb.toString());
+					sb = new StringBuilder();
+				}
+				else
+					patterns.add(line);
         	}
         }
         catch(Exception e) {
         	System.err.println("Could not load " + filename + " " + e.toString());
         }
-		return lineList;
+		return patterns;
 	}
 	
 	public static void main(String...strings) {

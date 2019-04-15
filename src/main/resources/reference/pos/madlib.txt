@@ -2,7 +2,7 @@
 // a pattern can be spread across multiple lines. Lines ending with '+' continue on the next line
 // Add punctuation as a one-character literal such as (,) (.) (") etc.
 // first line is a lambda definition.
-%band=org.dwbzen.text.pos.TextGenerator(TextFile,src/main/resources/reference/bandNamePatterns.txt,TC);
+%band=org.dwbzen.text.pos.TextGenerator(Resource,/reference/pos/bandNamePatterns.txt,TC);
 %band2=org.dwbzen.text.pos.TextGenerator(Text,[M|F](and)(the)p,TC);
 $1=MS(,) $2=FS(and I traveled to)H(to see a)A N(.)(\n)+
 (We were shocked at the)A{1,2}[N|p](we saw!)(\n)+

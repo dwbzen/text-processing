@@ -15,6 +15,7 @@ import java.util.function.Function;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.dwbzen.services.TextDao;
 import org.dwbzen.text.util.DataSourceType;
 import org.dwbzen.text.util.FunctionManager;
 import org.dwbzen.text.util.ITextGenerator;;
@@ -273,6 +274,10 @@ public class TextGenerator implements ITextGenerator, Function<Integer, String>,
 			boolean startOfQuote = false;
 			for(int i=0; i<len; i++){
 				String s = generatedList.get(i);
+				if(s == null || s.length() == 0) {
+					System.err.println("null string");
+					continue;
+				}
 				log.debug("'" + s + "'");
 				int punctIndex = PUNCUTATION.indexOf(s);	// >=0 if the string is a single PUNCTUATION character
 				int blen = sb.length();
@@ -388,7 +393,8 @@ public class TextGenerator implements ITextGenerator, Function<Integer, String>,
 	
 	public void setPatternList(String[] patterns) {
 		for(int i=0; i<patterns.length; i++) {
-			addPattern(patterns[i]);
+			String thePattern = patterns[i];
+			addPattern(thePattern);
 		}
 	}
 	
@@ -476,7 +482,7 @@ public class TextGenerator implements ITextGenerator, Function<Integer, String>,
 		try {
 			BufferedReader fileReader = new BufferedReader(new FileReader(f));
 			String line = null;
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			while((line = fileReader.readLine()) != null) {
 				if(line.startsWith("//"))
 					continue;
@@ -486,7 +492,7 @@ public class TextGenerator implements ITextGenerator, Function<Integer, String>,
 				else if(sb.length() > 0 ) {
 					sb.append(line);
 					patterns.add(sb.toString());
-					sb = new StringBuffer();
+					sb = new StringBuilder();
 				}
 				else
 					patterns.add(line);
@@ -516,7 +522,8 @@ public class TextGenerator implements ITextGenerator, Function<Integer, String>,
 	 * Configures TextGenerator for a given DataSourceType using comma-delimited parameter arguments provided.</br>
 	 * The first parameter is either a path to a template file (TextFile) or a text pattern (Text)</br>
 	 * The second parameter is a valid post-processing specification: TC, UC, LC, etc.
-	 * @param dsType a valid DataSourceType  (TextFile or Text)
+	 * 
+	 * @param dsType a valid DataSourceType  (TextFile, Resource, or Text)
 	 * @param args comma-delimited String arguments
 	 * @throws IllegalArgumentException if any problems such as file not found, missing params, or invalid pattern.
 	 */
@@ -538,6 +545,11 @@ public class TextGenerator implements ITextGenerator, Function<Integer, String>,
 		}
 		else if(dsType == DataSourceType.Text) {
 			addPattern(params[0]);
+		}
+		else if(dsType == DataSourceType.Resource) {
+			TextDao dao = new TextDao();
+			List<String> patterns = dao.loadFile(params[0]);
+			setPatternList(patterns);
 		}
 		else  {
 			throw new IllegalArgumentException("Unsupported DataSourceType: " + dsType);

@@ -2,15 +2,16 @@
 // a pattern can be spread across multiple lines
 // lines ending with '+' indicate this
 //
+(Some sort of)N(,)N(,)(or)N(\n)+
+(    )V(with)AB(\n)+
 (I am)G(into the)AN(\n)+
-FXv(\n)+
-C(,)Mxv(\n)+
+FXv(,)(eating)T(with)T(\n)+
+(    )C(,)M(in)Hxv(\n)+
 (We are)G(the)AA[p|h](\n)+
 (My)NvV(\n)+
 Ft(my)AN(while)FXv(\n)+
-ANX(me-)ApXF(\n)+
+(    )ANX(me -)ApXF(\n)+
 !(!)[(Where)|(Is)|(Why)|(What)]ANvx(?)(\n)+
-Dhtv(,)Dhtv(!)
-// the next one is stand alone
-hiv+
-!(!)[(Will)|(Is)|(How)|(What)]ANrvtp(?)
+(    )Dhtv(,)Dhtv(!)(\n)+
+(        )hiv(\n)+
+[(Will)|(Is)|(How)|(What)]ANrvtp(?)

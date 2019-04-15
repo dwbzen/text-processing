@@ -288,6 +288,8 @@ public class PartOfSpeechParser implements IPatternParser, IJson {
 					break;
 					case "JsonText": t = DataSourceType.JsonText;
 					break;
+					case "Resource": t = DataSourceType.Resource;
+					break;
 				}
 				consumer.accept(t, params);
 				function = (Function<Integer, String>)consumer;
