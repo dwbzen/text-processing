@@ -97,6 +97,8 @@ public class PartsOfSpeech implements IJson {
 		legacyPosMapping.put("v", new PartOfSpeech("adverb", PosCategory.adverb, "v", "a modifier of an adjective, verb, or another adverb"));
 		
 		partsOfSpeechLegacy.put("C", "Conjunction");
+		legacyPosMapping.put("C", new PartOfSpeech("conjunction", PosCategory.conjunction, "C", "joins two phrases"));
+		
 		partsOfSpeechLegacy.put("P", "Preposition");
 		partsOfSpeechLegacy.put("!", "Interjection");
 		partsOfSpeechLegacy.put("r", "Pronoun");

@@ -1,6 +1,6 @@
 // comments - (\n) is an embedded '\n'
 // a pattern can be spread across multiple lines
-// lines ending with '+' indicate this
+// by ending with '+'
 //
 (Some sort of)N(,)N(,)(or)N(\n)+
 (    )V(with)AB(\n)+
@@ -10,8 +10,9 @@ FXv(,)(eating)T(with)T(\n)+
 (We are)G(the)AA[p|h](\n)+
 (My)NvV(\n)+
 Ft(my)AN(while)FXv(\n)+
+(     eating)cAT(\n)+
 (    )ANX(me -)ApXF(\n)+
 !(!)[(Where)|(Is)|(Why)|(What)]ANvx(?)(\n)+
 (    )Dhtv(,)Dhtv(!)(\n)+
 (        )hiv(\n)+
-[(Will)|(Is)|(How)|(What)]ANrvtp(?)
+[(Will)|(Is)|(How)|(What)]AcNvtp(?)(\n)
