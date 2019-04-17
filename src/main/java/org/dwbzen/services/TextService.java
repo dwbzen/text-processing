@@ -27,7 +27,7 @@ public class TextService {
 		String theType = typeid.toLowerCase();
 		if(theType.startsWith("band")) {
 			// http://localhost:8080/text-service/rest/TextService/bands/20
-			generatedText = generateFromPatternFile("bands", "TC", num);
+			generatedText = generateFromPatternFile("bands", "TC,JSON", num);
 		}
 		else if(theType.startsWith("drug")) {
 			// http://localhost:8080/text-service/rest/TextService/drugs/20
