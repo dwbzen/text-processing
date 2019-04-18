@@ -78,7 +78,7 @@ public class TextDao {
         		sb.append((char)b);
         	}
         	String s = sb.toString();
-        	String[] lines = s.split("\r\n");		// Windows
+        	String[] lines = s.split("\\R");		// Unicode linebreak sequence
 			sb = new StringBuilder();
         	for(String line : lines) {
 				if(line.startsWith("//"))
