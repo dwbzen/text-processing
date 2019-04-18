@@ -116,8 +116,9 @@ public class TextService {
 
 	public static void main(String...strings ) {
 		TextService service = new TextService();
-		String gentype = strings != null ? strings[0] : "fortune";
-		List<String> textList = service.generateText(gentype, 1);
+		String gentype = strings != null && strings.length>0 ? strings[0] : "fortune";
+		int num = strings != null && strings.length == 2 ? Integer.parseInt(strings[1]) : 1;
+		List<String> textList = service.generateText(gentype, num);
 		for(String text : textList) {
 			System.out.println(text);
 		}

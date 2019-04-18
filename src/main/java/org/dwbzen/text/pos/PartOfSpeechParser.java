@@ -15,6 +15,7 @@ import org.dwbzen.text.util.exception.ConfigurationException;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
+ * Parse POS pattern text into PatternWords for text generation.
  * 
  * @author don_bacon
  *

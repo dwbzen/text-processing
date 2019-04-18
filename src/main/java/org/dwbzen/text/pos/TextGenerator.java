@@ -21,10 +21,10 @@ import org.dwbzen.text.util.FunctionManager;
 import org.dwbzen.text.util.ITextGenerator;;
 
 /**
- * Generates random text (words) from POS (part-of-speach) patterns.
- * Usage: TextGenerator [options] [pattern1 pattern2...]
- * Where: 
- * 	pattern1, pattern2...  :  POS pattern to use for text generation. 
+ * Generates random text (words) from POS (part-of-speach) patterns.</br>
+ * Usage: TextGenerator [options] [pattern1 pattern2...]</br>
+ * Where: </br>
+ * 	pattern1, pattern2...  :  POS pattern to use for text generation. </br>
  * Options:<br>
  * 	-pattern <text> : inline pattern to use<br>
  * 	-template <filename>   : path to text file containing patterns to select from<br>
@@ -40,16 +40,16 @@ import org.dwbzen.text.util.ITextGenerator;;
  *						TAB = tab-separated words<br>
  *						JSON:fieldname = as JSON array<br>
  * config.properties specifies the names and locations of POS files.</p>
- * Sample patterns:
- *  	[M|F|N](and)(the)A?p  - band name
- *  	!(where did you get that)A{1,3}[b|B](?) - puerile insults
- *  	hiv+
- *  	!(!)[(Will)|(Is)|(How)|(What)]ANrvtp(?) -  poetry
- *		ANp - simple example
- *
+ * Sample patterns:</br><code>
+ *  	[M|F|N](and)(the)A?p  - band name</br>
+ *  	!(where did you get that)A{1,3}[b|B](?) - puerile insults</br>
+ *  	hiv+</br>
+ *  	!(!)[(Will)|(Is)|(How)|(What)]ANrvtp(?) -  poetry</br>
+ *		ANp - simple example</br>
+ * </code>
  * @author don_bacon
- * @see org.dwbzen.text.pos.PartsOfSpeach for valid parts of speach
- * @see org.dwbzen.text.pos.PartOfSpeachPattern for valid patterns.
+ * @see org.dwbzen.text.pos.PartsOfSpeach PartsOfSpeach
+ * @see org.dwbzen.text.pos.PartOfSpeachPattern PartOfSpeachPattern
  *
  */
 public class TextGenerator implements ITextGenerator, Function<Integer, String>, BiConsumer<DataSourceType, String[]> {
@@ -275,7 +275,7 @@ public class TextGenerator implements ITextGenerator, Function<Integer, String>,
 			for(int i=0; i<len; i++){
 				String s = generatedList.get(i);
 				if(s == null || s.length() == 0) {
-					System.err.println("null string");
+					log.error("format: null string");
 					continue;
 				}
 				log.debug("'" + s + "'");
