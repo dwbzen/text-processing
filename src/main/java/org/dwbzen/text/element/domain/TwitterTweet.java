@@ -1,4 +1,4 @@
-package org.dwbzen.text.util.domain.model;
+package org.dwbzen.text.element.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

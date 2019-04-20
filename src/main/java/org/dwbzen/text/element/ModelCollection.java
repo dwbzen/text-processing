@@ -1,4 +1,4 @@
-package org.dwbzen.text.util.model;
+package org.dwbzen.text.element;
 import java.util.ArrayList;
 import java.util.List;
 

@@ -15,11 +15,10 @@ import java.util.stream.Stream;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dwbzen.text.util.model.Sentence;
-import org.dwbzen.text.util.model.Word;
-
 import org.dwbzen.common.cp.*;
 import org.dwbzen.common.math.OccurrenceProbability;
+import org.dwbzen.text.element.Sentence;
+import org.dwbzen.text.element.Word;
 
 
 public class WordProducer implements IProducer<MarkovChain<Character, Word, Sentence>, Word > { 

@@ -12,9 +12,9 @@ import java.util.regex.Pattern;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dwbzen.text.util.model.Book;
-import org.dwbzen.text.util.model.Book.ContentType;
-import org.dwbzen.text.util.model.Sentence;
+import org.dwbzen.text.element.Book;
+import org.dwbzen.text.element.Sentence;
+import org.dwbzen.text.element.Book.ContentType;
 
 /**
  * Encapsulates config.properties.</br>

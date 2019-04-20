@@ -1,7 +1,7 @@
 package org.dwbzen.text.junit;
 
-import org.dwbzen.text.util.model.Sentence;
-import org.dwbzen.text.util.model.Word;
+import org.dwbzen.text.element.Sentence;
+import org.dwbzen.text.element.Word;
 import org.junit.Test;
 
 import junit.framework.TestCase;

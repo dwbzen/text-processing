@@ -6,12 +6,11 @@ import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dwbzen.text.util.model.Sentence;
-import org.dwbzen.text.util.model.Word;
-
 import org.dwbzen.common.cp.CollectorStats;
 import org.dwbzen.common.cp.ICollector;
 import org.dwbzen.common.cp.MarkovChain;
+import org.dwbzen.text.element.Sentence;
+import org.dwbzen.text.element.Word;
 
 /**
  * Collects statistics on Characters within Words. The corresponding producer is WordProducer. </p>

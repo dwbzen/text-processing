@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.dwbzen.text.util.model.Sentence;
+import org.dwbzen.text.element.Sentence;
 
 /**
  * Takes text data in one form and transforms it to a standard format for a Collector

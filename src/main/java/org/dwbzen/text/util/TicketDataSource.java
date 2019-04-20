@@ -1,6 +1,6 @@
 package org.dwbzen.text.util;
 
-import org.dwbzen.text.util.domain.model.ServiceTicket;
+import org.dwbzen.text.element.domain.ServiceTicket;
 
 public class TicketDataSource implements IDataSource<ServiceTicket>{
 

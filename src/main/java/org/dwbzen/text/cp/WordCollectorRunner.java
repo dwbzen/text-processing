@@ -9,15 +9,14 @@ import java.util.TreeMap;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.dwbzen.text.element.Book;
+import org.dwbzen.text.element.Sentence;
+import org.dwbzen.text.element.Word;
+import org.dwbzen.text.element.Book.ContentType;
 import org.dwbzen.text.util.DataSourceDescription;
 import org.dwbzen.text.util.DataSourceType;
 import org.dwbzen.text.util.TextFileDataSource;
 import org.dwbzen.text.util.Util;
-import org.dwbzen.text.util.model.Book;
-import org.dwbzen.text.util.model.Book.ContentType;
-import org.dwbzen.text.util.model.Sentence;
-import org.dwbzen.text.util.model.Word;
-
 import org.dwbzen.common.cp.CollectorStats;
 import org.dwbzen.common.cp.MarkovChain;
 import org.dwbzen.common.cp.OutputStyle;

@@ -11,11 +11,10 @@ import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dwbzen.text.util.model.Sentence;
-import org.dwbzen.text.util.model.Word;
-
 import org.dwbzen.common.cp.*;
 import org.dwbzen.common.math.OccurrenceProbability;
+import org.dwbzen.text.element.Sentence;
+import org.dwbzen.text.element.Word;
 
 /**
  * Produces made-up Words based on the MarkovChain result from a CharacterCollector.<br>

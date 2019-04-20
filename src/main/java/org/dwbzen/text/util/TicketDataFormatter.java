@@ -2,9 +2,9 @@ package org.dwbzen.text.util;
 
 import java.io.IOException;
 
-import org.dwbzen.text.util.domain.model.ServiceTicket;
-import org.dwbzen.text.util.domain.model.ServiceTickets;
-import org.dwbzen.text.util.model.Sentence;
+import org.dwbzen.text.element.Sentence;
+import org.dwbzen.text.element.domain.ServiceTicket;
+import org.dwbzen.text.element.domain.ServiceTickets;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;

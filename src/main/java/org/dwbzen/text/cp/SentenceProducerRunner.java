@@ -6,11 +6,10 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.dwbzen.text.cp.WordCollectorRunner.WordCollectorBuilder;
-import org.dwbzen.text.util.model.Book;
-import org.dwbzen.text.util.model.Sentence;
-import org.dwbzen.text.util.model.Word;
-import org.dwbzen.text.util.model.Book.ContentType;
-
+import org.dwbzen.text.element.Book;
+import org.dwbzen.text.element.Sentence;
+import org.dwbzen.text.element.Word;
+import org.dwbzen.text.element.Book.ContentType;
 import org.dwbzen.common.cp.CollectorStats;
 import org.dwbzen.common.cp.MarkovChain;
 

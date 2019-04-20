@@ -2,9 +2,8 @@ package org.dwbzen.text.util;
 
 import java.util.List;
 
-import org.dwbzen.text.util.model.Word;
-
 import org.dwbzen.common.math.Tupple;
+import org.dwbzen.text.element.Word;
 
 public class WordTupple extends Tupple<Word> {
 

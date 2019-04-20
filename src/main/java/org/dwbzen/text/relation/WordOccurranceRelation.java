@@ -2,11 +2,10 @@ package org.dwbzen.text.relation;
 
 import java.util.Map;
 
+import org.dwbzen.text.element.Book;
+import org.dwbzen.text.element.Sentence;
+import org.dwbzen.text.element.Word;
 import org.dwbzen.text.util.WordTupple;
-import org.dwbzen.text.util.model.Book;
-import org.dwbzen.text.util.model.Sentence;
-import org.dwbzen.text.util.model.Word;
-
 import org.dwbzen.common.math.Tupple;
 import org.dwbzen.common.relation.OccurrenceRelation;
 

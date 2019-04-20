@@ -8,12 +8,11 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dwbzen.text.util.model.Book;
-import org.dwbzen.text.util.model.Sentence;
-import org.dwbzen.text.util.model.Word;
-
 import org.dwbzen.common.cp.*;
 import org.dwbzen.common.math.OccurrenceProbability;
+import org.dwbzen.text.element.Book;
+import org.dwbzen.text.element.Sentence;
+import org.dwbzen.text.element.Word;
 
 /**
  * Produces Sentences based on the MarkovChain result from a WordCollector.</p>

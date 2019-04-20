@@ -3,8 +3,8 @@ package org.dwbzen.text.util;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import org.dwbzen.text.util.domain.model.TwitterTweet;
-import org.dwbzen.text.util.domain.model.TwitterTweets;
+import org.dwbzen.text.element.domain.TwitterTweet;
+import org.dwbzen.text.element.domain.TwitterTweets;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonParser;

@@ -4,10 +4,9 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.function.BiFunction;
 
-import org.dwbzen.text.util.model.Word;
-
 import org.dwbzen.common.math.Tupple;
 import org.dwbzen.common.relation.Partitions;
+import org.dwbzen.text.element.Word;
 
 /**
  * Given a Tupple<Character>, and a Word instance, is computes the mean distance

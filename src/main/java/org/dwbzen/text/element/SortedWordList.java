@@ -1,4 +1,4 @@
-package org.dwbzen.text.util.model;
+package org.dwbzen.text.element;
 
 import java.io.IOException;
 import java.util.ArrayList;

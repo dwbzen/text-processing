@@ -1,4 +1,4 @@
-package org.dwbzen.text.util.model;
+package org.dwbzen.text.element;
 
 import org.dwbzen.common.util.IJson;
 import org.dwbzen.common.util.INameable;
