@@ -44,12 +44,12 @@ public class TextService {
 			generatedText = generateFromPatternFile("bands", "TC,JSON", num);
 		}
 		else if(theType.equalsIgnoreCase("drugNames")) {
-			// http://localhost:8080/text-service/rest/TextService/drugs/20
+			// sample: http://localhost:8080/text-service/rest/TextService/drugs/20?order=3
 			// -file  "$RESOURCE/drugNames.txt"  -order 2 -list -ignoreCase -num 20 -min 5 -format "TC" -init -stat false
 			generatedText = generateDrugNames(num, order, queryParams);
 		}
 		else if(theType.equalsIgnoreCase("firstNames")) {
-			// http://localhost:8080/text-service/rest/TextService/drugs/20
+			// sample: http://localhost:8080/text-service/rest/TextService/firstNames/10?gender=male&order=3
 			// -file  "$RESOURCE/drugNames.txt"  -order 2 -list -ignoreCase -num 20 -min 5 -format "TC" -init -stat false
 			generatedText = generateFirstNames(num, order, queryParams);
 		}
