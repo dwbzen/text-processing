@@ -31,13 +31,12 @@ import org.dwbzen.text.element.Word;
  *  -ignoreCase	Ignores case (converts input to lower)
  *  -repeat n	#times to run the producer - each run produces <num> Words
  *  -sort  	Sort the output.
- *  -list y|n		Display produce Words in order produced, default is 'n'
- *  -trace y|n	Traces seed picking. Sets trace mode on CharacterCollector, default is 'n'
+ *  -list true|false	Display produce Words in order produced, default is 'n'
+ *  -trace true|false	Traces seed picking. Sets trace mode on CharacterCollector, default is 'n'
  *  -format	post-processing: TC = title case, UC = upper case, LC = lower case
  *  -init		choose initial seed only (start of word)
  *  -pos		Specify parts of speech. Assumes file list includes a POS file.
- *  -stat y|n	Use Markov chain probabilities in production, otherwise
- *  		selects a successor at random. Default is 'Y'
+ *  -stat true|false	Use Markov chain probabilities in production, otherwise selects a successor at random. Default is 'true'
  *  </pre>
  *  
  * If you wanted to use the same seed, for example " KA" for womens names, specify -recycle number<br>
@@ -72,7 +71,7 @@ import org.dwbzen.text.element.Word;
 		boolean statistical = true;
 		int recycleSeedNumber = 1;		// how often to pick a new seed.
 		int repeats = 1;	// number of times to run WordProducer
-		int minLength = 0;
+		int minLength = 3;
 		int maxLength = 10;
 		boolean showOrderGenerated = false;
 		CharacterCollector collector = null;

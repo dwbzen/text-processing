@@ -59,6 +59,24 @@ public class CharacterCollector implements ICollector<Word, MarkovChain<Characte
 	private Word word = null;	// current Word we are scanning
 	
 	/**
+	 * Constructor for TextService
+	 * @param order
+	 * @param fileLines
+	 * @param ignoreCase
+	 */
+	public CharacterCollector(int order, List<String> fileLines, boolean ignoreCase) {
+		this.order = order;
+		this.ignoreCase = ignoreCase;
+		StringBuilder sb = new StringBuilder();
+		for(String line : fileLines) {
+			sb.append(ignoreCase ? line.toLowerCase() : line);
+			sb.append(" ");
+		}
+		setText(sb.toString());
+		setMarkovChain(new MarkovChain<Character, Word, Sentence>(order));
+	}
+	
+	/**
 	 * 
 	 * @param order length of the key in #of characters, usually 2 or 3
 	 * @param filename full path to the input file. Use null for STDIN
@@ -202,6 +220,7 @@ public class CharacterCollector implements ICollector<Word, MarkovChain<Characte
 	public void setTrace(boolean trace) {
 		this.trace = trace;
 		markovChain.setTrace(trace);
+		CollectorStats.trace = trace;
 	}
 	
 	public Character[] getFilters() {

@@ -17,7 +17,9 @@ public class TextDao {
 	public static String insultPatternsFile = "/reference/pos/insultPatterns.txt";
 	public static String drugNamesFile = "/reference/drugNames.txt";
 	public static String poetryPatternsFile = "/reference/pos/poetryPatterns.txt";
-	
+	public static String maleNamesFile = "/reference/maleFirstNames.txt";
+	public static String femaleNamesFile = "/reference/femaleFirstNames.txt";
+
 	public static String[] defaultPatterns = {
 			"(We are)G(the)AA[p|h](\\n)"
 	};
@@ -58,6 +60,17 @@ public class TextDao {
 			patterns = defaultPatterns;
 		}
 		return patterns;
+	}
+	
+	public List<String>  loadResource(String type, String params) {
+		List<String> lines = new ArrayList<>();
+		if(type.equalsIgnoreCase("drugNames")) {
+			lines = loadFile(drugNamesFile);
+		}
+		else if(type.equalsIgnoreCase("firstNames")) {
+			lines = params.equalsIgnoreCase("male") ? loadFile(maleNamesFile) : loadFile(femaleNamesFile);
+		}
+		return lines;
 	}
 	
 	/**
