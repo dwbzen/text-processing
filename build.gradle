@@ -52,8 +52,8 @@ uploadArchives {
 dependencies {
     // Use JUnit test framework
     testImplementation 'junit:junit:4.12'
-    implementation  'org.apache.logging.log4j:log4j-api:2.11.1'
-    implementation  'org.apache.logging.log4j:log4j-core:2.11.1'
+    implementation  'org.apache.logging.log4j:log4j-api:2.11.2'
+    implementation  'org.apache.logging.log4j:log4j-core:2.11.2'
 	implementation  'commonlib:commonlib:1.0'
     implementation  'com.fasterxml.jackson.core:jackson-core:2.9.5'
     implementation  'com.fasterxml.jackson.core:jackson-annotations:2.9.5'

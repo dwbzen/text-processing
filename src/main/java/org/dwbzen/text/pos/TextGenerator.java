@@ -110,6 +110,7 @@ public class TextGenerator implements ITextGenerator, Function<Integer, String>,
 	 * @param pattern
 	 */
 	public void generate(int numberToGenerate, String pattern) {
+		log.info("pattern: " + pattern);
 		addPattern(pattern);
 		generate(numberToGenerate);
 	}
