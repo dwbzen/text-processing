@@ -55,6 +55,7 @@ Diovan
 Doxazosin
 Doxepin
 Duloxetine
+Dupixent
 Dutoprol
 Duzallo
 Econazole
@@ -154,6 +155,7 @@ Rizatriptan
 Rocephin
 Saxenda
 Simcor
+Skyrizi
 Solodyn
 Solosec
 Sotalol
@@ -209,6 +211,7 @@ Xarelto
 Xeljanz
 Xhance
 Xifaxan
+Xofluza
 Zetia
 Zoloft
 Zomig

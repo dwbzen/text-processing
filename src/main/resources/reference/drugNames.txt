@@ -83,6 +83,7 @@ Doxazosin
 Doxepin
 Doxycycline
 Duloxetine
+Dupixent
 Dutoprol
 Duzallo
 Econazole
@@ -221,6 +222,7 @@ Sertraline
 Sildenafil
 Simcor
 Simvastatin
+Skyrizi
 Solodyn
 Solosec
 Sotalol
@@ -282,6 +284,7 @@ Xarelto
 Xeljanz
 Xhance
 Xifaxan
+Xofluza
 Zetia
 Zoloft
 Zomig

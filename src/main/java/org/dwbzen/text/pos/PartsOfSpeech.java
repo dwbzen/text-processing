@@ -20,6 +20,7 @@ public class PartsOfSpeech implements IJson {
 
 	private static final long serialVersionUID = 1L;
 	public static Map<String, String> partsOfSpeechLegacy = new HashMap<String, String>();
+	// Maps single-character legacy part of speech to PartOfSpeech
 	public static Map<String, PartOfSpeech> legacyPosMapping = new TreeMap<String, PartOfSpeech>();
 	
 	@JsonProperty	private List<PartOfSpeech> partsOfSpeech = new ArrayList<>();
@@ -81,11 +82,28 @@ public class PartsOfSpeech implements IJson {
 		legacyPosMapping.put("S", new PartOfSpeech("surname", PosCategory.noun, "S",  "Last Name", "noun"));
 
 		partsOfSpeechLegacy.put("l", "Improper Noun");
+		legacyPosMapping.put("l", new PartOfSpeech("improperNoun", PosCategory.noun, "l", "Improper Noun", "noun"));
+		
 		partsOfSpeechLegacy.put("p", "Plural");
+		legacyPosMapping.put("p", new PartOfSpeech("plural", PosCategory.noun, "p", "Plural Noun", "noun"));
+
 		partsOfSpeechLegacy.put("h", "Noun Phrase");
+		legacyPosMapping.put("h", new PartOfSpeech("nounPhrase", PosCategory.noun, "h", "Noun Phrase", "noun"));
+
 		partsOfSpeechLegacy.put("V", "Verb (participle)");
+		legacyPosMapping.put("V", new PartOfSpeech("participleVerb", PosCategory.verb, "V", "Verb (participle)", "verb"));
+
 		partsOfSpeechLegacy.put("t", "Verb (transitive)");
+		legacyPosMapping.put("t", new PartOfSpeech("transitiveVerb", PosCategory.verb, "t", "Verb (transitive)", "verb"));
+		
 		partsOfSpeechLegacy.put("i", "Verb (intransitive)");
+		legacyPosMapping.put("i", new PartOfSpeech("intransitiveVerb", PosCategory.verb, "i", "Verb (intransitive)", "verb"));
+		
+		partsOfSpeechLegacy.put("X", "Present tense verb");
+		legacyPosMapping.put("X", new PartOfSpeech("presentTenseVerb", PosCategory.verb, "X", "Verb (present tense)", "verb"));
+		
+		partsOfSpeechLegacy.put("x", "Past tense verb");
+		legacyPosMapping.put("x", new PartOfSpeech("pastTenseVerb", PosCategory.verb, "x", "Verb (past tense)", "verb"));
 		
 		partsOfSpeechLegacy.put("A", "Adjective");
 		legacyPosMapping.put("A", new PartOfSpeech("adjective", PosCategory.adjective, "A",  "modifies a noun or pronoun"));
@@ -108,8 +126,7 @@ public class PartsOfSpeech implements IJson {
 		partsOfSpeechLegacy.put("G", "Gerund");
 		partsOfSpeechLegacy.put("Z", "Derrived noun");
 		partsOfSpeechLegacy.put("z", "Derrived plural noun");
-		partsOfSpeechLegacy.put("X", "Present tense verb");
-		partsOfSpeechLegacy.put("x", "Past tense verb");
+
 		
 		partsOfSpeechLegacy.put("B", "Body part");
 		legacyPosMapping.put("B", new PartOfSpeech("bodyPart", PosCategory.noun, "B",  "body part", "noun"));
