@@ -4,10 +4,14 @@ package org.dwbzen.text.relation;
 import java.util.Map;
 import java.util.function.Function;
 
+import org.dwbzen.common.cp.OutputStyle;
+import org.dwbzen.common.math.SourceOccurrenceProbability;
+import org.dwbzen.common.math.Tupple;
+import org.dwbzen.common.relation.OccurrenceRelationBag;
 import org.dwbzen.text.element.Book;
+import org.dwbzen.text.element.Book.ContentType;
 import org.dwbzen.text.element.Sentence;
 import org.dwbzen.text.element.Word;
-import org.dwbzen.text.element.Book.ContentType;
 import org.dwbzen.text.util.Configuration;
 import org.dwbzen.text.util.IDataSource;
 import org.dwbzen.text.util.TextConfigurator;
@@ -15,13 +19,8 @@ import org.dwbzen.text.util.TextConfigurator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import org.dwbzen.common.math.SourceOccurrenceProbability;
-import org.dwbzen.common.math.Tupple;
-import org.dwbzen.common.cp.OutputStyle;
-import org.dwbzen.common.relation.OccurrenceRelationBag;
-
 public class WordOccurrenceRelationBag extends OccurrenceRelationBag<Word, Sentence, Book> {
-	private static final long serialVersionUID = 1L;
+
 	static OutputStyle outputStyle = OutputStyle.TEXT;
 	static boolean trace = true;
 	

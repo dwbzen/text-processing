@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import org.dwbzen.common.util.IJson;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import org.dwbzen.common.util.IJson;
 
 /**
  * A PatternWord is a "compiled" version of a text pattern word template such as N{2,5}</br>
@@ -20,7 +20,6 @@ import org.dwbzen.common.util.IJson;
  */
 public class PatternWord implements IJson {
 
-	private static final long serialVersionUID = 1815452894936278476L;
 	@JsonIgnore			private int rangeLow = 1;
 	@JsonIgnore			private int rangeHigh = 1;
 	@JsonIgnore			private String choices = null;	// could be only 1 or null if raw text

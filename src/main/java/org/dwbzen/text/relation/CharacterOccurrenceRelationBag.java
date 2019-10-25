@@ -6,18 +6,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.dwbzen.common.cp.OutputStyle;
+import org.dwbzen.common.math.SourceOccurrenceProbability;
+import org.dwbzen.common.math.Tupple;
+import org.dwbzen.common.relation.OccurrenceRelationBag;
 import org.dwbzen.text.element.Sentence;
 import org.dwbzen.text.element.Word;
 import org.dwbzen.text.util.TextFileReader;
 import org.dwbzen.text.util.Util;
-import org.dwbzen.common.math.SourceOccurrenceProbability;
-import org.dwbzen.common.math.Tupple;
-import org.dwbzen.common.cp.OutputStyle;
-import org.dwbzen.common.relation.OccurrenceRelationBag;
 
 public class CharacterOccurrenceRelationBag extends OccurrenceRelationBag<Character, Word, Sentence> {
 
-	private static final long serialVersionUID = 8408003287349121596L;
 	static OutputStyle outputStyle = OutputStyle.TEXT;
 	static boolean trace = false;
 

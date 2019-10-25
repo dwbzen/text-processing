@@ -51,8 +51,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class PartOfSpeechPattern extends TextPattern {
 
-	private static final long serialVersionUID = -30711369720096758L;
-	
 	@JsonProperty("rawPattern")	private String sentence;
 	@JsonIgnore					private String currentWord = null;
 	@JsonIgnore					private int currentIndex = 0;

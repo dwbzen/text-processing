@@ -14,7 +14,6 @@ import org.dwbzen.text.element.Word;
  */
 public class CharacterOccurrenceRelation extends OccurrenceRelation<Character, Word, Sentence>  {
 
-	private static final long serialVersionUID = 6745410389085910664L;
 	private boolean ignoreCase = true;
 	
 	protected CharacterOccurrenceRelation() {

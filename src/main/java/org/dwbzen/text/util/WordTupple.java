@@ -6,8 +6,6 @@ import org.dwbzen.common.math.Tupple;
 import org.dwbzen.text.element.Word;
 
 public class WordTupple extends Tupple<Word> {
-
-	private static final long serialVersionUID = 8455018677104575801L;
 	
 	public WordTupple() {
 		super();

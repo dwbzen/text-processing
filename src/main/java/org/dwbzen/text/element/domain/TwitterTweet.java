@@ -1,8 +1,8 @@
 package org.dwbzen.text.element.domain;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import org.dwbzen.common.util.IJson;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Example:</p>
@@ -19,7 +19,6 @@ import org.dwbzen.common.util.IJson;
  */
 public class TwitterTweet implements IJson {
 
-	private static final long serialVersionUID = 7887464081780013307L;
 	@JsonProperty("source")			private String source;
 	@JsonProperty("text")			private String text;
 	@JsonProperty("created_at")		private String created_at;

@@ -22,8 +22,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class PartOfSpeechParser implements IPatternParser, IJson {
 
-	private static final long serialVersionUID = 1L;
-
 	public PartOfSpeechParser() { }
 	
 	@JsonProperty("words")	private List<String> words = new ArrayList<String>();		// Sentence parsed into Words

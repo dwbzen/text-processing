@@ -3,13 +3,11 @@ package org.dwbzen.text.element.domain;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import org.dwbzen.common.util.IJson;
 
-public class TwitterTweets implements IJson  {
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-	private static final long serialVersionUID = -4788032781083735344L;
+public class TwitterTweets implements IJson  {
 	
 	@JsonProperty	List<TwitterTweet>	tweets = new ArrayList<>();
 	

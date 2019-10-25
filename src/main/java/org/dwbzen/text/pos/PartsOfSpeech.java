@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.dwbzen.common.util.IJson;
-import org.dwbzen.text.pos.PosCategory;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -18,7 +17,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 */
 public class PartsOfSpeech implements IJson {
 
-	private static final long serialVersionUID = 1L;
 	public static Map<String, String> partsOfSpeechLegacy = new HashMap<String, String>();
 	// Maps single-character legacy part of speech to PartOfSpeech
 	public static Map<String, PartOfSpeech> legacyPosMapping = new TreeMap<String, PartOfSpeech>();

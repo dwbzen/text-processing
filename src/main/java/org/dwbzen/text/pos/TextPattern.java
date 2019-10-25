@@ -2,9 +2,9 @@ package org.dwbzen.text.pos;
 
 import java.util.Set;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import org.dwbzen.common.util.IJson;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * A Pattern combines the following ideas:
@@ -43,8 +43,6 @@ import org.dwbzen.common.util.IJson;
  *
  */
 public abstract class TextPattern implements java.util.Iterator<PatternWord>, IJson {
-
-	private static final long serialVersionUID = 1L;
 	@JsonIgnore	protected Set<String> vocabulary;
 	
 	public Set<String> getVocabulary() {

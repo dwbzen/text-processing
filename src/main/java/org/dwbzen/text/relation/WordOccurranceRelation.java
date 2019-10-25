@@ -2,16 +2,15 @@ package org.dwbzen.text.relation;
 
 import java.util.Map;
 
+import org.dwbzen.common.math.Tupple;
+import org.dwbzen.common.relation.OccurrenceRelation;
 import org.dwbzen.text.element.Book;
 import org.dwbzen.text.element.Sentence;
 import org.dwbzen.text.element.Word;
 import org.dwbzen.text.util.WordTupple;
-import org.dwbzen.common.math.Tupple;
-import org.dwbzen.common.relation.OccurrenceRelation;
 
 public class WordOccurranceRelation extends OccurrenceRelation<Word, Sentence, Book> {
 	
-	private static final long serialVersionUID = -72193910166450859L;
 	private boolean ignoreCase = true;
 	private String id = null;
 
