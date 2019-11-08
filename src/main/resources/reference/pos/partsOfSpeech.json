@@ -22,6 +22,8 @@
 {"partOfSpeechCode":"h", "name":"nounPhrase", "description":"Noun Phrase"},
 {"partOfSpeechCode":"i", "name":"verbIntransitive", "description":"Verb (intransitive)"},
 {"partOfSpeechCode":"l", "name":"nounImproper", "description":"Improper Noun"},
+{"partOfSpeechCode":"w", "name":"digit", "description":"Random digit 0 to 9"},
+{"partOfSpeechCode":"W", "name":"digit", "description":"Random digit 1 to 9"},
 {"partOfSpeechCode":"o", "name":"nominative", "description":"Nominative"},
 {"partOfSpeechCode":"p", "name":"nounPlural", "description":"Plural"},
 {"partOfSpeechCode":"r", "name":"pronoun", "description":"Pronoun"},

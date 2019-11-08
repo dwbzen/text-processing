@@ -249,7 +249,18 @@ public class TextGenerator implements ITextGenerator, Function<Integer, String>,
 						generatedList.add(word);
 					}
 				}
+				else if(c.equalsIgnoreCase("w")) {
+					if(c.equals("w")) {
+						// generate a random number 0 to 9
+						generatedList.add(String.valueOf(random.nextInt(10)));
+					}
+					else {
+						// generate a random number 1 to 9
+						generatedList.add(String.valueOf(random.nextInt(1, 10)));
+					}
+				}
 				else {	// invalid POS key used
+					System.err.println("ERROR: Invalid part of speech: " + c);
 					return "ERROR: Invalid part of speech: " + c;
 				}
 			}

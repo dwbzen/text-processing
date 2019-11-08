@@ -49,6 +49,8 @@ import org.dwbzen.text.util.Configuration;
 	I	Indefinite Article
 	o	Nominative
 	c	Color
+	w	Random digit 0 to 9
+	W   Random digit 1 to 9
 	
 	Derived Forms
 	-------------
@@ -62,7 +64,7 @@ import org.dwbzen.text.util.Configuration;
 	b	body part - male    (optional tagged) added automatically for B
 	d	body part - female  (optional tagged) added automatically for B
 	
-	Unused in legacy: E, J, K, O, Q, R, T, U, W, Y, a, e, f, g, j, k, m, n, q, s, u, w, y
+	Unused in legacy: E, J, K, O, Q, R, T, U, Y, a, e, f, g, j, k, m, n, q, s, u, y
 
 */
 public class PartsOfSpeechManager {
@@ -352,12 +354,14 @@ public class PartsOfSpeechManager {
 			case 'b':
 			case 'd':
 			case 'c':
+			case 'w':
 			case 'E':
 			case 'J':
 			case 'K':
 			case 'Q':
 			case 'R':
-			case 'T':				
+			case 'T':
+			case 'W':
 				addWord(word, c);
 				break;
 			case 'V':
