@@ -3,20 +3,21 @@
  *
  * This generated file contains a sample Java Library project to get you started.
  * For more details take a look at the Java Libraries chapter in the Gradle
- * user guide available at https://docs.gradle.org/3.5/userguide/java_library_plugin.html
+ * user guide available at https://docs.gradle.org/6.0/userguide/java_plugin.html
  */
  plugins {
   id "java"
+  id "ivy-publish"
 }
 
 apply plugin: 'java-library'
 apply plugin: 'java-library-distribution'
 apply plugin: 'eclipse'
-apply plugin: 'maven'
+apply plugin: 'maven-publish'
 apply plugin: 'war'
 
-sourceCompatibility = 11
-targetCompatibility = 11
+sourceCompatibility = 12
+targetCompatibility = 12
 version = '2.0'
 group = 'org.dwbzen.text-processing'
 description = "Text Processing Framework"
@@ -24,27 +25,25 @@ description = "Text Processing Framework"
 jar {
     manifest {
         attributes 'Implementation-Title': 'text-processing',
-                   'Implementation-Version': version
+                   'Implementation-Version': archiveVersion
     }
 }
 
 repositories {
     // Use jcenter for resolving your dependencies.
     // You can declare any Maven/Ivy/file repository here.
-    jcenter()
-    maven {
-        url "http://central.maven.org/maven2/"
-    }
 	mavenLocal()
+	jcenter()
+    mavenCentral()
 	flatDir {
-        name "jarRepository"
-        dirs "lib"
+        name "commonlibLib"
+        dirs "../commonlib/lib"
     }
 }
 
 uploadArchives {
 		repositories {
-			add project.repositories.jarRepository
+			add project.repositories.commonlibLib
 			mavenLocal()
 		}
 }
@@ -54,7 +53,7 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     implementation  'org.apache.logging.log4j:log4j-api:2.11.2'
     implementation  'org.apache.logging.log4j:log4j-core:2.11.2'
-	implementation  'org.dwbzen.commonlib:commonlib:1.0'
+	implementation  'org.dwbzen.commonlib:commonlib:2.0'
     implementation  'com.fasterxml.jackson.core:jackson-core:2.9.9'
     implementation  'com.fasterxml.jackson.core:jackson-annotations:2.9.9'
     implementation  'com.fasterxml.jackson.core:jackson-databind:2.9.9'

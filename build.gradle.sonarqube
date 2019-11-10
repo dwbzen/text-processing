@@ -8,6 +8,7 @@
  plugins {
   id "org.sonarqube" version "2.7"
   id "java"
+  id "ivy-publish"
 }
 
 apply plugin: 'java-library'
@@ -16,8 +17,8 @@ apply plugin: 'eclipse'
 apply plugin: 'maven'
 apply plugin: 'war'
 
-sourceCompatibility = 11
-targetCompatibility = 11
+sourceCompatibility = 12
+targetCompatibility = 12
 version = '2.0'
 project.group = 'org.dwbzen.text-processing'
 project.description = "Text Processing Framework"
@@ -26,7 +27,7 @@ project.tasks["sonarqube"].dependsOn "build"
 jar {
     manifest {
         attributes 'Implementation-Title': 'text-processing',
-                   'Implementation-Version': version
+                   'Implementation-Version': archiveVersion
     }
 }
 
@@ -40,19 +41,17 @@ repositories {
     // Use jcenter for resolving your dependencies.
     // You can declare any Maven/Ivy/file repository here.
     jcenter()
-    maven {
-        url "http://central.maven.org/maven2/"
-    }
+    mavenCentral()
 	mavenLocal()
 	flatDir {
-        name "jarRepository"
-        dirs "lib"
+        name "commonlibLib"
+        dirs "../commonlib/lib"
     }
 }
 
 uploadArchives {
 		repositories {
-			add project.repositories.jarRepository
+			add project.repositories.commonlibLib
 			mavenLocal()
 		}
 }
@@ -63,7 +62,7 @@ dependencies {
     
     implementation  'org.apache.logging.log4j:log4j-api:2.11.1'
     implementation  'org.apache.logging.log4j:log4j-core:2.11.1'
-	implementation  'org.dwbzen.commonlib:commonlib:1.0'
+	implementation  'org.dwbzen.commonlib:commonlib:2.0'
     implementation  'com.fasterxml.jackson.core:jackson-core:2.9.5'
     implementation  'com.fasterxml.jackson.core:jackson-annotations:2.9.5'
     implementation  'com.fasterxml.jackson.core:jackson-databind:2.9.5'
