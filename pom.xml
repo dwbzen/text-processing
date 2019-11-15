@@ -51,7 +51,7 @@
   <dependency>
   		<groupId>org.dwbzen.commonlib</groupId>
   		<artifactId>commonlib</artifactId>
-  		<version>1.0</version>
+  		<version>2.0</version>
   </dependency>
   	<dependency>
 		<groupId>com.fasterxml.jackson.dataformat</groupId>
