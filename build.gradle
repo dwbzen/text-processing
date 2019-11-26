@@ -32,9 +32,13 @@ jar {
 repositories {
     // Use jcenter for resolving your dependencies.
     // You can declare any Maven/Ivy/file repository here.
-	mavenLocal()
 	jcenter()
+	mavenLocal()
     mavenCentral()
+	flatDir {
+        name "jarRepository"
+        dirs "lib"
+    }
 	flatDir {
         name "commonlibLib"
         dirs "../commonlib/lib"
@@ -43,8 +47,9 @@ repositories {
 
 uploadArchives {
 		repositories {
-			add project.repositories.commonlibLib
-			mavenLocal()
+		add project.repositories.jarRepository
+		add project.repositories.commonlibLib
+		mavenLocal()
 		}
 }
 
