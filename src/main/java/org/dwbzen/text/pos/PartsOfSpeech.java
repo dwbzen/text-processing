@@ -101,34 +101,42 @@ public class PartsOfSpeech implements IJson {
 		partsOfSpeechLegacy.put("z", "Derrived plural noun");
 
 		// PosCategory category, String code, String name, String description, String parent
+		legacyPosMapping.put("!", new PartOfSpeech("interjection", PosCategory.interjection, "!", "Interjection"));
 		legacyPosMapping.put("A", new PartOfSpeech("adjective", PosCategory.adjective, "A",  "modifies a noun or pronoun"));
 		legacyPosMapping.put("B", new PartOfSpeech("bodyPart", PosCategory.noun, "B",  "body part", "noun"));
 		legacyPosMapping.put("C", new PartOfSpeech("conjunction", PosCategory.conjunction, "C", "joins two phrases"));
+		legacyPosMapping.put("D", new PartOfSpeech("definiteArticle", PosCategory.determiner, "D", "determiners are the new articles"));
 		legacyPosMapping.put("E", new PartOfSpeech("numberName", PosCategory.noun, "E", "cardinal number or word representing a number", "noun"));
 		legacyPosMapping.put("F", new PartOfSpeech("femaleName", PosCategory.noun, "F",  "Female Name", "noun"));
+		legacyPosMapping.put("G", new PartOfSpeech("gerund", PosCategory.noun, "G", "Gerund", "noun"));
 		legacyPosMapping.put("H", new PartOfSpeech("placeName", PosCategory.noun, "H",  "Place Name", "noun"));
+		legacyPosMapping.put("I", new PartOfSpeech("indefiniteArticle", PosCategory.determiner, "I", "determiners are the new articles"));
 		legacyPosMapping.put("J", new PartOfSpeech("number", PosCategory.adjective, "J", "cardinal number as an adjective", "adjective"));
 		legacyPosMapping.put("K", new PartOfSpeech("ordinal", PosCategory.adjective, "K", "ordinal number or word", "adjective"));
 		legacyPosMapping.put("L", new PartOfSpeech("properNoun", PosCategory.noun, "L",  "Proper Noun", "noun"));
 		legacyPosMapping.put("M", new PartOfSpeech("maleName", PosCategory.noun, "M",  "Male Name", "noun"));
-		legacyPosMapping.put("N", new PartOfSpeech( "noun", PosCategory.noun, "N", "a word or lexical item denoting any abstract or concrete entity"));
+		legacyPosMapping.put("N", new PartOfSpeech("noun", PosCategory.noun, "N", "a word or lexical item denoting any abstract or concrete entity"));
+		legacyPosMapping.put("P", new PartOfSpeech("preposition", PosCategory.preposition, "P", "Preposition"));
 		legacyPosMapping.put("Q", new PartOfSpeech("cityName", PosCategory.noun, "Q",  "City name", "placeName"));
 		legacyPosMapping.put("R", new PartOfSpeech("countryName", PosCategory.noun, "R",  "Country name", "placeName"));
 		legacyPosMapping.put("S", new PartOfSpeech("surname", PosCategory.noun, "S",  "Last Name", "noun"));
 		legacyPosMapping.put("T", new PartOfSpeech("food", PosCategory.noun, "T",  "Food/beverage name", "noun"));
 		legacyPosMapping.put("V", new PartOfSpeech("participleVerb", PosCategory.verb, "V", "Verb (participle)", "verb"));
 		legacyPosMapping.put("X", new PartOfSpeech("presentTenseVerb", PosCategory.verb, "X", "Verb (present tense)", "verb"));
+		legacyPosMapping.put("Z", new PartOfSpeech("derrivedNoun", PosCategory.noun, "Z",  "Made-up from a legit noun", "noun"));
 		legacyPosMapping.put("b", new PartOfSpeech("maleBodyPart", PosCategory.noun, "b",  "male body part", "bodyPart"));
 		legacyPosMapping.put("c", new PartOfSpeech("color", PosCategory.adjective, "c",  "adjective representing a color", "adjective"));
 		legacyPosMapping.put("d", new PartOfSpeech("femaleBodyPart", PosCategory.noun, "d",  "female body part", "bodyPart"));
 		legacyPosMapping.put("h", new PartOfSpeech("nounPhrase", PosCategory.noun, "h", "Noun Phrase", "noun"));
 		legacyPosMapping.put("i", new PartOfSpeech("intransitiveVerb", PosCategory.verb, "i", "Verb (intransitive)", "verb"));
 		legacyPosMapping.put("l", new PartOfSpeech("improperNoun", PosCategory.noun, "l", "Improper Noun", "noun"));
+		legacyPosMapping.put("o", new PartOfSpeech("nominative", PosCategory.noun, "o", "Nominative", "noun"));
 		legacyPosMapping.put("p", new PartOfSpeech("plural", PosCategory.noun, "p", "Plural Noun", "noun"));
+		legacyPosMapping.put("r", new PartOfSpeech("pronoun", PosCategory.pronoun, "r", "Pronoun"));
 		legacyPosMapping.put("t", new PartOfSpeech("transitiveVerb", PosCategory.verb, "t", "Verb (transitive)", "verb"));
 		legacyPosMapping.put("v", new PartOfSpeech("adverb", PosCategory.adverb, "v", "a modifier of an adjective, verb, or another adverb"));
 		legacyPosMapping.put("x", new PartOfSpeech("pastTenseVerb", PosCategory.verb, "x", "Verb (past tense)", "verb"));
-		
+		legacyPosMapping.put("z", new PartOfSpeech("derrivedPluralNoun", PosCategory.noun, "z",  "Made-up from a legit plural noun", "noun"));
 	}
 
 	/**
