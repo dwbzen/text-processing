@@ -64,9 +64,6 @@ public class PartsOfSpeech implements IJson {
 	 */
 	static  {
 		partsOfSpeechLegacy.put("!", "Interjection");
-		partsOfSpeechLegacy.put("J", "Number adjective");
-		partsOfSpeechLegacy.put("V", "Verb (participle)");
-		partsOfSpeechLegacy.put("p", "Plural");
 		partsOfSpeechLegacy.put("A", "Adjective");
 		partsOfSpeechLegacy.put("B", "Body part");
 		partsOfSpeechLegacy.put("C", "Conjunction");
@@ -76,6 +73,7 @@ public class PartsOfSpeech implements IJson {
 		partsOfSpeechLegacy.put("G", "Gerund");
 		partsOfSpeechLegacy.put("H", "Place names");
 		partsOfSpeechLegacy.put("I", "Indefinite Article");
+		partsOfSpeechLegacy.put("J", "Number adjective");
 		partsOfSpeechLegacy.put("K", "Ordinal number");
 		partsOfSpeechLegacy.put("L", "Proper Noun");
 		partsOfSpeechLegacy.put("M", "Male first name");
@@ -85,6 +83,8 @@ public class PartsOfSpeech implements IJson {
 		partsOfSpeechLegacy.put("R", "Country");
 		partsOfSpeechLegacy.put("S", "Surname");
 		partsOfSpeechLegacy.put("T", "Food/Beveage");
+		partsOfSpeechLegacy.put("V", "Verb (participle)");
+		partsOfSpeechLegacy.put("W", "Digit19");
 		partsOfSpeechLegacy.put("X", "Present tense verb");
 		partsOfSpeechLegacy.put("Z", "Derrived noun");
 		partsOfSpeechLegacy.put("b", "Male body part");
@@ -94,9 +94,11 @@ public class PartsOfSpeech implements IJson {
 		partsOfSpeechLegacy.put("i", "Verb (intransitive)");
 		partsOfSpeechLegacy.put("l", "Improper Noun");
 		partsOfSpeechLegacy.put("o", "Nominative");
+		partsOfSpeechLegacy.put("p", "Plural");
 		partsOfSpeechLegacy.put("r", "Pronoun");
 		partsOfSpeechLegacy.put("t", "Verb (transitive)");
 		partsOfSpeechLegacy.put("v", "Adverb");
+		partsOfSpeechLegacy.put("w", "Digit09");
 		partsOfSpeechLegacy.put("x", "Past tense verb");
 		partsOfSpeechLegacy.put("z", "Derrived plural noun");
 
@@ -122,6 +124,7 @@ public class PartsOfSpeech implements IJson {
 		legacyPosMapping.put("S", new PartOfSpeech("surname", PosCategory.noun, "S",  "Last Name", "noun"));
 		legacyPosMapping.put("T", new PartOfSpeech("food", PosCategory.noun, "T",  "Food/beverage name", "noun"));
 		legacyPosMapping.put("V", new PartOfSpeech("participleVerb", PosCategory.verb, "V", "Verb (participle)", "verb"));
+		legacyPosMapping.put("W", new PartOfSpeech("digit19", PosCategory.noun, "W", "Random digit 1 to 9", "noun"));
 		legacyPosMapping.put("X", new PartOfSpeech("presentTenseVerb", PosCategory.verb, "X", "Verb (present tense)", "verb"));
 		legacyPosMapping.put("Z", new PartOfSpeech("derrivedNoun", PosCategory.noun, "Z",  "Made-up from a legit noun", "noun"));
 		legacyPosMapping.put("b", new PartOfSpeech("maleBodyPart", PosCategory.noun, "b",  "male body part", "bodyPart"));
@@ -135,6 +138,7 @@ public class PartsOfSpeech implements IJson {
 		legacyPosMapping.put("r", new PartOfSpeech("pronoun", PosCategory.pronoun, "r", "Pronoun"));
 		legacyPosMapping.put("t", new PartOfSpeech("transitiveVerb", PosCategory.verb, "t", "Verb (transitive)", "verb"));
 		legacyPosMapping.put("v", new PartOfSpeech("adverb", PosCategory.adverb, "v", "a modifier of an adjective, verb, or another adverb"));
+		legacyPosMapping.put("w", new PartOfSpeech("digit09", PosCategory.noun, "w", "Random digit 0 to 9", "noun"));
 		legacyPosMapping.put("x", new PartOfSpeech("pastTenseVerb", PosCategory.verb, "x", "Verb (past tense)", "verb"));
 		legacyPosMapping.put("z", new PartOfSpeech("derrivedPluralNoun", PosCategory.noun, "z",  "Made-up from a legit plural noun", "noun"));
 	}
