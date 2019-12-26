@@ -94,33 +94,41 @@ far out	!A
 fecund	A
 finger	NBVt
 flesh-colored	c
+foie gras	T
 food	N
 foot	B
 for	P
 fried grasshopper	T
 fried rice	T
 gigantic	A
+ginormous	A
 grab	Vt
 gray	c
 greedily	v
+green	c
 groovy	A!
 grope	Vi
+gross	A
 hair	B
 hand	B
 he	rN
+heel	B
 her	r
 his	Dr
 hot	A
+icky	A
 in	P
 indigo	c
 into	P
 it	rN
+lavender	c
 legs	pB
 like	Vt
 lips	B
 loudly	v
 love	Vt
 make whoopee	Vi
+mauve	c
 mouth	B
 my	P
 my God	!
@@ -141,6 +149,7 @@ purple	c
 readily	v
 red	c
 revolting	A
+rinky-dink	A
 royal blue	c
 rub	Vt
 she	rN
@@ -188,3 +197,4 @@ wildly	v
 wine & cheese	T
 with	P
 yellow	c
+yucky	A
