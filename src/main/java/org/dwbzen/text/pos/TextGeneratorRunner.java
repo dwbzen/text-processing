@@ -2,14 +2,18 @@ package org.dwbzen.text.pos;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class TextGeneratorRunner {
 
 	/**
-	 * Generates text from pattern(s) using configured PartsOfSpeech files
-	 * TODO: refactor the main into a new Runner class
-	 * 
+	 * Generates text from pattern(s) using configured PartsOfSpeech files<br>
+	 * If specified, "-pos file1,[file2...] overrides config setting POS_FILE<br>
+	 * To also include POS_FILE, add to the list<br>
+	 * by default POS files loaded from POS_DIR folder: /reference/pos/<br>
+	 * This can be overridden by specifying a complete file path, for example "C:/data/text/filename.pos"
 	 * @param args
 	 * @throws Exception
 	 */
@@ -21,7 +25,7 @@ public class TextGeneratorRunner {
 		List<String>postProcessing = new ArrayList<String>();
 		String patternLib = null;
 		String delim = ",";	// for CSV output - field separator
-		
+		List<String> posFiles = Collections.emptyList();
 		for(int i=0; i<args.length; i++) {
 			if(args[i].equalsIgnoreCase("-n")) {
 				numberToGenerate = Integer.parseInt(args[++i]);
@@ -39,12 +43,15 @@ public class TextGeneratorRunner {
 			else if(args[i].equalsIgnoreCase("-delim")) {
 				delim = args[++i];
 			}
+			else if(args[i].equalsIgnoreCase("-pos")) {	// alternative list of POS_FILEs
+				posFiles = Arrays.asList(args[++i].split(","));
+			}
 			else {
 				patternList.add(args[i]);
 			}
 		}
 
-		generator = new TextGenerator();
+		generator = TextGenerator.newInstance(posFiles);
 		if(patternList.size() == 0 && patternLib == null) {
 			patternList.add(defaultPattern);
 		}

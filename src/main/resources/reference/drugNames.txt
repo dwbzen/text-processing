@@ -72,6 +72,7 @@ Coumadin
 Crestor
 Cyltezo
 Cymbalta
+Descovy
 Desonide
 Dexmethylphenidate
 Dextroamphetamine
@@ -79,6 +80,7 @@ Differin
 Dificid
 Digoxin
 Diovan
+Dovato
 Doxazosin
 Doxepin
 Doxycycline
@@ -92,6 +94,7 @@ Edarbyclor
 Effient
 Elidel
 Eliquis
+Emgality
 Enalapril
 Enoxaparin
 Entresto
@@ -137,6 +140,7 @@ Isosorbide
 Januvia
 Jardiance
 Jublia
+Kisqali
 Ketoconazole
 Keytruda
 Kybella
@@ -215,6 +219,7 @@ Repatha
 Retin-A
 Revlimid
 Rexulti
+Rinvoq
 Rizatriptan
 Rocephin
 Saxenda
@@ -247,8 +252,8 @@ Torsemide
 Toujeo
 Tracleer
 Trazodone
-Tremfya
 Trelegy Ellipta
+Tremfya
 Tresiba
 Tretinoin
 Triamcinolone

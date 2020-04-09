@@ -61,9 +61,9 @@ public class TextGenerator implements ITextGenerator, Function<Integer, String>,
 	private Map<String, List<String>> wordMap = null;
 	private Map<String, Integer> posCount = new HashMap<>();
 	private List<PartOfSpeechPattern> partOfSpeechPatterns = new ArrayList<PartOfSpeechPattern>();
-	private List<String> patternList = new ArrayList<>();	// raw patterns
-	private List<String>generatedText = new ArrayList<>();
-	private List<String>postProcessing = new ArrayList<>();
+	private List<String> patternList = new ArrayList<String>();	// raw patterns
+	private List<String>generatedText = new ArrayList<String>();
+	private List<String>postProcessing = new ArrayList<String>();
 	private boolean upperCase = false;
 	private boolean sentenceCase = false;
 	private boolean titleCase = false;
@@ -77,10 +77,10 @@ public class TextGenerator implements ITextGenerator, Function<Integer, String>,
 	private String delimiter = null;
 	private ThreadLocalRandom random = ThreadLocalRandom.current();
 	
-	public static TextGenerator newInstance() {
+	public static TextGenerator newInstance(List<String> files) {
 		PartsOfSpeechManager pos = null;
 		try {
-				pos =  PartsOfSpeechManager.newInstance();
+				pos = (files == null || files.size()==0) ? PartsOfSpeechManager.newInstance() : PartsOfSpeechManager.newInstance(files);
 		}
 		catch(IOException ex)  {
 			System.err.println("Could not create ParsOfSpeechManager because " + ex.getMessage());
@@ -169,8 +169,8 @@ public class TextGenerator implements ITextGenerator, Function<Integer, String>,
 	 */
 	public String generateText(PartOfSpeechPattern posPattern) {
 		StringBuffer sb = new StringBuffer();
-		String pattern = posPattern.createInstance();
-		int nwords = pattern.length();
+		List<String> patternTokens = parseInstance(posPattern);
+	
 		List<String> generatedList = new ArrayList<String>();
 		Map<String, String> variables = new HashMap<String, String>();
 		boolean isText = false;
@@ -178,9 +178,8 @@ public class TextGenerator implements ITextGenerator, Function<Integer, String>,
 		boolean useVariable = false;
 		boolean isLambda = false;
 		String variable = null;
-		for(int j=0; j<nwords; j++) {
-			String c = pattern.substring(j, j+1);
-			if(c.equals(PatternWord.TEXT_DELIMETER)) {
+		for(String posToken : patternTokens) {
+			if(posToken.equals(PatternWord.TEXT_DELIMETER)) {
 				if(isText) {
 					if(setVariable) {
 						variable = sb.toString();
@@ -212,30 +211,40 @@ public class TextGenerator implements ITextGenerator, Function<Integer, String>,
 				isText = !isText;
 				continue;
 			}
-			else if(c.equals("$")) {	// use a variable
+			else if(posToken.equals("$")) {	// use a variable
 				useVariable = true;
 				continue;
 			}
-			else if(c.equals("=")) {	// set a variable
+			else if(posToken.equals("=")) {	// set a variable
 				setVariable = true;
 				continue;
 			}
-			else if(c.equals("%") && isText) {
+			else if(posToken.equals("%") && isText) {
 				// the inline text is a lambda name and NOT literal text to insert
 				isLambda = true;
 			}
 			if(isText) {
-				sb.append(c);
+				sb.append(posToken);
 			}
 			else {
-				if(posCount.containsKey(c)) {
-					int n = posCount.get(c);
+				if(posToken.equalsIgnoreCase("w")) {
+					if(posToken.equals("w")) {
+						// generate a random number 0 to 9
+						generatedList.add(String.valueOf(random.nextInt(10)));
+					}
+					else {
+						// generate a random number 1 to 9
+						generatedList.add(String.valueOf(random.nextInt(1, 10)));
+					}
+				}
+				else if(posCount.containsKey(posToken)) {
+					int n = posCount.get(posToken);
 					if(n > 0) {
 						/*
 						 * word can actually be 2 words, for example "human rights"
 						 * 
 						 */
-						String word = wordMap.get(c).get(random.nextInt(n));
+						String word = wordMap.get(posToken).get(random.nextInt(n));
 						int ind = word.indexOf(' ');
 						if(ind > 0 && removeWhiteSpace) {
 							word = word.substring(0, ind) 
@@ -249,23 +258,46 @@ public class TextGenerator implements ITextGenerator, Function<Integer, String>,
 						generatedList.add(word);
 					}
 				}
-				else if(c.equalsIgnoreCase("w")) {
-					if(c.equals("w")) {
-						// generate a random number 0 to 9
-						generatedList.add(String.valueOf(random.nextInt(10)));
-					}
-					else {
-						// generate a random number 1 to 9
-						generatedList.add(String.valueOf(random.nextInt(1, 10)));
-					}
-				}
 				else {	// invalid POS key used
-					System.err.println("ERROR: Invalid part of speech: " + c);
-					return "ERROR: Invalid part of speech: " + c;
+					System.err.println("ERROR: TextGenerator: Invalid part of speech: " + posToken);
+					return "ERROR: TextGenerator: Invalid part of speech: " + posToken;
 				}
 			}
 		}
 		return format(generatedList);
+	}
+	
+	public static List<String> parseInstance(PartOfSpeechPattern posPattern) {
+		return parseInstance(posPattern.createInstance());
+	}
+	
+	/**
+	 * Converts a part of speech instance string to a List<String> where each element is an individual POS<br>
+	 * For example, "N`op`A`sp` would be parsed to a 4-element List<String> ["N", "`op`, "A", "`sp`]
+	 * The multi-char pos delimiter (`) is retained.
+	 * @param patternInstance String
+	 * @return List<String>
+	 */
+	public static List<String> parseInstance(String patternInstance) {
+		List<String> tokens = new ArrayList<String>();
+		int index = 0;
+		int index2 = 0;
+		while(index < patternInstance.length()) {
+			char c = patternInstance.charAt(index);
+			if(c == '`') {
+				index2 = patternInstance.indexOf('`', index+1) + 1;
+				tokens.add(
+						index2 >= patternInstance.length() ?
+							patternInstance.substring(index) :
+							patternInstance.substring(index, index2));
+				index = index2;
+			}
+			else {
+				tokens.add(String.valueOf(c));
+				index++;
+			}
+		}
+		return tokens;
 	}
 	
 	public static final String PUNCUTATION = ".?!;:,\"'";

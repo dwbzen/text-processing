@@ -1,6 +1,7 @@
 package org.dwbzen.services;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -95,7 +96,7 @@ public class TextService {
 	@Consumes(MediaType.TEXT_PLAIN)
 	public List<String> generateText(@PathParam("number") int num, String message) {
 		List<String> generatedText = new ArrayList<>();
-		TextGenerator generator = TextGenerator.newInstance();
+		TextGenerator generator = TextGenerator.newInstance(Collections.emptyList());
 		if(generator == null) {
 			generatedText.add("There was a problem creating TextGenerator");
 		}

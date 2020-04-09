@@ -218,6 +218,24 @@
     "code":"z",
     "description":"Made-up from a legit plural noun",
     "parent":"noun"
+  },
+  {"name":"subjectPhrase",
+    "category":"noun",
+    "code":"sp",
+    "description":"A phrase that can start a sentence",
+    "parent":"noun"
+  },
+  {"name":"objectPhrase",
+    "category":"noun",
+    "code":"op",
+    "description":"An object phrase",
+    "parent":"noun"
+  },
+  {"name":"nounPhrase",
+    "category":"noun",
+    "code":"np",
+    "description":"A general noun phrase",
+    "parent":"noun"
   }
-  ]
+ ]
 }

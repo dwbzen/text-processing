@@ -137,8 +137,8 @@ public class PartOfSpeechPattern extends TextPattern {
 
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
-		for(int i=0; i<patternWords.size(); i++) {
-			sb.append(patternWords.get(i).toString());
+		for(PatternWord pw : patternWords) {
+			sb.append(pw.toString());
 		}
 		return sb.toString();
 	}
@@ -150,8 +150,8 @@ public class PartOfSpeechPattern extends TextPattern {
 	public String createInstance() {
 		StringBuffer sb = new StringBuffer();
 		if(valid) {
-			for(int i=0; i<patternWords.size(); i++) {
-				sb.append(patternWords.get(i).getInstance());
+			for(PatternWord pw : patternWords) {
+				sb.append(pw.getInstance());
 			}
 		}
 		else {

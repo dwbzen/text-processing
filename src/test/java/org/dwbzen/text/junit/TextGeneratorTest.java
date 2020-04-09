@@ -1,5 +1,6 @@
 package org.dwbzen.text.junit;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.dwbzen.text.pos.TextGenerator;
@@ -24,7 +25,7 @@ public class TextGeneratorTest extends TestCase  {
 	
 	@Test
 	public void testGenerateText() {
-		TextGenerator generator = TextGenerator.newInstance();
+		TextGenerator generator = TextGenerator.newInstance(Collections.emptyList());
 		generator.setPatternList(bandPatterns);
 		generator.setPostProcessing("TC");
 		generator.generate(20);

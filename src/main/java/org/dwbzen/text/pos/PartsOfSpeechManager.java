@@ -111,7 +111,7 @@ public class PartsOfSpeechManager {
 	private boolean ignoreCompoundWords = false;
 	
 	private List<String> posFiles = new ArrayList<String>();
-	private List<String> posFileNames = new ArrayList<String>();
+	private List<String> customPosFiles = new ArrayList<String>();
 	private BufferedReader posFileReader;
 	private Properties configProperties = null;
 	private Configuration configuration = null;
@@ -175,7 +175,17 @@ public class PartsOfSpeechManager {
 		return pos;
 	}
 	
+	public static PartsOfSpeechManager newInstance(List<String> files)throws IOException {
+		PartsOfSpeechManager pos = new PartsOfSpeechManager(files);
+		return pos;
+	}
+	
 	protected PartsOfSpeechManager() throws IOException {
+		initialize();	// set configuration and load wordMap
+	}
+	
+	protected PartsOfSpeechManager(List<String> files) throws IOException {
+		customPosFiles.addAll(files);
 		initialize();	// set configuration and load wordMap
 	}
 
@@ -189,35 +199,42 @@ public class PartsOfSpeechManager {
 	/**
 	 * Load all the configured pos file names to use
 	 */
-	private void configure()  {
+	public void configure()  {
 		configuration = Configuration.getInstance(CONFIG_FILENAME);
 		configProperties = configuration.getProperties();
+		boolean customPos = customPosFiles.size() > 0;
 		// set file names & locations
 		posDir = configProperties.getProperty("POS_DIR", POS_DIR);		// mandatory
 		posFile = configProperties.getProperty("POS_FILE", POS_FILE);	// mandatory
-		addPosFileName(posDir + posFile);
+		if(customPos) {
+			customPosFiles.forEach(f -> addPosFileName(posDir + f));
+		}
+		else {
+			addPosFileName(posDir + posFile);
+		}
+		
 		/*
 		 * The other parts-of-speech files are all optional
 		 * There are no defaults
 		 */
-		if(configProperties.containsKey("EXTENDED_VOCAB_FILE")) {
+		if(!customPos && configProperties.containsKey("EXTENDED_VOCAB_FILE")) {
 			extendedVocabFile = configProperties.getProperty("EXTENDED_VOCAB_FILE");
 			addPosFileName(posDir + extendedVocabFile);
 		}
-		if(configProperties.containsKey("FIRSTNAMES")) {
+		if(!customPos && configProperties.containsKey("FIRSTNAMES")) {
 			firstNamesFile = configProperties.getProperty("FIRSTNAMES");
 			addPosFileName(posDir + firstNamesFile);
 		}
-		if(configProperties.containsKey("LASTNAMES")) {
+		if(!customPos && configProperties.containsKey("LASTNAMES")) {
 			lastNamesFile = configProperties.getProperty("LASTNAMES");
 			addPosFileName(posDir + lastNamesFile);
 		}
-		if(configProperties.containsKey("SLANG_FILE")) {
+		if(!customPos && configProperties.containsKey("SLANG_FILE")) {
 			slangFile = configProperties.getProperty("SLANG_FILE");
 			addPosFileName(posDir + slangFile);
 		}
 		userDir = configProperties.getProperty("USER_DIR", "C:/data/text/");
-		if(configProperties.containsKey("USER_FILE")) {
+		if(!customPos && configProperties.containsKey("USER_FILE")) {
 			userFile = configProperties.getProperty("USER_FILE");
 			addPosFileName(userDir + userFile);
 		}
@@ -297,24 +314,24 @@ public class PartsOfSpeechManager {
 			compoundWordsSkipped++;
 			return; 
 		}
-		for(int i=0; i<pos.length();i++) {
+		List<String> posList = TextGenerator.parseInstance(pos);
+		for(String aPos : posList) {
 			// a word can have multiple parts of speech
-			char apos = pos.charAt(i);
 			boolean isproper = word.matches(PROPER_WORD);
-			if(apos == 'N') {
+			if(aPos.equals("N")) {
 				if(isproper) {
-					saveWord(word, apos + "L");
+					saveWord(word, "L");
 				}
 				else {
-					saveWord(word, apos + "l");
+					saveWord(word, "l");
 				}
 			}
-			else if(apos == 'B') {
-				saveWord(word, apos + "db");
+			else if(aPos.equals("B")) {
+				saveWord(word, "d");
+				saveWord(word, "b");
 			}
-			else {
-				saveWord(word, String.valueOf(apos));
-			}
+
+			saveWord(word, aPos);
 			fileWords++;
 		}
 		return;
@@ -322,100 +339,100 @@ public class PartsOfSpeechManager {
 
 	private void saveWord(String word, String pos) {
 		posMap.put(word, pos);
-		for(char c : pos.toCharArray()) {
-			switch(c) {
-			case '|':
-			case 'o':
+			switch(pos) {
+			case "|":
+			case "o":
 				break;
-			case 'N':
-			case 'p':
-			case 'h':
-				addWord(word, c);
-				addDerrived(word, 'z');
+			case "N":
+			case "p":
+			case "h":
+				addWord(word, pos);
+				addDerrived(word, "z");
 				break;
-			case '!':
-				addWord(word.concat("!"),c);
+			case "!":
+				addWord(word.concat("!"), pos);
 				break;
-			case 'L':
-			case 'l':
-			case 'M':
-			case 'H':
-			case 'F':
-			case 'S':
-			case 'A':
-			case 'v':
-			case 'C':
-			case 'P':
-			case 'r':
-			case 'D':
-			case 'i':
-			case 'I':
-			case 'B':
-			case 'b':
-			case 'd':
-			case 'c':
-			case 'w':
-			case 'E':
-			case 'J':
-			case 'K':
-			case 'Q':
-			case 'R':
-			case 'T':
-			case 'W':
-				addWord(word, c);
+			case "L":
+			case "l":
+			case "M":
+			case "H":
+			case "F":
+			case "S":
+			case "A":
+			case "v":
+			case "C":
+			case "P":
+			case "r":
+			case "D":
+			case "i":
+			case "I":
+			case "B":
+			case "b":
+			case "d":
+			case "c":
+			case "w":
+			case "E":
+			case "J":
+			case "K":
+			case "Q":
+			case "R":
+			case "T":
+			case "W":
+			case "`op`":
+			case "`sp`":
+				addWord(word, pos);
 				break;
-			case 'V':
-			case 't':
-				addWord(word, c);
-				addDerrived(word, 'G');
-				addDerrived(word, 'Z');
-				addDerrived(word, 'X');
-				addDerrived(word, 'x');
+			case "V":
+			case "t":
+				addWord(word, pos);
+				addDerrived(word, "G");
+				addDerrived(word, "Z");
+				addDerrived(word, "X");
+				addDerrived(word, "x");
 				break;
 			default: /* invalid or non-legacy character */
-				logger.debug("Warning Invalid character: '" + c + "' " + word + " ignored");
+				logger.warn("Warning Invalid part of speech: '" + pos + "' " + word + " ignored");
 			}
-		}
 	}
 	
-	private void addDerrived(String word, char pos) {
-		if(word.endsWith("ing") && pos == 'G') {
+	private void addDerrived(String word, String pos) {
+		if(word.endsWith("ing") && pos == "G") {
 			wordMap.get(String.valueOf(pos)).add(word);
 		}
 		else {
 			String nWord = null;
 			int n = word.length()- 1;
 			char c = word.charAt(n);
-			if("AEIOUaeiou".indexOf(c) >= 0 && (pos == 'G' || pos == 'Z' || pos == 'x')) {
+			if("AEIOUaeiou".indexOf(c) >= 0 && (pos == "G" || pos == "Z" || pos == "x")) {
 				nWord = word.substring(0, n);
 			}
 			else {
 				nWord = word;
 			}
-			if(pos == 'G') {
+			if(pos == "G") {
 				wordMap.get(String.valueOf(pos)).add(nWord + "ing");
 			}
-			else if(pos == 'Z') {
+			else if(pos == "Z") {
 				addDerrivedZ(nWord);
 				//wordMap.get(String.valueOf(pos)).add(nWord + "er");
 			}
-			else if(pos == 'z') {
+			else if(pos == "z") {
 				wordMap.get(String.valueOf(pos)).add(nWord + "er");
 			}
-			else if(pos == 'X') {
+			else if(pos == "X") {
 				if(c == 'e' || c == 'E')
 					wordMap.get(String.valueOf(pos)).add(nWord + "s");
 				else
 					wordMap.get(String.valueOf(pos)).add(nWord + "s");
 			}
-			else if(pos == 'x') {
+			else if(pos == "x") {
 				wordMap.get(String.valueOf(pos)).add(nWord + "ed");
 			}
 		}
 	}
 
-	private void addWord(String word, char pos) {
-		wordMap.get(String.valueOf(pos)).add(word);
+	private void addWord(String word, String pos) {
+		wordMap.get(pos).add(word);
 	}
 	
 	
@@ -447,15 +464,19 @@ public class PartsOfSpeechManager {
 	}
 	
 	public void addPosFile(String posFileName) throws IOException {
-		loadWords(addPosFileName(posFileName));
+		posFiles.add(posFileName);
+		loadWords(posFileName);
 	}
 	
 	private String addPosFileName(String posFileName) {
-		posFileNames.add(posFileName);
 		posFiles.add(posFileName);
 		return posFileName;
 	}
 	
+	public void addCustomPosFile(String posFileName) throws IOException {
+		customPosFiles.add(posFileName);
+	}
+
 	public boolean isIgnoreUpperCaseWords() {
 		return ignoreUpperCaseWords;
 	}
@@ -489,7 +510,7 @@ public class PartsOfSpeechManager {
 	}
 
 	public List<String> getPosFileNames() {
-		return posFileNames;
+		return posFiles;
 	}
 
 	public Map<String, List<String>> getWordMap() {

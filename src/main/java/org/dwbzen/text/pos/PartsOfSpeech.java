@@ -60,7 +60,7 @@ public class PartsOfSpeech implements IJson {
 	/*
 	 * PartOfSpeech that have no standard legacy code, by convention new additions are assigned
 	 * a code from unused in legacy in alpha order (except O and o)
-	 * Unused in legacy: E, J, K, O, Q, R, T, U, W, Y, a, e, f, g, j, k, m, n, q, s, u, w, y
+	 * Unused in legacy: E, J, K, O, Q, R, S, T, U, W, Y, a, e, f, g, j, k, m, n, q, s, u, w, y
 	 */
 	static  {
 		partsOfSpeechLegacy.put("!", "Interjection");
@@ -101,6 +101,11 @@ public class PartsOfSpeech implements IJson {
 		partsOfSpeechLegacy.put("w", "Digit09");
 		partsOfSpeechLegacy.put("x", "Past tense verb");
 		partsOfSpeechLegacy.put("z", "Derrived plural noun");
+		
+		// escaped PartsOfSpeech - n-character (n>1) code delimited by ` character: `sp` for example. Only the code is given.
+		partsOfSpeechLegacy.put("`sp`", "Subject phrase"); 		// as in "The revenge of the..."
+		partsOfSpeechLegacy.put("`op`", "Objective phrase");		// as in "... with a whip"
+		partsOfSpeechLegacy.put("`np`", "Noun phrase");			// equivalent to 'h' part of speech
 
 		// PosCategory category, String code, String name, String description, String parent
 		legacyPosMapping.put("!", new PartOfSpeech("interjection", PosCategory.interjection, "!", "Interjection"));
@@ -141,6 +146,11 @@ public class PartsOfSpeech implements IJson {
 		legacyPosMapping.put("w", new PartOfSpeech("digit09", PosCategory.noun, "w", "Random digit 0 to 9", "noun"));
 		legacyPosMapping.put("x", new PartOfSpeech("pastTenseVerb", PosCategory.verb, "x", "Verb (past tense)", "verb"));
 		legacyPosMapping.put("z", new PartOfSpeech("derrivedPluralNoun", PosCategory.noun, "z",  "Made-up from a legit plural noun", "noun"));
+	
+		// escaped POS mapping
+		legacyPosMapping.put("`sp`", new PartOfSpeech("subject phrase", PosCategory.noun, "sp", "A phrase that can start a sentence", "noun"));
+		legacyPosMapping.put("`op`", new PartOfSpeech("object phrase", PosCategory.noun, "op", "An object phrase", "noun"));
+		legacyPosMapping.put("`np`", new PartOfSpeech("noun phrase", PosCategory.noun, "np", "A general noun phrase", "noun"));		
 	}
 
 	/**

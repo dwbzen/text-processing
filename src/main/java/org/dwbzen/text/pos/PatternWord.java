@@ -13,8 +13,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * A PatternWord is a "compiled" version of a text pattern word template such as N{2,5}</br>
  * An instance is an actual pattern created at random from the template</br>
  * For example, "NN", "NNN", "NNNN", and "NNNNN" are all instances of N{2,5}</br>
- * Inline (not-interpreted) text can also be included in patterns</br>
- * For example. "[F|M](and)[F|M]"
+ * Inline (not-interpreted) text can also be included in patterns, For example. "[F|M](and)[F|M]"
  * @author don_bacon
  *
  */
@@ -22,7 +21,7 @@ public class PatternWord implements IJson {
 
 	@JsonIgnore			private int rangeLow = 1;
 	@JsonIgnore			private int rangeHigh = 1;
-	@JsonIgnore			private String choices = null;	// could be only 1 or null if raw text
+	@JsonIgnore			private List<String> choices = new ArrayList<String>();		// could be only 1 or size=0 if raw text
 	@JsonIgnore			private char variable = 0;		// '1', '2', etc. for $1, ... $9
 
 	// inline, non-pattern text
@@ -34,16 +33,31 @@ public class PatternWord implements IJson {
 	 */
 	public static String TEXT_DELIMETER = "/";
 
-	public PatternWord(int low, int high, String choices) {
+	public PatternWord(int low, int high, List<String> choicesList) {
 		rangeLow = low;
 		rangeHigh = high;
-		this.choices = choices;
+		if(choicesList != null && choicesList.size()>0) {
+			choices.addAll(choicesList);
+		}
 	}
-	public PatternWord(String choices) {
-		this(1, 1, choices);
+	
+	public PatternWord(int low, int high, String choicesString) {
+		rangeLow = low;
+		rangeHigh = high;
+		choices.add(choicesString);
+	}
+	public PatternWord(String choicesString) {
+		choices.add(choicesString);
+	}
+	public PatternWord(List<String> choicesList) {
+		this(1, 1, choicesList);
 	}
 	public PatternWord(char c) {
-		this(1,1, String.valueOf(c));
+		choices.add(String.valueOf(c));
+	}
+	public PatternWord(int low, int high, List<String> choicesList, char var) {
+		this(low, high, choicesList);
+		variable = var;
 	}
 	public PatternWord(int low, int high, String choices, char var) {
 		this(low, high, choices);
@@ -58,14 +72,22 @@ public class PatternWord implements IJson {
 	 * @param choices
 	 * @param inlineText
 	 */
-	public PatternWord(int low, int high, String choices, List<String> inlineTextList) {
-		this(low, high, choices);
+	public PatternWord(int low, int high, List<String> choicesList, List<String> inlineTextList) {
+		this(low, high, choicesList);
 		if(inlineTextList != null && inlineTextList.size()>0) {
 			textChoices.addAll(inlineTextList);
 		}
 	}
-	public PatternWord(int low, int high, String choices, String inlineText) {
-		this(low, high, choices);
+	public PatternWord(int low, int high, List<String> choicesList, String inlineText) {
+		this(low, high, choicesList);
+		if(inlineText != null && inlineText.length()>0) {
+			textChoices.add(inlineText);
+		}
+	}
+	public PatternWord(int low, int high, String choicesString, String inlineText) {
+		choices.add(choicesString);
+		rangeLow = low;
+		rangeHigh = high;
 		if(inlineText != null && inlineText.length()>0) {
 			textChoices.add(inlineText);
 		}
@@ -90,13 +112,16 @@ public class PatternWord implements IJson {
 									textChoices.get(0)) +
 						TEXT_DELIMETER);
 			}
-			if(choices != null) {
+			if(choices.size() > 0) {	// choices will never be null
 				if(variable > 0){
 					sb.append(TEXT_DELIMETER + "=" + variable + TEXT_DELIMETER);
 				}
-				sb.append( (choices.length() > 1) ?
-						String.valueOf(choices.charAt(rand.nextInt(choices.length()))) :
-							choices);
+				if(choices.size() > 1) {
+					sb.append(String.valueOf(choices.get(rand.nextInt(choices.size()))));
+				}
+				else if(choices.get(0) != null){
+					sb.append(choices.get(0));
+				}
 			}
 			else if(variable > 0){
 				// ($1) instance is /$1/
@@ -119,17 +144,17 @@ public class PatternWord implements IJson {
 			if(variable > 0) {
 				sb.append("$" + variable + "=");
 			}
-			if(choices.length() > 1) {
+			if(choices.size() > 1) {
 				sb.append('[');
-				for(int i=0; i<choices.length(); i++) {
-					sb.append(choices.charAt(i));
-					if(i != choices.length()-1) {
+				for(int i=0; i<choices.size(); i++) {
+					sb.append(choices.get(i));
+					if(i != choices.size()-1) {
 						sb.append(" | ");
 					}
 				}
 				sb.append(']');
 			}
-			else {
+			else if(choices.size() > 0 && choices.get(0) != null){
 				sb.append(choices);
 			}
 		}
@@ -176,12 +201,10 @@ public class PatternWord implements IJson {
 	public void setRangeHigh(int rangeHigh) {
 		this.rangeHigh = rangeHigh;
 	}
-	public String getChoices() {
+	public List<String> getChoices() {
 		return choices;
 	}
-	public void setChoices(String choices) {
-		this.choices = choices;
-	}
+
 	public Random getRand() {
 		return rand;
 	}

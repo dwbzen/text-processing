@@ -48,9 +48,11 @@ public class PartOfSpeechParser implements IPatternParser, IJson {
 		boolean isChoice = false;
 		boolean isRange = false;
 		boolean isText = false;
+		boolean isMultiChar = false;	// n-character code delimited by ``, as in `op`
 		int rangeLow = -1;
 		int rangeHigh = 1;
-		StringBuffer choices = null;
+		List<String> choices = new ArrayList<String>();
+		StringBuffer multiCharPos = null;
 		List<String> textChoices = new ArrayList<String>();
 		String inlineText = null;
 		String word = null;
@@ -69,12 +71,12 @@ public class PartOfSpeechParser implements IPatternParser, IJson {
 			if(c == '[') {
 				// parse choices [a | b | c etc. ]
 				isChoice = true;
-				choices = new StringBuffer();
+				choices = new ArrayList<String>();
 				textChoices = new ArrayList<String>();
-				if(isText) {	// close out inline Text if needed
+				if(isText) {	// close out in-line Text if needed
 					words.add(inlineText);
-					patternWord = new PatternWord(1, 1, null, inlineText);
-					patternWords.add(patternWord);
+					patternWord = new PatternWord(1, 1, (String)null, inlineText);
+					addPatternWordToList(patternWord);
 					isText = false;
 					inlineText = null;
 				}
@@ -86,14 +88,14 @@ public class PartOfSpeechParser implements IPatternParser, IJson {
 					if(textChoices.size() > 0) {
 						words.add(textChoices.toString());
 						patternWord = new PatternWord(1, 1, null, textChoices);
-						patternWords.add(patternWord);
+						addPatternWordToList(patternWord);
 						textChoices =  new ArrayList<String>();
 					}
 					else {
-						word = choices.toString();
+						word = String.join("",choices);
 						words.add(word);
-						patternWord = new PatternWord(word);
-						patternWords.add(patternWord);
+						patternWord = new PatternWord(choices);
+						addPatternWordToList(patternWord);
 						choices = null;
 					}
 				}
@@ -118,22 +120,22 @@ public class PartOfSpeechParser implements IPatternParser, IJson {
 					rangeLow = rangeHigh;
 				}
 				if(variable != 0) {
-					patternWord =new PatternWord(rangeLow, rangeHigh, null, variable);
+					patternWord =new PatternWord(rangeLow, rangeHigh, (String)null, variable);
 				}
 				else if(textChoices.size()>1) {
 					words.add(textChoices.toString());
 					patternWord = new PatternWord(rangeLow, rangeHigh, null, textChoices);
 				}
-				else if(choices != null && choices.length()>0) {
+				else if(choices != null && choices.size()>0) {
 					word = choices.toString();
 					words.add(word);
-					patternWord = new PatternWord(rangeLow, rangeHigh, word);
+					patternWord = new PatternWord(rangeLow, rangeHigh, choices);
 				}
 				else {
 					words.add(word);
 					patternWord = new PatternWord(rangeLow, rangeHigh, word, inlineText);
 				}
-				patternWords.add(patternWord);
+				addPatternWordToList(patternWord);
 				rangeLow = -1;
 				rangeHigh = 1;
 				isRange = false;
@@ -147,7 +149,7 @@ public class PartOfSpeechParser implements IPatternParser, IJson {
 			else if(c == '?' && !isText) {		// (?) punctuation
 				words.add(word);
 				patternWord = new PatternWord(0, 1, word);
-				patternWords.add(patternWord);				
+				addPatternWordToList(patternWord);				
 			}
 			else if(c == '(') {	// start of inline text or inline text choices
 				parenDelim = parsePosition;
@@ -168,15 +170,15 @@ public class PartOfSpeechParser implements IPatternParser, IJson {
 				else {
 					if(nextChar != '{') {
 						if(variable != 0) {
-							patternWord =new PatternWord(1, 1, null, variable);
+							patternWord =new PatternWord(1, 1, (String)null, variable);
 							variable = 0;
 						}
 						else {
 							words.add(text);
-							patternWord = new PatternWord(1, 1, null, text);
+							patternWord = new PatternWord(1, 1, (String)null, text);
 							inlineText = null;
 						}
-						patternWords.add(patternWord);
+						addPatternWordToList(patternWord);
 					}
 				}
 				isText = false;
@@ -188,11 +190,19 @@ public class PartOfSpeechParser implements IPatternParser, IJson {
 				if(previousChar == '(') {	// as in "($1)"
 					variable  = sentence.charAt(parsePosition++);
 				}
-				else {	// as in "$1=x"
+				else {	// as in "$1=M" or "$1=`op`"
 					variable = sentence.charAt(parsePosition++);
-					parsePosition++;
-					patternWord = new PatternWord(1, 1, String.valueOf(sentence.charAt(parsePosition++)), variable);
-					patternWords.add(patternWord);
+					parsePosition++;	// next character after the =
+					// if next char is ` pick off the chars up to the next ` for multi-char pos.
+					if(sentence.charAt(parsePosition) == '`') {
+						int indx = sentence.indexOf('`', parsePosition+1);
+						patternWord = new PatternWord(1,1, sentence.substring(++parsePosition, indx));
+						parsePosition = indx+1;
+					}
+					else {
+						patternWord = new PatternWord(1, 1, String.valueOf(sentence.charAt(parsePosition++)), variable);
+					}
+					addPatternWordToList(patternWord);
 					variable = 0;
 				}
 			}
@@ -213,22 +223,58 @@ public class PartOfSpeechParser implements IPatternParser, IJson {
 				else {
 					// PatternWord treat the lambda name (%aname) as in-line text, empty choices
 					patternWord = new PatternWord(1, 1, "", lambdaString);
-					patternWords.add(patternWord);
+					addPatternWordToList(patternWord);
+				}
+			}
+			else if(c=='`') {	// start or end multi-character pos
+				if(isMultiChar) {	// end of multi-char
+					multiCharPos.append(c);
+					word = multiCharPos.toString();
+					if(partsOfSpeechSet.contains(word)) {
+						words.add(word);
+						if(isChoice) {
+							choices.add(word);
+						}
+						else {
+							patternWord = new PatternWord(word);
+							patternWords.add(patternWord);
+						}
+					}
+					else {
+						error = "invalid part of speech: " + word;
+						return false;
+					}
+					multiCharPos = null;
+					isMultiChar = false;
+				}
+				else {		// start of multi-char
+					isMultiChar = true;
+					multiCharPos = new StringBuffer();
+					multiCharPos.append(c);
+					continue;
 				}
 			}
 			else {
 				if(isChoice && !isText) {
-					choices.append(c);
+					if(isMultiChar) {
+						multiCharPos.append(c);
+					}
+					else {
+						choices.add(String.valueOf(c));
+					}
 				}
 				else if(isRange || isText) {
 					continue;
+				}
+				else if(isMultiChar) {
+					multiCharPos.append(c);
 				}
 				else {
 					word = String.valueOf(c);
 					if(isText) {
 						words.add(inlineText);
-						patternWord = new PatternWord(1, 1, null, inlineText);
-						patternWords.add(patternWord);
+						patternWord = new PatternWord(1, 1, (String)null, inlineText);
+						addPatternWordToList(patternWord);
 						isText = false;
 						inlineText = null;
 					}
@@ -236,7 +282,7 @@ public class PartOfSpeechParser implements IPatternParser, IJson {
 						if(partsOfSpeechSet.contains(word)) {
 							words.add(word);
 							patternWord = new PatternWord(word);
-							patternWords.add(patternWord);
+							addPatternWordToList(patternWord);
 						}
 						else {
 							valid = false;
@@ -248,6 +294,11 @@ public class PartOfSpeechParser implements IPatternParser, IJson {
 			}
 		}
 		return valid;
+	}
+	
+	private void addPatternWordToList(PatternWord pw) {
+		// System.out.println(pw.toString());
+		patternWords.add(pw);
 	}
 
 	/**
