@@ -1,0 +1,230 @@
+{
+  "name" : "titlePos",
+  "sourceFiles" : [ "/reference/pos/titlePos.txt" ],
+  "words" : [ {
+    "word" : "Amazon",
+    "pos" : [ "N", "H", "#01" ]
+  }, {
+    "word" : "Apocalypse",
+    "pos" : [ "N", "L", "#03" ]
+  }, {
+    "word" : "Atomic",
+    "pos" : [ "A", "#01" ]
+  }, {
+    "word" : "Beach Party",
+    "pos" : [ "`op`", "#03" ]
+  }, {
+    "word" : "Biker",
+    "pos" : [ "N", "#01" ]
+  }, {
+    "word" : "Bloody",
+    "pos" : [ "A", "#01" ]
+  }, {
+    "word" : "Brides",
+    "pos" : [ "N", "p", "#02" ]
+  }, {
+    "word" : "Cannibals",
+    "pos" : [ "N", "p", "#02" ]
+  }, {
+    "word" : "Cat People",
+    "pos" : [ "N", "#02" ]
+  }, {
+    "word" : "Cheetah",
+    "pos" : [ "N", "#02" ]
+  }, {
+    "word" : "Colossal",
+    "pos" : [ "A", "#01" ]
+  }, {
+    "word" : "Cowboys",
+    "pos" : [ "N", "p", "#02" ]
+  }, {
+    "word" : "Creature",
+    "pos" : [ "N", "#02" ]
+  }, {
+    "word" : "Dead",
+    "pos" : [ "N", "A", "#02" ]
+  }, {
+    "word" : "Eyes",
+    "pos" : [ "N", "p", "#02" ]
+  }, {
+    "word" : "Flies",
+    "pos" : [ "N", "p", "#02" ]
+  }, {
+    "word" : "Frankenstein",
+    "pos" : [ "N", "L", "#02" ]
+  }, {
+    "word" : "From the Sea",
+    "pos" : [ "`op`", "#03" ]
+  }, {
+    "word" : "Ghost",
+    "pos" : [ "N", "#02" ]
+  }, {
+    "word" : "Giant",
+    "pos" : [ "A", "N", "#01" ]
+  }, {
+    "word" : "Goddess",
+    "pos" : [ "N", "#02" ]
+  }, {
+    "word" : "Hitchhiker",
+    "pos" : [ "N", "#02" ]
+  }, {
+    "word" : "Holocaust",
+    "pos" : [ "N", "#03" ]
+  }, {
+    "word" : "Inferno",
+    "pos" : [ "N", "#03" ]
+  }, {
+    "word" : "Killer",
+    "pos" : [ "N", "#01" ]
+  }, {
+    "word" : "Lawless",
+    "pos" : [ "A", "#01" ]
+  }, {
+    "word" : "Leeches",
+    "pos" : [ "N", "p", "#02" ]
+  }, {
+    "word" : "Madness",
+    "pos" : [ "N", "#03" ]
+  }, {
+    "word" : "Midnight",
+    "pos" : [ "N", "#01" ]
+  }, {
+    "word" : "Nightmare",
+    "pos" : [ "N", "#01", "#03" ]
+  }, {
+    "word" : "Pygmy",
+    "pos" : [ "N", "#01" ]
+  }, {
+    "word" : "Radioactive",
+    "pos" : [ "A", "#01" ]
+  }, {
+    "word" : "Robot",
+    "pos" : [ "N", "#01" ]
+  }, {
+    "word" : "Scream",
+    "pos" : [ "N", "#02" ]
+  }, {
+    "word" : "Seagulls",
+    "pos" : [ "N", "p", "#02" ]
+  }, {
+    "word" : "Serpent",
+    "pos" : [ "N", "#02" ]
+  }, {
+    "word" : "Shark",
+    "pos" : [ "N", "#02" ]
+  }, {
+    "word" : "Shrews",
+    "pos" : [ "N", "p", "#02" ]
+  }, {
+    "word" : "Singing",
+    "pos" : [ "N", "A", "#01" ]
+  }, {
+    "word" : "Sisters",
+    "pos" : [ "N", "p", "#02" ]
+  }, {
+    "word" : "Talking Mule",
+    "pos" : [ "N", "#02" ]
+  }, {
+    "word" : "Teenage",
+    "pos" : [ "A", "#01" ]
+  }, {
+    "word" : "Terror",
+    "pos" : [ "N", "#02" ]
+  }, {
+    "word" : "The Creeping",
+    "pos" : [ "`sp`", "#01" ]
+  }, {
+    "word" : "The Curse of the",
+    "pos" : [ "`sp`", "#01" ]
+  }, {
+    "word" : "The Grave of the",
+    "pos" : [ "`sp`", "#01" ]
+  }, {
+    "word" : "The Invasion of the",
+    "pos" : [ "`sp`", "#01" ]
+  }, {
+    "word" : "The Night of The",
+    "pos" : [ "`sp`", "#01" ]
+  }, {
+    "word" : "The Prisoner of the",
+    "pos" : [ "`sp`", "#01" ]
+  }, {
+    "word" : "The Revenge of the",
+    "pos" : [ "`sp`", "#01" ]
+  }, {
+    "word" : "The Trial of the",
+    "pos" : [ "`sp`", "#01" ]
+  }, {
+    "word" : "Transparent",
+    "pos" : [ "A", "#01" ]
+  }, {
+    "word" : "Vampire",
+    "pos" : [ "N", "#01" ]
+  }, {
+    "word" : "Weekend",
+    "pos" : [ "N", "#02" ]
+  }, {
+    "word" : "Werewolves",
+    "pos" : [ "N", "p", "#02" ]
+  }, {
+    "word" : "Whores",
+    "pos" : [ "N", "p", "#02" ]
+  }, {
+    "word" : "Zombie",
+    "pos" : [ "N", "#01" ]
+  }, {
+    "word" : "at Midnight",
+    "pos" : [ "`op`", "#03" ]
+  }, {
+    "word" : "from Hell",
+    "pos" : [ "`op`", "#03" ]
+  }, {
+    "word" : "from Outer Space",
+    "pos" : [ "`op`", "#03" ]
+  }, {
+    "word" : "from Pittsburgh",
+    "pos" : [ "`op`", "#03" ]
+  }, {
+    "word" : "in Gold Boots",
+    "pos" : [ "`op`", "#03" ]
+  }, {
+    "word" : "in Harlem",
+    "pos" : [ "`op`", "#03" ]
+  }, {
+    "word" : "in Lover's Lane",
+    "pos" : [ "`op`", "#03" ]
+  }, {
+    "word" : "in a Garden of Cucumbers",
+    "pos" : [ "`op`", "#03" ]
+  }, {
+    "word" : "of Destiny",
+    "pos" : [ "`op`", "#03" ]
+  }, {
+    "word" : "of Satan",
+    "pos" : [ "`op`", "#03" ]
+  }, {
+    "word" : "of Spider Island",
+    "pos" : [ "`op`", "#03" ]
+  }, {
+    "word" : "of the Mojave Desert",
+    "pos" : [ "`op`", "#03" ]
+  }, {
+    "word" : "on Old McDonald's Farm",
+    "pos" : [ "`op`", "#03" ]
+  }, {
+    "word" : "on a Prehistoric Planet",
+    "pos" : [ "`op`", "#03" ]
+  }, {
+    "word" : "that Wouldn't Die",
+    "pos" : [ "`op`", "#03" ]
+  }, {
+    "word" : "the Space Monster",
+    "pos" : [ "`sp`", "`op`", "#01", "#03" ]
+  }, {
+    "word" : "versus the Lizard People",
+    "pos" : [ "`op`", "#03" ]
+  }, {
+    "word" : "with two Heads",
+    "pos" : [ "`op`", "#03" ]
+  } ]
+}

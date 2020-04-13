@@ -18,7 +18,8 @@ import org.apache.logging.log4j.Logger;
 import org.dwbzen.services.TextDao;
 import org.dwbzen.text.util.DataSourceType;
 import org.dwbzen.text.util.FunctionManager;
-import org.dwbzen.text.util.ITextGenerator;;
+import org.dwbzen.text.util.ITextGenerator;
+import org.dwbzen.text.util.PosUtil;;
 
 /**
  * Generates random text (words) from POS (part-of-speach) patterns.</br>
@@ -268,37 +269,9 @@ public class TextGenerator implements ITextGenerator, Function<Integer, String>,
 	}
 	
 	public static List<String> parseInstance(PartOfSpeechPattern posPattern) {
-		return parseInstance(posPattern.createInstance());
+		return PosUtil.parseInstance(posPattern.createInstance(), false);		// returns delimiter with the pos or tag
 	}
 	
-	/**
-	 * Converts a part of speech instance string to a List<String> where each element is an individual POS<br>
-	 * For example, "N`op`A`sp` would be parsed to a 4-element List<String> ["N", "`op`, "A", "`sp`]
-	 * The multi-char pos delimiter (`) is retained.
-	 * @param patternInstance String
-	 * @return List<String>
-	 */
-	public static List<String> parseInstance(String patternInstance) {
-		List<String> tokens = new ArrayList<String>();
-		int index = 0;
-		int index2 = 0;
-		while(index < patternInstance.length()) {
-			char c = patternInstance.charAt(index);
-			if(c == '`') {
-				index2 = patternInstance.indexOf('`', index+1) + 1;
-				tokens.add(
-						index2 >= patternInstance.length() ?
-							patternInstance.substring(index) :
-							patternInstance.substring(index, index2));
-				index = index2;
-			}
-			else {
-				tokens.add(String.valueOf(c));
-				index++;
-			}
-		}
-		return tokens;
-	}
 	
 	public static final String PUNCUTATION = ".?!;:,\"'";
 	/**

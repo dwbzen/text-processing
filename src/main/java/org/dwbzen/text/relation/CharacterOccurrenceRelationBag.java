@@ -13,7 +13,7 @@ import org.dwbzen.common.relation.OccurrenceRelationBag;
 import org.dwbzen.text.element.Sentence;
 import org.dwbzen.text.element.Word;
 import org.dwbzen.text.util.TextFileReader;
-import org.dwbzen.text.util.Util;
+import org.dwbzen.text.util.PosUtil;
 
 public class CharacterOccurrenceRelationBag extends OccurrenceRelationBag<Character, Word, Sentence> {
 
@@ -119,7 +119,7 @@ public class CharacterOccurrenceRelationBag extends OccurrenceRelationBag<Charac
 		if(filenames.length > 0) {
 			try {
 				for(String inputFile : filenames) {
-					String inputFilename = Util.getInputFilename(inputFile);
+					String inputFilename = PosUtil.getInputFilename(inputFile);
 					TextFileReader reader = TextFileReader.getInstance(inputFilename);
 					reader.setMinimumLength(order);
 					String fileText = ignoreCase ? reader.getFileText().toLowerCase() : reader.getFileText();

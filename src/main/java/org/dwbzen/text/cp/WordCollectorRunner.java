@@ -16,7 +16,7 @@ import org.dwbzen.text.element.Book.ContentType;
 import org.dwbzen.text.util.DataSourceDescription;
 import org.dwbzen.text.util.DataSourceType;
 import org.dwbzen.text.util.TextFileDataSource;
-import org.dwbzen.text.util.Util;
+import org.dwbzen.text.util.PosUtil;
 import org.dwbzen.common.cp.CollectorStats;
 import org.dwbzen.common.cp.MarkovChain;
 import org.dwbzen.common.cp.OutputStyle;
@@ -66,7 +66,7 @@ public class WordCollectorRunner {
 				}
 			}
 			if(inputFile != null) {
-				String inputFilename = Util.getInputFilename(inputFile);
+				String inputFilename = PosUtil.getInputFilename(inputFile);
 				dataSourceDescription = new DataSourceDescription(inputFilename, DataSourceType.TextFile);
 				dataSourceDescription.getProperties().setProperty("eol", (type.equals(ContentType.VERSE)) ? "\n" : "");
 				schemaName = theschema.isPresent() ? theschema.get() : "text";

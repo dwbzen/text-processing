@@ -77,7 +77,7 @@ public class TextConfigurator {
 	 */
 	public Configuration configure()  {
 		try {
-			configuration = Util.getConfiguration();
+			configuration = PosUtil.getConfiguration();
 			configProperties = configuration.getProperties();
 			isFilteringInputText =  getBooleanProperty("filterWordsToIgnore");
 			isFilteringPunctuation  = getBooleanProperty("filterPunctuation");

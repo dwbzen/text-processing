@@ -20,12 +20,15 @@ import java.util.stream.Stream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dwbzen.text.util.Configuration;
+import org.dwbzen.text.util.PosUtil;
 
 /**
-	The format of each legacy POS entry is
-	<word><tab><POS tag(s)><unix newline>
+	Applies to legacy pos files only.<br>
+	The format of each legacy POS entry is 
+	<word><tab><POS tag(s)><unix newline><br>
 	
-	Where the POS tag is one or more of the following:
+	Where the POS tag is one or more of the following:</p>
+	<code>
 	
 	N	Noun
 	L   Proper noun (not tagged) - N and first letter upper case
@@ -63,16 +66,18 @@ import org.dwbzen.text.util.Configuration;
 	B	body part 
 	b	body part - male    (optional tagged) added automatically for B
 	d	body part - female  (optional tagged) added automatically for B
+	</code>
 	
 	Unused in legacy: E, J, K, O, Q, R, T, U, Y, a, e, f, g, j, k, m, n, q, s, u, y
-
+*
+* @see  org.dwbzen.text.pos.Dictionary
 */
 public class PartsOfSpeechManager {
 
 	public static final String CONFIG_FILENAME = "/config.properties";
 
-	private final static String POS_DIR = "/reference/pos/";
-	private final static String POS_FILE = "3eslpos.txt";
+	public  static final String POS_DIR = "/reference/pos/";
+	private static final String POS_FILE = "3eslpos.txt";
 	private static String ALL_UPPER =  "^[A-Z]{2,}";	// at least 2 upper case chars
 	private static String PROPER_WORD = "^[A-Z][a-z]+";	// Title case
 	private static String ALL_NUMERIC = "^[0-9]{2,}";
@@ -314,7 +319,7 @@ public class PartsOfSpeechManager {
 			compoundWordsSkipped++;
 			return; 
 		}
-		List<String> posList = TextGenerator.parseInstance(pos);
+		List<String> posList = PosUtil.parseInstance(pos, false);
 		for(String aPos : posList) {
 			// a word can have multiple parts of speech
 			boolean isproper = word.matches(PROPER_WORD);

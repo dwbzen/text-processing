@@ -18,7 +18,7 @@ import org.dwbzen.text.util.DataSourceDescription;
 import org.dwbzen.text.util.DataSourceType;
 import org.dwbzen.text.util.TextConfigurator;
 import org.dwbzen.text.util.TextFileDataSource;
-import org.dwbzen.text.util.Util;
+import org.dwbzen.text.util.PosUtil;
 import org.dwbzen.common.math.SourceOccurrenceProbability;
 import org.dwbzen.common.math.Tupple;
 import org.dwbzen.common.cp.OutputStyle;
@@ -68,7 +68,7 @@ public class WordOccurrenceRelationBagRunner {
 				}
 			}
 			if(inputFile != null) {
-				String inputFilename = Util.getInputFilename(inputFile);
+				String inputFilename = PosUtil.getInputFilename(inputFile);
 				if(theschema.isPresent()) {
 					dataSourceDescription = new DataSourceDescription(inputFilename, DataSourceType.JsonText);
 					schemaName = theschema.get();
