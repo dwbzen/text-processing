@@ -59,6 +59,8 @@ public class TextGenerator implements ITextGenerator, Function<Integer, String>,
 	public final static String SPACE = " ";
 	
 	private PartsOfSpeechManager partsOfSpeechManager = null;
+	private DictionaryManager dictionaryManager = null;
+	
 	private Map<String, List<String>> wordMap = null;
 	private Map<String, Integer> posCount = new HashMap<>();
 	private List<PartOfSpeechPattern> partOfSpeechPatterns = new ArrayList<PartOfSpeechPattern>();
@@ -78,6 +80,13 @@ public class TextGenerator implements ITextGenerator, Function<Integer, String>,
 	private String delimiter = null;
 	private ThreadLocalRandom random = ThreadLocalRandom.current();
 	
+	/**
+	 * Support both legacy POS files and new JSON format POS files.
+	 * If files are not provided by the runner, the configured POS_FILE (which is JSON) is used.<br>
+	 * 
+	 * @param files
+	 * @return
+	 */
 	public static TextGenerator newInstance(List<String> files) {
 		PartsOfSpeechManager pos = null;
 		try {
@@ -102,6 +111,7 @@ public class TextGenerator implements ITextGenerator, Function<Integer, String>,
 	public TextGenerator(PartsOfSpeechManager pos) {
 		setPartsOfSpeechManager(pos);
 	}
+	
 		
 	/**
 	 * Sample patterns: "AANp" "ANp" "NvV" "Np" "Ap" "vVp" "!AN" "ALp"

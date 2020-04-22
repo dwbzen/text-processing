@@ -40,7 +40,6 @@ public class PartOfSpeech implements IJson, INameable {
 		this(name, category, code, description, null);
 	}
 	public PartOfSpeech() {
-		
 	}
 	
 	public PosCategory getCategory() {

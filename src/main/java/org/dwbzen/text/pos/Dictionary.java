@@ -108,18 +108,4 @@ public class Dictionary implements IJson {
 		return dictionary;
 	}
 	
-	public static void main(String[] args) {
-		String name = null;
-		List<String> files = new ArrayList<>();
-		for(int i=0; i<args.length; i++) {
-			if(args[i].equalsIgnoreCase("-name")) {
-				name = args[++i];
-			}
-			else { 
-				files.add(args[i]);
-			}
-		}
-		Dictionary dictionary = Dictionary.instance(files, name);
-		System.out.println(dictionary.toJson(true));
-	}
 }

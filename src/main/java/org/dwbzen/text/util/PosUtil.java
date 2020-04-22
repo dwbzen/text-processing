@@ -11,7 +11,7 @@ import java.util.Properties;
 import java.util.stream.Stream;
 
 /**
- * Utility methods used by Builder, Runner classes
+ * Utility methods used by Builder, Runner and Dictionary classes
  * 
  * @author don_bacon
  *

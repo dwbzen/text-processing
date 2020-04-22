@@ -112,6 +112,7 @@ public class PartOfSpeechPattern extends TextPattern {
 		}
 		else {
 			error = errorMessage + ": " + parser.getError();
+			System.err.println(error);
 		}
 		return valid;
 	}

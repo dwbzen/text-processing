@@ -254,6 +254,13 @@ public class PartOfSpeechParser implements IPatternParser, IJson {
 					continue;
 				}
 			}
+			else if(c=='#'  && !isText) {	// start of a tag, #nn
+				word = sentence.substring(parsePosition - 1, parsePosition + 2);
+				words.add(word);
+				patternWord = new PatternWord(word);
+				patternWords.add(patternWord);
+				parsePosition += 2;
+			}
 			else {
 				if(isChoice && !isText) {
 					if(isMultiChar) {
