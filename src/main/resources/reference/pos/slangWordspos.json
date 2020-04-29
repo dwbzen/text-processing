@@ -1,6 +1,6 @@
 {
   "name" : "slangWordspos",
-  "sourceFiles" : [ "/reference/pos/slangWordspos.txt" ],
+  "sourceFiles" : [ "/reference/pos/slangWordspos.json" ],
   "words" : [ {
     "word" : "Africa",
     "pos" : [ "H" ]

@@ -6,75 +6,19 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Reader;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.TreeMap;
 import java.util.stream.Stream;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.dwbzen.text.util.Configuration;
+import org.dwbzen.text.util.PosUtil;
 
 /**
-	Applies to legacy pos files only.<br>
-	The format of each legacy POS entry is 
-	<word><tab><POS tag(s)><unix newline><br>
-	
-	Where the POS tag is one or more of the following:</p>
-	<code>
-	
-	N	Noun
-	L   Proper noun (not tagged) - N and first letter upper case
-	l   Improper noun (not tagged) - N, p and first letter lower case
-	H	Place name (proper noun)
-	M   Male person first name
-	F   Female person first name
-	S   Surname (last names)
-	p	Plural Noun
-	h	Noun Phrase
-	V	Verb (usu participle)
-	t	Verb (transitive)
-	i	Verb (intransitive)
-	A	Adjective
-	v	Adverb
-	C	Conjunction
-	P	Preposition
-	!	Interjection
-	r	Pronoun
-	D	Definite Article
-	I	Indefinite Article
-	o	Nominative
-	c	Color
-	w	Random digit 0 to 9
-	W   Random digit 1 to 9
-	
-	Derived Forms
-	-------------
-	G   gerund (V or t + ing)
-	Z   Adjectival verb (V or t + "er", as in taker, putter etc.)
-	z   derived possessive noun (N or p + "er" )
-	X	present tense verb (V, t)
-	x	past tense verb (V, t)
-	
-	B	body part 
-	b	body part - male    (optional tagged) added automatically for B
-	d	body part - female  (optional tagged) added automatically for B
-	</code>
-	
-	Unused in legacy: E, J, K, O, Q, R, T, U, Y, a, e, f, g, j, k, m, n, q, s, u, y
 *
-* @see  org.dwbzen.text.pos.Dictionary
+* @see org.dwbzen.text.pos.Dictionary
+* @see org.dwbzen.text.pos.PartsOfSpeech
 */
 public class PartsOfSpeechManager extends AbstractPartsOfSpeechManager {
-
-    private static final Logger logger = LogManager.getLogger(PartsOfSpeech.class);
-
 
 	/**
 	 * Command line arguments:
@@ -92,7 +36,7 @@ public class PartsOfSpeechManager extends AbstractPartsOfSpeechManager {
 		PartsOfSpeechManager partsOfSpeechManager = null;
 		List<String> posToIgnore = new ArrayList<>();
 		List<String> wordsToInclude = new ArrayList<>();
-		List<String> customFiles = new ArrayList();
+		List<String> customFiles = new ArrayList<>();
 		String[] posToShow = {};
 		for(int i=0; i<args.length; i++) {
 			if(args[i].equalsIgnoreCase("-filter")) {
@@ -166,44 +110,6 @@ public class PartsOfSpeechManager extends AbstractPartsOfSpeechManager {
 	public void configure()  {
 		super.configure();
     }
-	
-	public Map<String, List<String>> getWordsForPos(String[] poss) {
-		Map<String, List<String>> posWordMap = new TreeMap<>();
-		for(String key : poss) {
-			posWordMap.put(key, wordMap.get(key));
-		}
-		
-		return posWordMap;
-	}
-	
-	public String lookup(String word) {
-		return posMap.get(word);
-	}
-	
-	public List<String> getPosFiles() {
-		return this.posFiles;
-	}
-
-	public List<String> getPosFileNames() {
-		return posFiles;
-	}
-	
-	public String getPosDir() {
-		return posDir;
-	}
-
-	public void setPosDir(String posDir) {
-		this.posDir = posDir;
-	}
-
-	public String getPosFile() {
-		return posFile;
-	}
-
-	public void setPosFile(String posFile) {
-		this.posFile = posFile;
-	}
-
 
 	@Override
 	public IPartsOfSpeechManager getInstance()  {
@@ -229,6 +135,80 @@ public class PartsOfSpeechManager extends AbstractPartsOfSpeechManager {
 		return mgr;
 	}
 
+	/**
+	 * Loads words from a parts of speech file, for example "3eslpos" or "C;\data\text\myPos" <br>
+	 * File extension is not included but is provided by the concrete PartsOfSpeechManager as ".json" or ".txt"
+	 * 
+	 * @param posFileName
+	 */
+	@Override
+	public int loadWords(String posFileName) {
+		int fileWords = 0;
+		String posFile = (posFileName == null) ? null : posFileName + getPosFileExtension();
+		try {
+			if(posFile == null) {
+				readFileLines(new InputStreamReader(System.in));
+			}
+			else if(posFile.contains(":")) {	// like C:/data/text/
+					readFileLines(new FileReader(posFile));
+			}
+			else {
+				InputStream is = this.getClass().getResourceAsStream(posFile);
+				if(is != null) {
+					try(Stream<String> stream = new BufferedReader(new InputStreamReader(is)).lines()) {
+						stream.forEach(s -> analyzeAndSaveWord(s));
+					}
+				}
+				else {
+					logger.error("Unable to open " + posFile);
+				}
+			}
+		}
+		catch(FileNotFoundException e) {
+			logger.error("File not found: " + posFile);
+		}
+		catch(IOException e) {
+			logger.error("Unable to read: " + posFile);
+		}
+		
+		logger.debug(fileWords + " words analyzed/saved " + posFile);
+		return fileWords;
+	}
+	
+	/**
+	 * Analyzes and saves a word from legacy POS files.
+	 */
+	@Override
+	public int analyzeAndSaveWord(String line) {
+		int fileWords = 0;
+		int tab = line.indexOf('\t');
+		if(tab <= 0) return 0;
+		String word = line.substring(0,tab);
+		String pos = line.substring(tab+1);
+		if(word.length() <= 1) return 0;
+		List<String> posList = PosUtil.parseInstance(pos, false);
+		for(String aPos : posList) {
+			// a word can have multiple parts of speech
+			boolean isproper = word.matches(PROPER_WORD);
+			if(aPos.equals("N")) {
+				if(isproper) {
+					saveWord(word, "L");
+				}
+				else {
+					saveWord(word, "l");
+				}
+			}
+			else if(aPos.equals("B")) {
+				saveWord(word, "d");
+				saveWord(word, "b");
+			}
+
+			saveWord(word, aPos);
+			fileWords++;
+		}
+		return fileWords;
+	}
+	
 	@Override
 	public String getPosFileType() {
 		return "txt";

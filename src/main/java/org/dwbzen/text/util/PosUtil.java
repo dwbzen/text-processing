@@ -99,16 +99,22 @@ public class PosUtil {
 				e.printStackTrace();
 			}
 		}
-		else {	// relative to POS_DIR=/reference/pos/<aposfile>
-			InputStream is = this.getClass().getResourceAsStream(filename);
+		else {	// relative to POS_DIR=/reference/pos/<posfile>
+			String posDir = configProperties.getProperty("POS_DIR", "/reference/pos/");
+			String resourceFilename = (filename.indexOf('/') == 0) ? filename : posDir + filename;
+			InputStream is = this.getClass().getResourceAsStream(resourceFilename);
 			if(is != null) {
 				try(Stream<String> stream = new BufferedReader(new InputStreamReader(is)).lines()) {
 					stream.forEach(s -> sb.append(s));
 				}
 			}
+			else {
+				System.err.println("Could not read " + resourceFilename);
+			}
 		}
 		return sb;
 	}
+	
 	public static StringBuilder readFile(String filename) {
 		PosUtil util = new PosUtil();
 		return util.readPosFile(filename);

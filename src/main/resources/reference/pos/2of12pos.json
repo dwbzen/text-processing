@@ -1,6 +1,6 @@
 {
   "name" : "2of12pos",
-  "sourceFiles" : [ "/reference/pos/2of12pos.txt" ],
+  "sourceFiles" : [ "/reference/pos/2of12pos.json" ],
   "words" : [ {
     "word" : "aardvark",
     "pos" : [ "N" ]

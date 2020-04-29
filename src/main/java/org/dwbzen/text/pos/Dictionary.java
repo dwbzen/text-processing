@@ -8,7 +8,6 @@ import org.dwbzen.text.util.PosUtil;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -18,8 +17,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  *
  */
 public class Dictionary implements IJson {
-
-	@JsonProperty("name")			private String name = null;
+    public static final String DEFAULT_NAME = "MyDictionary";
+    public static final String POS_FILE_TYPE = "json";
+    
+	@JsonProperty("name")			private String name = "";
 	@JsonProperty("sourceFiles")	private List<String> sourceFiles = new ArrayList<>();
 	@JsonProperty("words")			private List<WordPos> words = new ArrayList<>();
 	
@@ -72,38 +73,47 @@ public class Dictionary implements IJson {
 		}
 	}
 	
-	public static Dictionary instance(List<String> posFiles, String name) {
+	/**
+	 * Creates a Dictionary instance from a JSON part of speech file.<br>
+	 * posFile does not need an extension. If present it us used otherwise ".json" is added.
+	 * @param posFile the JSON part of speech file base only (no extension).
+	 * @param myName the Dictionary name. Can be blank but not null;
+	 * @return Dictionary instance
+	 * @throws RuntimeException if unable to deserialize the posFile
+	 */
+	public static Dictionary instance(List<String> posFiles, String myName) {
 		Dictionary dictionary = null;
-		String combinedName = null;
 		for(String posFile : posFiles) {
 			if(dictionary == null) {
 				dictionary = instance(posFile);
-				combinedName = dictionary.getName();
 			}
 			else {
 				dictionary.addDictionary(instance(posFile));
 			}
 		}
-		dictionary.setName(name != null ? name : combinedName);
+		dictionary.setName(myName != null ? myName : DEFAULT_NAME);
 		return dictionary;
 	}
 	
 	/**
-	 * Creates a Dictionary instance from a JSON part of speech file
-	 * @param filename
-	 * @return
+	 * Creates a Dictionary instance from a JSON part of speech file.<br>
+	 * posFile does not need an extension. If present it us used otherwise ".json" is added.
+	 * @param posFile the JSON part of speech file base only (no extension).
+	 * @return Dictionary instance
+	 * @throws RuntimeException if unable to deserialize the posFile
 	 */
 	public static Dictionary instance(String posFile) {
 		Dictionary dictionary = null;
-		StringBuilder sb = PosUtil.readFile(posFile);
+		String posFileName = posFile.contains(".") ? posFile : posFile + "." + POS_FILE_TYPE;
+		StringBuilder sb = PosUtil.readFile(posFileName);
 		if(sb != null && sb.length() > 0) {
 			try {
 				dictionary = new ObjectMapper().readValue(sb.toString(), Dictionary.class);
-			} catch (JsonMappingException e ) {
-				System.err.println("Could not deserialize " + posFile + " because " + e.getMessage());
-			} catch (JsonProcessingException e) {
-				System.err.println("Could not deserialize " + posFile + " because " + e.getMessage());
-			}
+			} catch (JsonProcessingException e ) {
+				String message = "Could not deserialize " + posFile + " because " + e.getMessage();
+				System.err.println(message);
+				throw new RuntimeException(message, e);
+			} 
 		}
 		return dictionary;
 	}

@@ -21,15 +21,77 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	<li>String description</li>
 	<li>String parentPos (optional)</li> 
   </ul> 
+  	For legacy parts of speech files (<name>pos.txt typically) the format of each legacy POS entry is<br>
+	<word><tab><POS tag(s)><unix newline><br>
+	Where the POS tag is one or more of the following:</p>
+	<code>
+	N	Noun
+	L   Proper noun (not tagged) - N and first letter upper case
+	l   Improper noun (not tagged) - N, p and first letter lower case
+	H	Place name (proper noun)
+	M   Male person first name
+	F   Female person first name
+	S   Surname (last names)
+	p	Plural Noun
+	h	Noun Phrase
+	V	Verb (usu participle)
+	t	Verb (transitive)
+	i	Verb (intransitive)
+	A	Adjective
+	v	Adverb
+	C	Conjunction
+	P	Preposition
+	!	Interjection
+	r	Pronoun
+	D	Definite Article
+	I	Indefinite Article
+	o	Nominative
+	c	Color
+	w	Random digit 0 to 9
+	W   Random digit 1 to 9
+	
+	Derived Forms (not present in original legacy)
+	----------------------------------------------
+	G   gerund (V or t + ing)
+	Z   Adjectival verb (V or t + "er", as in taker, putter etc.)
+	z   derived possessive noun (N or p + "er" )
+	X	present tense verb (V, t)
+	x	past tense verb (V, t)
+	
+	Added (new)
+	-----------
+	B	body part 
+	b	body part - male    (optional tagged) added automatically for B
+	d	body part - female  (optional tagged) added automatically for B
+	E	Number name
+	F	Feminine first name
+	J	Number adjective (as in first, third etc.)
+	M	Male first name
+	Q	City
+	R	Country
+	S	surname
+	T	food/beverage
+	W	digit19
+	X	Present tense verb
+	Z	derrived noun
+	</code>
 * 
 * @author don_bacon
 */
 public class PartsOfSpeech implements IJson {
 
+	/**
+	 * Parts of speech that can be used in patterns including tags (#nn)
+	 */
 	public static Map<String, String> PartsOfSpeechMap = new HashMap<String, String>();
-	// Maps single-character legacy part of speech to PartOfSpeech
+	/**
+	 * Defines parts of speech codes including tags (#nn)
+	 */
 	public static Map<String, PartOfSpeech> PartsOfSpeechDefinitionMap = new TreeMap<String, PartOfSpeech>();
-	public static final int MAX_TAGS = 10;
+	/**
+	 * Maximum number of #nn tags being used. Set more if needed.
+	 */
+	public static int MAX_TAGS = 10;
 	
 	@JsonProperty	private List<PartOfSpeech> partsOfSpeech = new ArrayList<>();
 	
@@ -165,10 +227,23 @@ public class PartsOfSpeech implements IJson {
 		PartsOfSpeechDefinitionMap.put("x", new PartOfSpeech("pastTenseVerb", PosCategory.verb, "x", "Verb (past tense)", "verb"));
 		PartsOfSpeechDefinitionMap.put("z", new PartOfSpeech("derrivedPluralNoun", PosCategory.noun, "z",  "Made-up from a legit plural noun", "noun"));
 	
-		// extended POS mapping does not include tags (#nn)
+		// extended POS mappings including tags
 		PartsOfSpeechDefinitionMap.put("`sp`", new PartOfSpeech("subject phrase", PosCategory.noun, "sp", "A phrase that can start a sentence", "noun"));
 		PartsOfSpeechDefinitionMap.put("`op`", new PartOfSpeech("object phrase", PosCategory.noun, "op", "An object phrase", "noun"));
-		PartsOfSpeechDefinitionMap.put("`np`", new PartOfSpeech("noun phrase", PosCategory.noun, "np", "A general noun phrase", "noun"));		// equivalent to 'h' legacy
+		PartsOfSpeechDefinitionMap.put("`np`", new PartOfSpeech("noun phrase", PosCategory.noun, "np", "A general noun phrase", "noun"));	// equivalent to 'h' legacy
+		for(int i=1; i<MAX_TAGS; i++) {
+			String tag = (i<=9) ? "#0" + Integer.valueOf(i) : "#" + Integer.valueOf(i);
+			PartsOfSpeechDefinitionMap.put(tag,
+					new PartOfSpeech("Tag", PosCategory.tag, tag,  "Arbritary tag of any POS", "tag")
+			);
+		}
+	}
+	
+	public static int getMaxTags() {
+		return MAX_TAGS;
+	}
+	public static void setMaxTags(int ntags) {
+		MAX_TAGS = (ntags > 0) ? ntags : 10;
 	}
 
 	/**

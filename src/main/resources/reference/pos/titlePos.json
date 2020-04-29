@@ -1,6 +1,6 @@
 {
   "name" : "titlePos",
-  "sourceFiles" : [ "/reference/pos/titlePos.txt" ],
+  "sourceFiles" : [ "/reference/pos/titlePos.json" ],
   "words" : [ {
     "word" : "Amazon",
     "pos" : [ "N", "H", "#01" ]

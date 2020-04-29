@@ -58,8 +58,7 @@ public class TextGenerator implements ITextGenerator, Function<Integer, String>,
 	public final static String QUOTE = "\"";
 	public final static String SPACE = " ";
 	
-	private PartsOfSpeechManager partsOfSpeechManager = null;
-	private DictionaryManager dictionaryManager = null;
+	private IPartsOfSpeechManager partsOfSpeechManager = null;
 	
 	private Map<String, List<String>> wordMap = null;
 	private Map<String, Integer> posCount = new HashMap<>();
@@ -81,35 +80,18 @@ public class TextGenerator implements ITextGenerator, Function<Integer, String>,
 	private ThreadLocalRandom random = ThreadLocalRandom.current();
 	
 	/**
-	 * Support both legacy POS files and new JSON format POS files.
-	 * If files are not provided by the runner, the configured POS_FILE (which is JSON) is used.<br>
+	 * Support both legacy POS files and new JSON format POS files via the selected IPartsOfSpeechManager<br>
+	 * If files are not provided by the runner, the configured POS_FILE is used.
 	 * 
-	 * @param files
-	 * @return
+	 * @param posManager the IPartsOfSpeechManager to use
+	 * @return TextGenerator instance
 	 */
-	public static TextGenerator newInstance(List<String> files) {
-		PartsOfSpeechManager pos = null;
-		try {
-				pos = (files == null || files.size()==0) ? PartsOfSpeechManager.newInstance() : PartsOfSpeechManager.newInstance(files);
-		}
-		catch(IOException ex)  {
-			System.err.println("Could not create ParsOfSpeechManager because " + ex.getMessage());
-			return null;
-		}
-		return new TextGenerator(pos);
+	public static TextGenerator newInstance(IPartsOfSpeechManager posManager) {
+		return new TextGenerator(posManager);
 	}
-	
-	public TextGenerator() {
-		try {
-			setPartsOfSpeechManager(PartsOfSpeechManager.newInstance());
-		}
-		catch(IOException ex)  {
-			System.err.println("Could not create ParsOfSpeechManager because " + ex.getMessage());
-		}
-	}
-	
-	public TextGenerator(PartsOfSpeechManager pos) {
-		setPartsOfSpeechManager(pos);
+
+	public TextGenerator(IPartsOfSpeechManager posManager) {
+		setPartsOfSpeechManager(posManager);
 	}
 	
 		
@@ -397,12 +379,12 @@ public class TextGenerator implements ITextGenerator, Function<Integer, String>,
 
 	}
 
-	public PartsOfSpeechManager getPartsOfSpeechManager() {
+	public IPartsOfSpeechManager getPartsOfSpeechManager() {
 		return partsOfSpeechManager;
 	}
-
-	public void setPartsOfSpeechManager(PartsOfSpeechManager partsOfSpeech) {
-		partsOfSpeechManager = partsOfSpeech;
+	
+	public void setPartsOfSpeechManager(IPartsOfSpeechManager manager) {
+		partsOfSpeechManager = manager;
 		wordMap = partsOfSpeechManager.getWordMap();
 		Set<String> loadedPos = PartsOfSpeechManager.getLoadedPartsOfSpeech();
 		loadedPos.forEach(ps -> posCount.put(ps, wordMap.get(ps).size()));
@@ -501,6 +483,12 @@ public class TextGenerator implements ITextGenerator, Function<Integer, String>,
 				jsonFieldname = pp.substring(pp.indexOf(":") + 1);
 			}
 		}
+	}
+	
+	public int setInputPatterns(List<String> patterns) {
+		int ret = 0;
+		
+		return ret;
 	}
 	
 	public int setInputPatterns(File f) {

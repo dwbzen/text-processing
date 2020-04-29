@@ -1,7 +1,6 @@
 package org.dwbzen.services;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -20,6 +19,8 @@ import org.dwbzen.text.cp.CharacterCollector;
 import org.dwbzen.text.cp.WordProducer;
 import org.dwbzen.text.element.Sentence;
 import org.dwbzen.text.element.Word;
+import org.dwbzen.text.pos.DictionaryManager;
+import org.dwbzen.text.pos.IPartsOfSpeechManager;
 import org.dwbzen.text.pos.TextGenerator;
 
 @Path("/TextService") 
@@ -28,6 +29,7 @@ public class TextService {
 	private TextDao textDao = new TextDao();
 	private CharacterCollector collector = null;
 	private WordProducer producer = null;
+	private IPartsOfSpeechManager partsOfSpeechManager = DictionaryManager.instance();
 	
 	@GET 
 	@Path("/{typeid}/{number}") 
@@ -96,7 +98,7 @@ public class TextService {
 	@Consumes(MediaType.TEXT_PLAIN)
 	public List<String> generateText(@PathParam("number") int num, String message) {
 		List<String> generatedText = new ArrayList<>();
-		TextGenerator generator = TextGenerator.newInstance(Collections.emptyList());
+		TextGenerator generator = TextGenerator.newInstance(partsOfSpeechManager);
 		if(generator == null) {
 			generatedText.add("There was a problem creating TextGenerator");
 		}
@@ -125,7 +127,7 @@ public class TextService {
 	}
 	
 	public List<String> generateFromPatternFile(String type, String postProcessing, int num) {
-		TextGenerator generator = new TextGenerator();
+		TextGenerator generator = new TextGenerator(partsOfSpeechManager);
 		List<String> generatedText = new ArrayList<>();
 		String[] patterns = textDao.getPatterns(type);
 		generator.setPatternList(patterns);

@@ -1,11 +1,7 @@
 package org.dwbzen.text.pos;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,16 +10,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-import java.util.stream.Stream;
+import java.util.TreeMap;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dwbzen.text.util.Configuration;
-import org.dwbzen.text.util.PosUtil;
 
 public abstract class AbstractPartsOfSpeechManager implements IPartsOfSpeechManager {
 
-	private static final Logger logger = LogManager.getLogger(PartsOfSpeech.class);
+	protected static final Logger logger = LogManager.getLogger(TextGenerator.class);
 	public static final String POS_FILE = "3eslpos";
 
     private static String[] Zwords = {" in", " on", " over" };
@@ -214,41 +209,51 @@ public abstract class AbstractPartsOfSpeechManager implements IPartsOfSpeechMana
 	}
 	
 	/**
-	 * Loads words from a parts of speech file, for example "3eslpos" or "C;\data\text\myPos" <br>
-	 * File extension is not included but is provided by the concrete PartsOfSpeechManager as ".json" or ".txt"
-	 * 
-	 * @param posFileName
+	 * Default implementation does nothing.
 	 */
-	protected void loadWords(String posFileName) {
-		fileWords = 0;
-		String posFile = (posFileName == null) ? null : posFileName + getPosFileExtension();
-		try {
-			if(posFile == null) {
-				readFileLines(new InputStreamReader(System.in));
-			}
-			else if(posFile.contains(":")) {	// like C:/data/text/
-					readFileLines(new FileReader(posFile));
-			}
-			else {
-				InputStream is = this.getClass().getResourceAsStream(posFile);
-				if(is != null) {
-					try(Stream<String> stream = new BufferedReader(new InputStreamReader(is)).lines()) {
-						stream.forEach(s -> analyzeAndSaveWord(s));
-					}
-				}
-				else {
-					logger.error("Unable to open " + posFile);
-				}
-			}
+	public int analyzeAndSaveWord(String line) {
+		return 0;
+	}
+	
+	/**
+	 * Gets a sorted map of all the Words having the parts of speech specified.
+	 * @param poss String[]
+	 * @return Map<String, List<String>> of part of speech, List of words
+	 */
+	public Map<String, List<String>> getWordsForPos(String[] poss) {
+		Map<String, List<String>> posWordMap = new TreeMap<>();
+		for(String key : poss) {
+			posWordMap.put(key, wordMap.get(key));
 		}
-		catch(FileNotFoundException e) {
-			logger.error("File not found: " + posFile);
-		}
-		catch(IOException e) {
-			logger.error("Unable to read: " + posFile);
-		}
-		
-		logger.debug(fileWords + " words analyzed/saved " + posFile);
+		return posWordMap;
+	}
+	
+	public String lookup(String word) {
+		return posMap.get(word);
+	}
+	
+	public List<String> getPosFiles() {
+		return this.posFiles;
+	}
+
+	public List<String> getPosFileNames() {
+		return posFiles;
+	}
+	
+	public String getPosDir() {
+		return posDir;
+	}
+
+	public void setPosDir(String posDir) {
+		this.posDir = posDir;
+	}
+
+	public String getPosFile() {
+		return posFile;
+	}
+
+	public void setPosFile(String posFile) {
+		this.posFile = posFile;
 	}
 
 	protected int readFileLines(Reader reader)  throws IOException {
@@ -260,36 +265,6 @@ public abstract class AbstractPartsOfSpeechManager implements IPartsOfSpeechMana
 		}
 		posFileReader.close();
 		return fileWords;
-	}
-
-	
-	protected void analyzeAndSaveWord(String line) {
-		int tab = line.indexOf('\t');
-		if(tab <= 0) return;
-		String word = line.substring(0,tab);
-		String pos = line.substring(tab+1);
-		if(word.length() <= 1) return;
-		List<String> posList = PosUtil.parseInstance(pos, false);
-		for(String aPos : posList) {
-			// a word can have multiple parts of speech
-			boolean isproper = word.matches(PROPER_WORD);
-			if(aPos.equals("N")) {
-				if(isproper) {
-					saveWord(word, "L");
-				}
-				else {
-					saveWord(word, "l");
-				}
-			}
-			else if(aPos.equals("B")) {
-				saveWord(word, "d");
-				saveWord(word, "b");
-			}
-
-			saveWord(word, aPos);
-			fileWords++;
-		}
-		return;
 	}
 
 	protected void saveWord(String word, String pos) {
@@ -355,6 +330,16 @@ public abstract class AbstractPartsOfSpeechManager implements IPartsOfSpeechMana
 			}
 	}
 	
+	protected void addWord(String word, String pos) {
+		if(wordMap.containsKey(pos)) {
+			wordMap.get(pos).add(word);
+		}
+		else {	// add Tag
+			wordMap.put(pos, new ArrayList<String>());
+			wordMap.get(pos).add(word);
+		}
+	}
+	
 	protected void addDerrived(String word, String pos) {
 		if(word.endsWith("ing") && pos == "G") {
 			wordMap.get(String.valueOf(pos)).add(word);
@@ -391,16 +376,6 @@ public abstract class AbstractPartsOfSpeechManager implements IPartsOfSpeechMana
 		}
 	}
 
-	protected void addWord(String word, String pos) {
-		if(wordMap.containsKey(pos)) {
-			wordMap.get(pos).add(word);
-		}
-		else {	// add Tag
-			wordMap.put(pos, new ArrayList<String>());
-			wordMap.get(pos).add(word);
-		}
-	}
-	
 	/*
 	 * Eliminates the trailing "in", "on", "over"
 	 */

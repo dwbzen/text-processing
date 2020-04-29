@@ -18,6 +18,9 @@ public interface IPartsOfSpeechManager {
 	Configuration getConfiguration();
 	Properties getConfigProperties();
 	
+	int loadWords(String posFileName);
+	int analyzeAndSaveWord(String line);
+	
 	/**
 	 * A Map<String, List<String>> of words keyed by part of speech
 	 */

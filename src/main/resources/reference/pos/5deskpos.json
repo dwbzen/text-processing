@@ -1,6 +1,6 @@
 {
   "name" : "5deskpos",
-  "sourceFiles" : [ "/reference/pos/5deskpos.txt" ],
+  "sourceFiles" : [ "/reference/pos/5deskpos.json" ],
   "words" : [ {
     "word" : "Aachen",
     "pos" : [ "N" ]

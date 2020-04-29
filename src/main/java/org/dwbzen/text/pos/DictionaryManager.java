@@ -2,38 +2,86 @@ package org.dwbzen.text.pos;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.dwbzen.text.util.Configuration;
-import org.dwbzen.text.util.PosUtil;
 
 public class DictionaryManager extends AbstractPartsOfSpeechManager {
 
-    private static final Logger logger = LogManager.getLogger(Dictionary.class);
-    public static final String DEFAULT_NAME = "dictionary";
-    
 	private Dictionary dictionary = null;
 
-	protected DictionaryManager() { 
-		configuration = PosUtil.getConfiguration();
-		configProperties = configuration.getProperties();
+	/**
+	 * Creates DictionaryManager with the configured POS_FILE
+	 */
+	protected DictionaryManager() {
+		configure();
+		dictionary = Dictionary.instance(posFile);
 	}
 	
 	protected DictionaryManager(Dictionary dict) {
-		this();
 		dictionary = dict;
+		configure();
 	}
 	
-	static DictionaryManager instance(String posFile) {
+	public static DictionaryManager instance() {
+		return new DictionaryManager();
+	}
+	
+	public static DictionaryManager instance(String posFile) {
 		Dictionary dict = Dictionary.instance(posFile);
 		return new DictionaryManager(dict);
 	}
 	
-	static DictionaryManager instance(List<String> posFiles, String name) {
-		Dictionary dict = Dictionary.instance(posFiles, name);
-		return new DictionaryManager(dict);
+	public static DictionaryManager instance(List<String> posFiles, String name) {
+		Dictionary dict = null;
+		DictionaryManager dictionaryManager = null;
+		if(posFiles != null && posFiles.size()>0) {
+			dict = Dictionary.instance(posFiles, name);
+			dictionaryManager = new DictionaryManager(dict);
+		}
+		else {
+			dictionaryManager = new DictionaryManager();
+		}
+		return dictionaryManager;
+	}
+
+	@Override
+	public IPartsOfSpeechManager getInstance() {
+		return new DictionaryManager();
+	}
+
+	@Override
+	public IPartsOfSpeechManager getInstance(List<String> posFiles) {
+		return DictionaryManager.instance(posFiles, Dictionary.DEFAULT_NAME);
+	}
+
+	/**
+	 * Load all the configured pos file names to use. Names don't include extensions, ".json" in this case.
+	 */
+	@Override
+	public void configure()  {
+		super.configure();
+    }
+	
+	@Override
+	public int loadWords(String posFileName) {
+		if(dictionary == null) {
+			dictionary = Dictionary.instance(posFileName);
+		}
+		else {
+			dictionary.addDictionary(Dictionary.instance(posFileName));
+		}
+		for(WordPos wordPos : dictionary.getWords()) {
+			wordPos.getPos().forEach(w -> saveWord(wordPos.getWord(),w));
+		}
+		return dictionary.getWords().size();
+	}
+
+	
+	public Dictionary getDictionary() {
+		return dictionary;
+	}
+	
+	@Override
+	public String getPosFileType() {
+		return Dictionary.POS_FILE_TYPE;
 	}
 	
 	public static void main(String[] args) {
@@ -50,30 +98,4 @@ public class DictionaryManager extends AbstractPartsOfSpeechManager {
 		Dictionary dictionary = Dictionary.instance(files, name);
 		System.out.println(dictionary.toJson(true));
 	}
-
-	@Override
-	public IPartsOfSpeechManager getInstance() {
-		return new DictionaryManager();
-	}
-
-	@Override
-	public IPartsOfSpeechManager getInstance(List<String> posFiles) {
-		return DictionaryManager.instance(posFiles, DEFAULT_NAME);
-	}
-
-	@Override
-	public void configure() {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	public Dictionary getDictionary() {
-		return dictionary;
-	}
-	
-	@Override
-	public String getPosFileType() {
-		return "json";
-	}
-	
 }
