@@ -6,8 +6,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.dwbzen.text.util.PosUtil;
-
 public class TextGeneratorRunner {
 
 	/**

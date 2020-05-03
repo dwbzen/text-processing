@@ -10,10 +10,6 @@ public interface IPartsOfSpeechManager {
 	static final String CONFIG_FILENAME = "/config.properties";
 	static final String POS_DIR = "/reference/pos/";
 	
-	IPartsOfSpeechManager getInstance();
-	IPartsOfSpeechManager getInstance(List<String> posFiles);
-	IPartsOfSpeechManager getInstance(List<String> posFiles, String name);
-	
 	void configure();
 	Configuration getConfiguration();
 	Properties getConfigProperties();

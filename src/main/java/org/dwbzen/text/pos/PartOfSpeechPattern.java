@@ -63,14 +63,14 @@ public class PartOfSpeechPattern extends TextPattern {
 	public final static String errorMessage = "ERROR: invalid Part of Speech Pattern";
 	
 	public PartOfSpeechPattern(String sentence) {
-		setVocabulary(PartsOfSpeechManager.getLoadedPartsOfSpeech());
+		setVocabulary(DictionaryManager.getLoadedPartsOfSpeech());
 		setSentence(sentence);
 		parse();
 	}
 	
 	
 	public PartOfSpeechPattern(String[] sentences) {
-		setVocabulary(PartsOfSpeechManager.getLoadedPartsOfSpeech());
+		setVocabulary(DictionaryManager.getLoadedPartsOfSpeech());
 		setSentence(sentences.toString());
 		parse();
 	}

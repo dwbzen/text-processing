@@ -21,11 +21,11 @@ public class PatternWord implements IJson {
 
 	@JsonIgnore			private int rangeLow = 1;
 	@JsonIgnore			private int rangeHigh = 1;
-	@JsonIgnore			private List<String> choices = new ArrayList<String>();		// could be only 1 or size=0 if raw text
+	@JsonIgnore			private List<String> choices = new ArrayList<>();		// could be only 1 or size=0 if raw text
 	@JsonIgnore			private char variable = 0;		// '1', '2', etc. for $1, ... $9
 
 	// inline, non-pattern text
-	@JsonIgnore			private List<String> textChoices = new ArrayList<String>();
+	@JsonIgnore			private List<String> textChoices = new ArrayList<>();
 	@JsonIgnore			Random rand = new Random();
 	@JsonProperty("instance")	private String instance = "";
 	/**
@@ -37,17 +37,25 @@ public class PatternWord implements IJson {
 		rangeLow = low;
 		rangeHigh = high;
 		if(choicesList != null && choicesList.size()>0) {
-			choices.addAll(choicesList);
+			for(String choice : choicesList) {
+				if(choice != null) {
+					choices.add(choice);
+				}
+			}
 		}
 	}
 	
 	public PatternWord(int low, int high, String choicesString) {
 		rangeLow = low;
 		rangeHigh = high;
-		choices.add(choicesString);
+		if(choicesString != null) {
+			choices.add(choicesString);
+		}
 	}
 	public PatternWord(String choicesString) {
-		choices.add(choicesString);
+		if(choicesString != null) {
+			choices.add(choicesString);
+		}
 	}
 	public PatternWord(List<String> choicesList) {
 		this(1, 1, choicesList);

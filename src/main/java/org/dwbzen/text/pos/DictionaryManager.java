@@ -42,16 +42,6 @@ public class DictionaryManager extends AbstractPartsOfSpeechManager {
 		return dictionaryManager;
 	}
 
-	@Override
-	public IPartsOfSpeechManager getInstance() {
-		return new DictionaryManager();
-	}
-
-	@Override
-	public IPartsOfSpeechManager getInstance(List<String> posFiles) {
-		return DictionaryManager.instance(posFiles, Dictionary.DEFAULT_NAME);
-	}
-
 	/**
 	 * Load all the configured pos file names to use. Names don't include extensions, ".json" in this case.
 	 */

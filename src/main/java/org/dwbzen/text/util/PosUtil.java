@@ -85,6 +85,12 @@ public class PosUtil {
 		return tokens;
 	}
 	
+	/**
+	 * Lines starting with "//" are treated as comments and not returned.<br>
+	 * Resource files lacking a path are loaded from /resource/pos.
+	 * @param filename an absolute path or resource file
+	 * @return contents as StringBuilder instance
+	 */
 	public StringBuilder readPosFile(String filename) {
 		StringBuilder sb = new StringBuilder();
 		FileReader reader = null;
@@ -105,7 +111,7 @@ public class PosUtil {
 			InputStream is = this.getClass().getResourceAsStream(resourceFilename);
 			if(is != null) {
 				try(Stream<String> stream = new BufferedReader(new InputStreamReader(is)).lines()) {
-					stream.forEach(s -> sb.append(s));
+					stream.filter(s -> !s.startsWith("//")).forEach(s -> sb.append(s));
 				}
 			}
 			else {

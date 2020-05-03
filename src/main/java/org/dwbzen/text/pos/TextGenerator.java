@@ -90,6 +90,13 @@ public class TextGenerator implements ITextGenerator, Function<Integer, String>,
 		return new TextGenerator(posManager);
 	}
 
+	/**
+	 * Default constructor uses DictionaryManager for IPartsOfSpeechManager
+	 */
+	public  TextGenerator() {
+		setPartsOfSpeechManager(DictionaryManager.instance());
+	}
+	
 	public TextGenerator(IPartsOfSpeechManager posManager) {
 		setPartsOfSpeechManager(posManager);
 	}

@@ -111,30 +111,6 @@ public class PartsOfSpeechManager extends AbstractPartsOfSpeechManager {
 		super.configure();
     }
 
-	@Override
-	public IPartsOfSpeechManager getInstance()  {
-		IPartsOfSpeechManager mgr = null;
-		try {
-			mgr = PartsOfSpeechManager.newInstance();
-		} catch (IOException e) {
-			System.err.println(e.getMessage());
-			e.printStackTrace();
-		}
-		return mgr;
-	}
-
-	@Override
-	public IPartsOfSpeechManager getInstance(List<String> posFiles) {
-		IPartsOfSpeechManager mgr = null;
-		try {
-			mgr = PartsOfSpeechManager.newInstance(posFiles);
-		} catch (IOException e) {
-			System.err.println(e.getMessage());
-			e.printStackTrace();
-		}
-		return mgr;
-	}
-
 	/**
 	 * Loads words from a parts of speech file, for example "3eslpos" or "C;\data\text\myPos" <br>
 	 * File extension is not included but is provided by the concrete PartsOfSpeechManager as ".json" or ".txt"

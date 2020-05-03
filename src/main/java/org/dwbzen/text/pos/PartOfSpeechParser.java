@@ -242,6 +242,7 @@ public class PartOfSpeechParser implements IPatternParser, IJson {
 					}
 					else {
 						error = "invalid part of speech: " + word;
+						System.err.println(error);
 						return false;
 					}
 					multiCharPos = null;
@@ -293,7 +294,8 @@ public class PartOfSpeechParser implements IPatternParser, IJson {
 						}
 						else {
 							valid = false;
-							error = "invalid part of speech: " + word;
+							error = "Invalid part of speech: " + word;
+							System.err.println(error);
 							return valid;	// invalid pattern
 						}
 					}
