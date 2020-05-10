@@ -187,7 +187,12 @@ public class PartOfSpeechParser implements IPatternParser, IJson {
 				// use of variable: $1...$9
 				// "($1)" or "$1=x"
 				//
-				if(previousChar == '(') {	// as in "($1)"
+				if(isText && (nextChar < '0' || nextChar > '9')) {
+					// must be just text
+					continue;
+				}
+				// must indicate a variable 
+				if(previousChar == '(' ) {	// as in "($1)"
 					variable  = sentence.charAt(parsePosition++);
 				}
 				else {	// as in "$1=M" or "$1=`op`"

@@ -211,7 +211,7 @@ public class TextGenerator implements ITextGenerator, Function<Integer, String>,
 				isText = !isText;
 				continue;
 			}
-			else if(posToken.equals("$")) {	// use a variable
+			else if(posToken.equals("$") && !isText) {	// use a variable or treat $ as text
 				useVariable = true;
 				continue;
 			}
