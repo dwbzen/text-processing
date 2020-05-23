@@ -1,0 +1,8 @@
+// Sample pattern - (\n) is an embedded '\n'
+// a pattern can be spread across multiple lines. Lines ending with '+' continue on the next line
+// Add punctuation as a one-character literal such as (,) (.) (") etc.
+// lambda definition(s) appear first
+//
+(She made an entrance as she always did, showing off her)A{1,2}[d|B](.)(\n)+
+(She was the kind of woman that could)t(your)B(,)(who liked her)`nF`A(and her)`nB`A(.)(\n)+
+(Her friends called her)F(but I just called her)F(because she reminded me of a)A[`nF`|`nB`](.)(\n)
