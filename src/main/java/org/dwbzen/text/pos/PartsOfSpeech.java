@@ -157,7 +157,6 @@ public class PartsOfSpeech implements IJson {
 		PartsOfSpeechMap.put("Q", "City");
 		PartsOfSpeechMap.put("R", "Country");
 		PartsOfSpeechMap.put("S", "Surname");
-		PartsOfSpeechMap.put("T", "Food/Beveage");
 		PartsOfSpeechMap.put("V", "Verb (participle)");
 		PartsOfSpeechMap.put("W", "Digit19");
 		PartsOfSpeechMap.put("X", "Present tense verb");
@@ -181,6 +180,8 @@ public class PartsOfSpeech implements IJson {
 		PartsOfSpeechMap.put("`sp`", "Subject phrase"); 		// as in "The revenge of the..."
 		PartsOfSpeechMap.put("`op`", "Objective phrase");		// as in "... with a whip"
 		PartsOfSpeechMap.put("`np`", "Noun phrase");			// equivalent to 'h' part of speech
+		PartsOfSpeechMap.put("`nF`", "Noun - Food");
+		PartsOfSpeechMap.put("`nB`", "Noun - Beverage");	
 		/*
 		 *  Add tags #00 through #10. If U need more change the MAX_TAGS.
 		 */
@@ -207,7 +208,6 @@ public class PartsOfSpeech implements IJson {
 		PartsOfSpeechDefinitionMap.put("Q", new PartOfSpeech("cityName", PosCategory.noun, "Q",  "City name", "placeName"));
 		PartsOfSpeechDefinitionMap.put("R", new PartOfSpeech("countryName", PosCategory.noun, "R",  "Country name", "placeName"));
 		PartsOfSpeechDefinitionMap.put("S", new PartOfSpeech("surname", PosCategory.noun, "S",  "Last Name", "noun"));
-		PartsOfSpeechDefinitionMap.put("T", new PartOfSpeech("food", PosCategory.noun, "T",  "Food/beverage name", "noun"));
 		PartsOfSpeechDefinitionMap.put("V", new PartOfSpeech("participleVerb", PosCategory.verb, "V", "Verb (participle)", "verb"));
 		PartsOfSpeechDefinitionMap.put("W", new PartOfSpeech("digit19", PosCategory.noun, "W", "Random digit 1 to 9", "noun"));
 		PartsOfSpeechDefinitionMap.put("X", new PartOfSpeech("presentTenseVerb", PosCategory.verb, "X", "Verb (present tense)", "verb"));
@@ -231,6 +231,9 @@ public class PartsOfSpeech implements IJson {
 		PartsOfSpeechDefinitionMap.put("`sp`", new PartOfSpeech("subject phrase", PosCategory.noun, "sp", "A phrase that can start a sentence", "noun"));
 		PartsOfSpeechDefinitionMap.put("`op`", new PartOfSpeech("object phrase", PosCategory.noun, "op", "An object phrase", "noun"));
 		PartsOfSpeechDefinitionMap.put("`np`", new PartOfSpeech("noun phrase", PosCategory.noun, "np", "A general noun phrase", "noun"));	// equivalent to 'h' legacy
+		PartsOfSpeechDefinitionMap.put("`nF`", new PartOfSpeech("food", PosCategory.noun, "nF",  "Food name", "noun"));
+		PartsOfSpeechDefinitionMap.put("`nB`", new PartOfSpeech("beverage", PosCategory.noun, "nB",  "Beverage/Drink name", "noun"));
+
 		for(int i=1; i<MAX_TAGS; i++) {
 			String tag = (i<=9) ? "#0" + Integer.valueOf(i) : "#" + Integer.valueOf(i);
 			PartsOfSpeechDefinitionMap.put(tag,

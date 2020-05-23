@@ -1,6 +1,6 @@
 {
-  "name" : "slangWordspos",
-  "sourceFiles" : [ "/reference/pos/slangWordspos.json" ],
+  "name" : "slangWordsPos",
+  "sourceFiles" : [ "/reference/pos/slangWordspos.txt" ],
   "words" : [ {
     "word" : "Africa",
     "pos" : [ "H" ]
@@ -48,7 +48,7 @@
     "pos" : [ "H" ]
   }, {
     "word" : "Cuban sandwich",
-    "pos" : [ "T" ]
+    "pos" : [ "`nF`" ]
   }, {
     "word" : "Damascus",
     "pos" : [ "Q" ]
@@ -57,13 +57,13 @@
     "pos" : [ "!" ]
   }, {
     "word" : "Diet Coke",
-    "pos" : [ "T" ]
+    "pos" : [ "`nB`" ]
   }, {
     "word" : "Dixie",
     "pos" : [ "H" ]
   }, {
     "word" : "Dr. Pepper",
-    "pos" : [ "T" ]
+    "pos" : [ "`nB`" ]
   }, {
     "word" : "England",
     "pos" : [ "H", "R" ]
@@ -120,7 +120,7 @@
     "pos" : [ "N" ]
   }, {
     "word" : "Jell-O Salad",
-    "pos" : [ "T" ]
+    "pos" : [ "`nF`" ]
   }, {
     "word" : "Jupiter",
     "pos" : [ "H" ]
@@ -210,13 +210,13 @@
     "pos" : [ "N" ]
   }, {
     "word" : "beer",
-    "pos" : [ "T" ]
+    "pos" : [ "`nB`" ]
   }, {
     "word" : "belly-button",
     "pos" : [ "B" ]
   }, {
     "word" : "blood pudding",
-    "pos" : [ "T" ]
+    "pos" : [ "`nF`" ]
   }, {
     "word" : "blue",
     "pos" : [ "c" ]
@@ -243,15 +243,18 @@
     "pos" : [ "N", "B" ]
   }, {
     "word" : "chocolate ants",
-    "pos" : [ "p", "T" ]
+    "pos" : [ "p", "`nF`" ]
   }, {
     "word" : "coldsore-red",
     "pos" : [ "c" ]
   }, {
     "word" : "cupcakes",
-    "pos" : [ "p", "T" ]
+    "pos" : [ "p", "`nF`" ]
   }, {
     "word" : "disgusting",
+    "pos" : [ "A" ]
+  }, {
+    "word" : "dope",
     "pos" : [ "A" ]
   }, {
     "word" : "ear",
@@ -267,7 +270,7 @@
     "pos" : [ "A" ]
   }, {
     "word" : "escargot",
-    "pos" : [ "T" ]
+    "pos" : [ "`nF`" ]
   }, {
     "word" : "eye",
     "pos" : [ "B", "b", "d" ]
@@ -291,7 +294,7 @@
     "pos" : [ "c" ]
   }, {
     "word" : "foie gras",
-    "pos" : [ "T" ]
+    "pos" : [ "`nF`" ]
   }, {
     "word" : "food",
     "pos" : [ "N" ]
@@ -303,16 +306,19 @@
     "pos" : [ "P" ]
   }, {
     "word" : "fried grasshopper",
-    "pos" : [ "T" ]
+    "pos" : [ "`nF`" ]
   }, {
     "word" : "fried rice",
-    "pos" : [ "T" ]
+    "pos" : [ "`nF`" ]
   }, {
     "word" : "gigantic",
     "pos" : [ "A" ]
   }, {
     "word" : "ginormous",
     "pos" : [ "A" ]
+  }, {
+    "word" : "Gin & Tonic",
+    "pos" : [ "`nB`" ]
   }, {
     "word" : "grab",
     "pos" : [ "V", "t" ]
@@ -392,6 +398,9 @@
     "word" : "make whoopee",
     "pos" : [ "V", "i" ]
   }, {
+    "word" : "Martini",
+    "pos" : [ "`nB`" ]
+  }, {
     "word" : "mauve",
     "pos" : [ "c" ]
   }, {
@@ -435,10 +444,10 @@
     "pos" : [ "B" ]
   }, {
     "word" : "pizza",
-    "pos" : [ "T" ]
+    "pos" : [ "`nF`" ]
   }, {
     "word" : "pot roast",
-    "pos" : [ "T" ]
+    "pos" : [ "`nF`" ]
   }, {
     "word" : "puce",
     "pos" : [ "c" ]
@@ -471,7 +480,7 @@
     "pos" : [ "c" ]
   }, {
     "word" : "short ribs",
-    "pos" : [ "T" ]
+    "pos" : [ "`nF`" ]
   }, {
     "word" : "slimy",
     "pos" : [ "A" ]
@@ -483,13 +492,13 @@
     "pos" : [ "A" ]
   }, {
     "word" : "spaghetti",
-    "pos" : [ "T" ]
+    "pos" : [ "`nF`" ]
   }, {
     "word" : "sushi",
-    "pos" : [ "T" ]
+    "pos" : [ "`nF`" ]
   }, {
     "word" : "tacos",
-    "pos" : [ "p", "T" ]
+    "pos" : [ "p", "`nF`" ]
   }, {
     "word" : "teal",
     "pos" : [ "c" ]
@@ -584,6 +593,9 @@
     "word" : "whip",
     "pos" : [ "N" ]
   }, {
+    "word" : "whiskey",
+    "pos" : [ "`nB`" ]
+  }, {
     "word" : "white",
     "pos" : [ "c" ]
   }, {
@@ -591,7 +603,7 @@
     "pos" : [ "v" ]
   }, {
     "word" : "wine & cheese",
-    "pos" : [ "T" ]
+    "pos" : [ "`nF`" ]
   }, {
     "word" : "with",
     "pos" : [ "P" ]

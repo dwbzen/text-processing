@@ -6,6 +6,7 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -151,13 +152,21 @@ public abstract class AbstractPartsOfSpeechManager implements IPartsOfSpeechMana
 	
 	/**
 	 * Creates a count of words by part of speech
+	 * suppresses zero count parts of speech
 	 * @return String the stats formatted
 	 */
 	public String getStats() {
 		StringBuffer sb = new StringBuffer();
-		wordMap.keySet().forEach(key -> sb.append(
-				(PartsOfSpeech.PartsOfSpeechMap.containsKey(key) ? PartsOfSpeech.PartsOfSpeechMap.get(key) : "Tag" )
-				+ " (" + key + "): " ).append(wordMap.get(key).size() + "\n"));
+		Iterator<String> keyIt = wordMap.keySet().stream().sorted().iterator();
+		while(keyIt.hasNext()) {
+			String key = keyIt.next();
+			int size = wordMap.get(key).size();
+			if(size > 0) {
+				sb.append(
+					(PartsOfSpeech.PartsOfSpeechMap.containsKey(key) ? PartsOfSpeech.PartsOfSpeechMap.get(key) : "Tag" )
+					+ " (" + key + "): " ).append(size + "\n");
+			}
+		} 
 		return sb.toString();
 	}
 	
@@ -310,6 +319,9 @@ public abstract class AbstractPartsOfSpeechManager implements IPartsOfSpeechMana
 			case "W":
 			case "`op`":
 			case "`sp`":
+			case "`np`":
+			case "`nF`":
+			case "`nB`":
 				addWord(word, pos);
 				break;
 			case "V":
