@@ -1,0 +1,26 @@
+
+sentence:
+$1=MS (traveled to)H(to see a)A N(.)(\\n)($1)(saw)cp(on his) B(.)(\\n)
+
+patternWords: List<String>
+[$1=[M], [S], (traveled to), [H], (to see a), [A], [N], (.), (
+), $1=, (saw), [c], [p], (on his), [B], (.), (
+)]
+
+PosUtil.parseInstance()
+	patternInstance: 
+	/=1/MS/traveled to/H/to see a/AN/.//
+//$1//saw/cp/on his/B/.//
+/
+
+PatternWord:    $1=[M]
+getInstance():  /=1/
+
+PatternWord:   $1=
+getInstance(): /$1/
+
+------------------------------------
+
+sentence: [A]{1,2}[N]( price: )($)[W]{1,3}(.)[w]{2}
+PosUtil.parseInstance()
+	patternInstance: AAN/ price: //$/WWW/./ww

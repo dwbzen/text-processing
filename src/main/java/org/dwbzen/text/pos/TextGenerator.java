@@ -211,8 +211,9 @@ public class TextGenerator implements ITextGenerator, Function<Integer, String>,
 				isText = !isText;
 				continue;
 			}
-			else if(posToken.equals("$") && !isText) {	// use a variable or treat $ as text
+			else if(posToken.length() > 1 && posToken.charAt(0) == '$') {	// use a variable 
 				useVariable = true;
+				sb.append(String.valueOf(posToken.charAt(1)));
 				continue;
 			}
 			else if(posToken.equals("=")) {	// set a variable
@@ -393,7 +394,7 @@ public class TextGenerator implements ITextGenerator, Function<Integer, String>,
 	public void setPartsOfSpeechManager(IPartsOfSpeechManager manager) {
 		partsOfSpeechManager = manager;
 		wordMap = partsOfSpeechManager.getWordMap();
-		Set<String> loadedPos = PartsOfSpeechManager.getLoadedPartsOfSpeech();
+		Set<String> loadedPos = LegacyPartsOfSpeechManager.getLoadedPartsOfSpeech();
 		loadedPos.forEach(ps -> posCount.put(ps, wordMap.get(ps).size()));
 	}
 

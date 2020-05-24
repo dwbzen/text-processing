@@ -5,12 +5,12 @@
 (Some sort of)N(,)N(,)(or)N(\n)+
 (    )V(with)AB(\n)+
 (I am)G(into the)AN(\n)+
-FXv(,)(eating)T(with)T(\n)+
+FXv(,)(eating)`nF`(with)`nB`(\n)+
 (    )C(,)M(in)Hxv(\n)+
 (We are)G(the)AA[p|h](\n)+
 (My)NvV(\n)+
 Ft(my)AN(while)FXv(\n)+
-(     eating)cAT(\n)+
+(     eating)cA`nF`(\n)+
 (    )ANX(me -)ApXF(\n)+
 !(!)[(Where)|(Is)|(Why)|(What)]ANvx(?)(\n)+
 (    )Dhtv(,)Dhtv(!)(\n)+

@@ -3,7 +3,7 @@ package org.dwbzen.text.pos;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DictionaryManager extends AbstractPartsOfSpeechManager {
+public class DictionaryManager extends PartsOfSpeechManager {
 
 	private Dictionary dictionary = null;
 
@@ -29,6 +29,10 @@ public class DictionaryManager extends AbstractPartsOfSpeechManager {
 		return new DictionaryManager(dict);
 	}
 	
+	public static DictionaryManager instance(List<String> posFiles) {
+		return DictionaryManager.instance(posFiles, "name");
+	}
+	
 	public static DictionaryManager instance(List<String> posFiles, String name) {
 		Dictionary dict = null;
 		DictionaryManager dictionaryManager = null;
@@ -43,7 +47,7 @@ public class DictionaryManager extends AbstractPartsOfSpeechManager {
 	}
 
 	/**
-	 * Load all the configured pos file names to use. Names don't include extensions, ".json" in this case.
+	 * Load all the configured pos file names to use. Names don't include filename extensions, ".json" in this case.
 	 */
 	@Override
 	public void configure()  {

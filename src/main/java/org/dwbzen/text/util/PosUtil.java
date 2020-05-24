@@ -50,8 +50,10 @@ public class PosUtil {
 		List<String> tokens = new ArrayList<String>();
 		int index = 0;
 		int index2 = 0;
-		while(index < patternInstance.length()) {
+		int len = patternInstance.length();
+		while(index < len) {
 			char c = patternInstance.charAt(index);
+			char nextChar = index+1 >= len ? 0 : patternInstance.charAt(index + 1);
 			if(c == '`') {
 				if(suppressDelims) {
 					index2 = patternInstance.indexOf('`', index+1);
@@ -74,6 +76,17 @@ public class PosUtil {
 				index2 = index + 3;
 				tokens.add(patternInstance.substring(index + (suppressDelims ? 1 :0), index2));
 				index = index2;
+			}
+			else if(c == '$') {		// use a variable /$1/
+				if(nextChar == '/') {				//	treat as text	/$/
+					tokens.add(String.valueOf(c));
+					index++;
+				}
+				else {							// treat as variable /$1/
+					index2 = index + 2;
+					tokens.add(patternInstance.substring(index, index2));
+					index = index2;
+				}
 			}
 			else {
 				if(c != '|') { // legacy dictionary reference we can ignore

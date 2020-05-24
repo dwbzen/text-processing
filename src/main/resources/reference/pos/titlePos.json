@@ -5,6 +5,9 @@
     "word" : "Amazon",
     "pos" : [ "N", "H", "#01" ]
   }, {
+    "word" : "And the Martians",
+    "pos" : [ "`op`", "#03" ]
+  }, {
     "word" : "Apocalypse",
     "pos" : [ "N", "L", "#03" ]
   }, {
@@ -53,6 +56,9 @@
     "word" : "Frankenstein",
     "pos" : [ "N", "L", "#02" ]
   }, {
+    "word" : "From Pittsburgh",
+    "pos" : [ "N", "#03" ]
+  }, {
     "word" : "From the Sea",
     "pos" : [ "`op`", "#03" ]
   }, {
@@ -89,8 +95,14 @@
     "word" : "Midnight",
     "pos" : [ "N", "#01" ]
   }, {
+    "word" : "Mummies",
+    "pos" : [ "N", "#02" ]
+  }, {
     "word" : "Nightmare",
     "pos" : [ "N", "#01", "#03" ]
+  }, {
+    "word" : "Programmers",
+    "pos" : [ "N", "#02" ]
   }, {
     "word" : "Pygmy",
     "pos" : [ "N", "#01" ]
@@ -161,6 +173,9 @@
     "word" : "Vampire",
     "pos" : [ "N", "#01" ]
   }, {
+    "word" : "Wasps",
+    "pos" : [ "N", "#02" ]
+  }, {
     "word" : "Weekend",
     "pos" : [ "N", "#02" ]
   }, {
@@ -218,10 +233,13 @@
     "word" : "that Wouldn't Die",
     "pos" : [ "`op`", "#03" ]
   }, {
-    "word" : "the Space Monster",
-    "pos" : [ "`sp`", "`op`", "#01", "#03" ]
+    "word" : "versus the Space Monster",
+    "pos" : [ "`op`", "#03" ]
   }, {
     "word" : "versus the Lizard People",
+    "pos" : [ "`op`", "#03" ]
+  }, {
+    "word" : "with a whip",
     "pos" : [ "`op`", "#03" ]
   }, {
     "word" : "with two Heads",

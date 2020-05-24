@@ -28,13 +28,14 @@ public class PartOfSpeechParser implements IPatternParser, IJson {
 	@JsonProperty("valid")	private boolean valid = true;
 	@JsonProperty("error")	private String error = "";
 	@JsonProperty("patterns")	private List<PatternWord> patternWords = new ArrayList<PatternWord>();
-	@JsonProperty			private  Set<String> partsOfSpeechSet = PartsOfSpeechManager.getLoadedPartsOfSpeech();
+	@JsonProperty			private  Set<String> partsOfSpeechSet = LegacyPartsOfSpeechManager.getLoadedPartsOfSpeech();
 
 	/**
 	 * replacement variables: $1, ... $9
 	 * $1=x will save the value of 'x' in variable $1
 	 * ($1) uses that saved value
 	 * 
+	 * TODO: Use a state machine instead of discrete code
 	 * @return true if pattern is valid, false otherwise
 	 */
 	public boolean parse(String sentence) {

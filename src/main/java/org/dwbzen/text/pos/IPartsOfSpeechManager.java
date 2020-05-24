@@ -33,6 +33,20 @@ public interface IPartsOfSpeechManager {
 	
 	String getPosFileType();	// txt or json
 	
+	/**
+	 * Creates a count of words by part of speech
+	 * suppresses zero count parts of speech
+	 * @return String the stats formatted
+	 */
+	 String getStats();
+	 
+	/**
+	 * Gets a sorted map of all the Words having the parts of speech specified.
+	 * @param poss String[]
+	 * @return Map<String, List<String>> of part of speech, List of words
+	 */
+	 Map<String, List<String>> getWordsForPos(String[] poss);
+	
 	default String getPosFileExtension() {
 		return "." + getPosFileType();
 	}

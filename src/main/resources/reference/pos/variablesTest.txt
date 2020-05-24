@@ -1,2 +1,1 @@
-$1=MS(,) $2=FS(and I traveled to)H(to see a)A N(.)(\n)+
-($1)(saw)cp(on his) B (and)($2)(sported a)cN(on her) B(.)(\n)
+$1=MS (traveled to)H(to see a)A N(.)(\n)($1)(saw)cp(on his) B(.)(\n)

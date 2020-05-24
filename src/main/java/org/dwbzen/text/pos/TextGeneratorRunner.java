@@ -12,9 +12,10 @@ public class TextGeneratorRunner {
 	 * Generates text from pattern(s) using configured PartsOfSpeech files<br>
 	 * If specified, "-pos file1,[file2...] overrides config setting POS_FILE<br>
 	 * To also include POS_FILE, add to the list<br>
-	 * by default POS files loaded from POS_DIR folder: /reference/pos/<br>
+	 * POS files loaded from POS_DIR folder by default: /reference/pos/<br>
 	 * This can be overridden by specifying a complete file path, for example "C:/data/text/filename.pos"<br>
 	 * Default IPartsOfSpeechManager is DictionaryManager which uses JSON parts of speech files.<br>
+	 * 
 	 * Use -legacy command line option to use legacy text POS files and PartsOfSpeechManager.<br>
 	 * POS files are specified without the filename extension (.json, .txt).<br>
 	 * -template <filename> : if only the name is provided, "bin/main/reference/pos/" is added to the path.
@@ -62,7 +63,7 @@ public class TextGeneratorRunner {
 		}
 
 		if(useLegacy) {
-			partsOfSpeechManager = PartsOfSpeechManager.newInstance(posFiles);
+			partsOfSpeechManager = LegacyPartsOfSpeechManager.newInstance(posFiles);
 		}
 		else {
 			partsOfSpeechManager = DictionaryManager.instance(posFiles, "name");

@@ -1,4 +1,5 @@
 Amazon	NH#01
+And the Martians	`op`#03
 Apocalypse	NL#03
 Atomic	A#01
 Beach Party	`op`#03
@@ -15,6 +16,7 @@ Dead	NA#02
 Eyes	Np#02
 Flies	Np#02
 Frankenstein	NL#02
+From Pittsburgh	N#03
 From the Sea	`op`#03
 Ghost	N#02
 Giant	AN#01
@@ -27,7 +29,9 @@ Lawless	A#01
 Leeches	Np#02
 Madness	N#03
 Midnight	N#01
+Mummies	N#02
 Nightmare	N#01#03
+Programmers	N#02
 Pygmy	N#01
 Radioactive	A#01
 Robot	N#01
@@ -51,6 +55,7 @@ The Revenge of the	`sp`#01
 The Trial of the	`sp`#01
 Transparent	A#01
 Vampire	N#01
+Wasps	N#02
 Weekend	N#02
 Werewolves	Np#02
 Whores	Np#02
@@ -70,6 +75,7 @@ of the Mojave Desert	`op`#03
 on Old McDonald's Farm	`op`#03
 on a Prehistoric Planet	`op`#03
 that Wouldn't Die	`op`#03
-the Space Monster	`sp``op`#01#03
+versus the Space Monster	`op`#03
 versus the Lizard People	`op`#03
+with a whip	`op`#03
 with two Heads	`op`#03
