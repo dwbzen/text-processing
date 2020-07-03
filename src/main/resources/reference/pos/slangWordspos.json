@@ -1,0 +1,617 @@
+{
+  "name" : "slangWordsPos",
+  "sourceFiles" : [ "/reference/pos/slangWordspos.txt" ],
+  "words" : [ {
+    "word" : "Africa",
+    "pos" : [ "H" ]
+  }, {
+    "word" : "America",
+    "pos" : [ "H", "R" ]
+  }, {
+    "word" : "Antarctic",
+    "pos" : [ "H" ]
+  }, {
+    "word" : "Arabia",
+    "pos" : [ "H", "R" ]
+  }, {
+    "word" : "Asia",
+    "pos" : [ "H" ]
+  }, {
+    "word" : "Australia",
+    "pos" : [ "H", "R" ]
+  }, {
+    "word" : "Beijing",
+    "pos" : [ "Q" ]
+  }, {
+    "word" : "Belfast",
+    "pos" : [ "Q" ]
+  }, {
+    "word" : "Berlin",
+    "pos" : [ "Q" ]
+  }, {
+    "word" : "Boston",
+    "pos" : [ "Q" ]
+  }, {
+    "word" : "Britain",
+    "pos" : [ "H", "R" ]
+  }, {
+    "word" : "Buffalo",
+    "pos" : [ "Q" ]
+  }, {
+    "word" : "Canada",
+    "pos" : [ "H", "R" ]
+  }, {
+    "word" : "China",
+    "pos" : [ "H", "R" ]
+  }, {
+    "word" : "Chinatown",
+    "pos" : [ "H" ]
+  }, {
+    "word" : "Cuban sandwich",
+    "pos" : [ "`nF`" ]
+  }, {
+    "word" : "Damascus",
+    "pos" : [ "Q" ]
+  }, {
+    "word" : "Damn",
+    "pos" : [ "!" ]
+  }, {
+    "word" : "Diet Coke",
+    "pos" : [ "`nB`" ]
+  }, {
+    "word" : "Dixie",
+    "pos" : [ "H" ]
+  }, {
+    "word" : "Dr. Pepper",
+    "pos" : [ "`nB`" ]
+  }, {
+    "word" : "England",
+    "pos" : [ "H", "R" ]
+  }, {
+    "word" : "Europe",
+    "pos" : [ "H" ]
+  }, {
+    "word" : "France",
+    "pos" : [ "H", "R" ]
+  }, {
+    "word" : "Germany",
+    "pos" : [ "H", "R" ]
+  }, {
+    "word" : "Great Britain",
+    "pos" : [ "H", "R" ]
+  }, {
+    "word" : "Greece",
+    "pos" : [ "H", "R" ]
+  }, {
+    "word" : "Hollywood",
+    "pos" : [ "H" ]
+  }, {
+    "word" : "Holy crap",
+    "pos" : [ "!" ]
+  }, {
+    "word" : "I'd",
+    "pos" : [ "N" ]
+  }, {
+    "word" : "Iceland",
+    "pos" : [ "H", "R" ]
+  }, {
+    "word" : "India",
+    "pos" : [ "H", "R" ]
+  }, {
+    "word" : "Iran",
+    "pos" : [ "H", "R" ]
+  }, {
+    "word" : "Iraq",
+    "pos" : [ "H", "R" ]
+  }, {
+    "word" : "Ireland",
+    "pos" : [ "H", "R" ]
+  }, {
+    "word" : "Israel",
+    "pos" : [ "H", "R" ]
+  }, {
+    "word" : "Italy",
+    "pos" : [ "H", "R" ]
+  }, {
+    "word" : "Japan",
+    "pos" : [ "H", "R" ]
+  }, {
+    "word" : "Jell-O",
+    "pos" : [ "N" ]
+  }, {
+    "word" : "Jell-O Salad",
+    "pos" : [ "`nF`" ]
+  }, {
+    "word" : "Jupiter",
+    "pos" : [ "H" ]
+  }, {
+    "word" : "Korea",
+    "pos" : [ "H", "R" ]
+  }, {
+    "word" : "Latin America",
+    "pos" : [ "H" ]
+  }, {
+    "word" : "London",
+    "pos" : [ "Q" ]
+  }, {
+    "word" : "Mars",
+    "pos" : [ "H" ]
+  }, {
+    "word" : "Mecca",
+    "pos" : [ "H" ]
+  }, {
+    "word" : "Mercury",
+    "pos" : [ "H" ]
+  }, {
+    "word" : "Mexico",
+    "pos" : [ "H", "R" ]
+  }, {
+    "word" : "Middle America",
+    "pos" : [ "H" ]
+  }, {
+    "word" : "Mississippi",
+    "pos" : [ "H" ]
+  }, {
+    "word" : "Moscow",
+    "pos" : [ "Q" ]
+  }, {
+    "word" : "Nairobi",
+    "pos" : [ "Q" ]
+  }, {
+    "word" : "Northern Ireland",
+    "pos" : [ "H", "R" ]
+  }, {
+    "word" : "Rochester",
+    "pos" : [ "Q" ]
+  }, {
+    "word" : "Rome",
+    "pos" : [ "Q" ]
+  }, {
+    "word" : "San Francisco",
+    "pos" : [ "Q" ]
+  }, {
+    "word" : "Sao Paolo",
+    "pos" : [ "Q" ]
+  }, {
+    "word" : "Syria",
+    "pos" : [ "H", "R" ]
+  }, {
+    "word" : "USA",
+    "pos" : [ "H", "R" ]
+  }, {
+    "word" : "a dingy cellar",
+    "pos" : [ "H" ]
+  }, {
+    "word" : "about",
+    "pos" : [ "P" ]
+  }, {
+    "word" : "admire",
+    "pos" : [ "V", "t" ]
+  }, {
+    "word" : "an Episcopal Church",
+    "pos" : [ "H" ]
+  }, {
+    "word" : "arms",
+    "pos" : [ "p", "B" ]
+  }, {
+    "word" : "around",
+    "pos" : [ "P" ]
+  }, {
+    "word" : "ass",
+    "pos" : [ "N", "B" ]
+  }, {
+    "word" : "awesome",
+    "pos" : [ "!", "A" ]
+  }, {
+    "word" : "balls",
+    "pos" : [ "b" ]
+  }, {
+    "word" : "bed",
+    "pos" : [ "N" ]
+  }, {
+    "word" : "beer",
+    "pos" : [ "`nB`" ]
+  }, {
+    "word" : "belly-button",
+    "pos" : [ "B" ]
+  }, {
+    "word" : "blood pudding",
+    "pos" : [ "`nF`" ]
+  }, {
+    "word" : "blue",
+    "pos" : [ "c" ]
+  }, {
+    "word" : "boobs",
+    "pos" : [ "d" ]
+  }, {
+    "word" : "booger",
+    "pos" : [ "N" ]
+  }, {
+    "word" : "brains",
+    "pos" : [ "B" ]
+  }, {
+    "word" : "brown",
+    "pos" : [ "c" ]
+  }, {
+    "word" : "chains",
+    "pos" : [ "p" ]
+  }, {
+    "word" : "chew",
+    "pos" : [ "V", "t" ]
+  }, {
+    "word" : "chin",
+    "pos" : [ "N", "B" ]
+  }, {
+    "word" : "chocolate ants",
+    "pos" : [ "p", "`nF`" ]
+  }, {
+    "word" : "coldsore-red",
+    "pos" : [ "c" ]
+  }, {
+    "word" : "cupcakes",
+    "pos" : [ "p", "`nF`" ]
+  }, {
+    "word" : "disgusting",
+    "pos" : [ "A" ]
+  }, {
+    "word" : "dope",
+    "pos" : [ "A" ]
+  }, {
+    "word" : "ear",
+    "pos" : [ "N", "B" ]
+  }, {
+    "word" : "ears",
+    "pos" : [ "p", "B" ]
+  }, {
+    "word" : "eat",
+    "pos" : [ "V", "t" ]
+  }, {
+    "word" : "enormous",
+    "pos" : [ "A" ]
+  }, {
+    "word" : "escargot",
+    "pos" : [ "`nF`" ]
+  }, {
+    "word" : "eye",
+    "pos" : [ "B", "b", "d" ]
+  }, {
+    "word" : "eyes",
+    "pos" : [ "p", "B" ]
+  }, {
+    "word" : "face",
+    "pos" : [ "N", "B" ]
+  }, {
+    "word" : "far out",
+    "pos" : [ "!", "A" ]
+  }, {
+    "word" : "fecund",
+    "pos" : [ "A" ]
+  }, {
+    "word" : "finger",
+    "pos" : [ "N", "B", "V", "t" ]
+  }, {
+    "word" : "flesh-colored",
+    "pos" : [ "c" ]
+  }, {
+    "word" : "foie gras",
+    "pos" : [ "`nF`" ]
+  }, {
+    "word" : "food",
+    "pos" : [ "N" ]
+  }, {
+    "word" : "foot",
+    "pos" : [ "B" ]
+  }, {
+    "word" : "for",
+    "pos" : [ "P" ]
+  }, {
+    "word" : "fried grasshopper",
+    "pos" : [ "`nF`" ]
+  }, {
+    "word" : "fried rice",
+    "pos" : [ "`nF`" ]
+  }, {
+    "word" : "gigantic",
+    "pos" : [ "A" ]
+  }, {
+    "word" : "ginormous",
+    "pos" : [ "A" ]
+  }, {
+    "word" : "Gin & Tonic",
+    "pos" : [ "`nB`" ]
+  }, {
+    "word" : "grab",
+    "pos" : [ "V", "t" ]
+  }, {
+    "word" : "gray",
+    "pos" : [ "c" ]
+  }, {
+    "word" : "greedily",
+    "pos" : [ "v" ]
+  }, {
+    "word" : "green",
+    "pos" : [ "c" ]
+  }, {
+    "word" : "groovy",
+    "pos" : [ "A", "!" ]
+  }, {
+    "word" : "grope",
+    "pos" : [ "V", "i" ]
+  }, {
+    "word" : "gross",
+    "pos" : [ "A" ]
+  }, {
+    "word" : "hair",
+    "pos" : [ "B" ]
+  }, {
+    "word" : "hand",
+    "pos" : [ "B" ]
+  }, {
+    "word" : "he",
+    "pos" : [ "r", "N" ]
+  }, {
+    "word" : "heel",
+    "pos" : [ "B" ]
+  }, {
+    "word" : "her",
+    "pos" : [ "r" ]
+  }, {
+    "word" : "his",
+    "pos" : [ "D", "r" ]
+  }, {
+    "word" : "hot",
+    "pos" : [ "A" ]
+  }, {
+    "word" : "icky",
+    "pos" : [ "A" ]
+  }, {
+    "word" : "in",
+    "pos" : [ "P" ]
+  }, {
+    "word" : "indigo",
+    "pos" : [ "c" ]
+  }, {
+    "word" : "into",
+    "pos" : [ "P" ]
+  }, {
+    "word" : "it",
+    "pos" : [ "r", "N" ]
+  }, {
+    "word" : "lavender",
+    "pos" : [ "c" ]
+  }, {
+    "word" : "legs",
+    "pos" : [ "p", "B" ]
+  }, {
+    "word" : "like",
+    "pos" : [ "V", "t" ]
+  }, {
+    "word" : "lips",
+    "pos" : [ "B" ]
+  }, {
+    "word" : "loudly",
+    "pos" : [ "v" ]
+  }, {
+    "word" : "love",
+    "pos" : [ "V", "t" ]
+  }, {
+    "word" : "make whoopee",
+    "pos" : [ "V", "i" ]
+  }, {
+    "word" : "Martini",
+    "pos" : [ "`nB`" ]
+  }, {
+    "word" : "mauve",
+    "pos" : [ "c" ]
+  }, {
+    "word" : "mouth",
+    "pos" : [ "B" ]
+  }, {
+    "word" : "my",
+    "pos" : [ "P" ]
+  }, {
+    "word" : "my God",
+    "pos" : [ "!" ]
+  }, {
+    "word" : "noisilly",
+    "pos" : [ "v" ]
+  }, {
+    "word" : "of",
+    "pos" : [ "P" ]
+  }, {
+    "word" : "off-white",
+    "pos" : [ "c" ]
+  }, {
+    "word" : "oh my",
+    "pos" : [ "!" ]
+  }, {
+    "word" : "on",
+    "pos" : [ "P" ]
+  }, {
+    "word" : "orange",
+    "pos" : [ "c" ]
+  }, {
+    "word" : "over",
+    "pos" : [ "P" ]
+  }, {
+    "word" : "penis",
+    "pos" : [ "b" ]
+  }, {
+    "word" : "pink",
+    "pos" : [ "c" ]
+  }, {
+    "word" : "pinky",
+    "pos" : [ "B" ]
+  }, {
+    "word" : "pizza",
+    "pos" : [ "`nF`" ]
+  }, {
+    "word" : "pot roast",
+    "pos" : [ "`nF`" ]
+  }, {
+    "word" : "puce",
+    "pos" : [ "c" ]
+  }, {
+    "word" : "purple",
+    "pos" : [ "c" ]
+  }, {
+    "word" : "readily",
+    "pos" : [ "v" ]
+  }, {
+    "word" : "red",
+    "pos" : [ "c" ]
+  }, {
+    "word" : "revolting",
+    "pos" : [ "A" ]
+  }, {
+    "word" : "rinky-dink",
+    "pos" : [ "A" ]
+  }, {
+    "word" : "royal blue",
+    "pos" : [ "c" ]
+  }, {
+    "word" : "rub",
+    "pos" : [ "V", "t" ]
+  }, {
+    "word" : "she",
+    "pos" : [ "r", "N" ]
+  }, {
+    "word" : "shit-brindle brown",
+    "pos" : [ "c" ]
+  }, {
+    "word" : "short ribs",
+    "pos" : [ "`nF`" ]
+  }, {
+    "word" : "slimy",
+    "pos" : [ "A" ]
+  }, {
+    "word" : "sloppy",
+    "pos" : [ "A" ]
+  }, {
+    "word" : "soft",
+    "pos" : [ "A" ]
+  }, {
+    "word" : "spaghetti",
+    "pos" : [ "`nF`" ]
+  }, {
+    "word" : "sushi",
+    "pos" : [ "`nF`" ]
+  }, {
+    "word" : "tacos",
+    "pos" : [ "p", "`nF`" ]
+  }, {
+    "word" : "teal",
+    "pos" : [ "c" ]
+  }, {
+    "word" : "the Arctic Circle",
+    "pos" : [ "H" ]
+  }, {
+    "word" : "the Atlantic Ocean",
+    "pos" : [ "H" ]
+  }, {
+    "word" : "the Capital",
+    "pos" : [ "H" ]
+  }, {
+    "word" : "the Caribbean",
+    "pos" : [ "H" ]
+  }, {
+    "word" : "the Deep South",
+    "pos" : [ "H" ]
+  }, {
+    "word" : "the Far East",
+    "pos" : [ "H" ]
+  }, {
+    "word" : "the House of Representatives",
+    "pos" : [ "H" ]
+  }, {
+    "word" : "the Indian Ocean",
+    "pos" : [ "H" ]
+  }, {
+    "word" : "the Laundromat",
+    "pos" : [ "H" ]
+  }, {
+    "word" : "the Mediterranean",
+    "pos" : [ "H" ]
+  }, {
+    "word" : "the Middle East",
+    "pos" : [ "H" ]
+  }, {
+    "word" : "the Midwest",
+    "pos" : [ "H" ]
+  }, {
+    "word" : "the Milky Way",
+    "pos" : [ "H" ]
+  }, {
+    "word" : "the YMCA",
+    "pos" : [ "H" ]
+  }, {
+    "word" : "the bomb",
+    "pos" : [ "A" ]
+  }, {
+    "word" : "the men's room",
+    "pos" : [ "H" ]
+  }, {
+    "word" : "the women's room",
+    "pos" : [ "H" ]
+  }, {
+    "word" : "them",
+    "pos" : [ "r", "p" ]
+  }, {
+    "word" : "they",
+    "pos" : [ "r", "p" ]
+  }, {
+    "word" : "to",
+    "pos" : [ "P" ]
+  }, {
+    "word" : "toe",
+    "pos" : [ "N", "B" ]
+  }, {
+    "word" : "toes",
+    "pos" : [ "p", "B" ]
+  }, {
+    "word" : "tongue",
+    "pos" : [ "B" ]
+  }, {
+    "word" : "us",
+    "pos" : [ "r", "p" ]
+  }, {
+    "word" : "used",
+    "pos" : [ "A" ]
+  }, {
+    "word" : "violet",
+    "pos" : [ "c" ]
+  }, {
+    "word" : "want",
+    "pos" : [ "V", "t" ]
+  }, {
+    "word" : "we",
+    "pos" : [ "r", "p" ]
+  }, {
+    "word" : "wet",
+    "pos" : [ "A" ]
+  }, {
+    "word" : "whip",
+    "pos" : [ "N" ]
+  }, {
+    "word" : "whiskey",
+    "pos" : [ "`nB`" ]
+  }, {
+    "word" : "white",
+    "pos" : [ "c" ]
+  }, {
+    "word" : "wildly",
+    "pos" : [ "v" ]
+  }, {
+    "word" : "wine & cheese",
+    "pos" : [ "`nF`" ]
+  }, {
+    "word" : "with",
+    "pos" : [ "P" ]
+  }, {
+    "word" : "yellow",
+    "pos" : [ "c" ]
+  }, {
+    "word" : "yucky",
+    "pos" : [ "A" ]
+  } ]
+}

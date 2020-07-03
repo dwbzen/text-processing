@@ -74,15 +74,16 @@ public class TextDao {
 	}
 	
 	/**
-	 * Loads a File as a resource
+	 * Loads a File as a resource (/reference/pos/).
 	 * @param filename a resource text file
 	 * @return List<String> pattern lines
 	 */
 	public List<String>  loadFile(String filename) {
 		List<String> patterns = new ArrayList<>();
-        URL url = getClass().getResource(filename);
+		String resourceFilename = (filename.indexOf('/') == 0) ? filename : "/reference/pos/" + filename;
+        URL url = getClass().getResource(resourceFilename);
         if(url == null) {
-            throw new IllegalArgumentException("Could not load resource: \"" + filename + "\"");
+            throw new IllegalArgumentException("Could not load resource: \"" + resourceFilename + "\"");
         }
         try(InputStream stream = url.openStream()) {
         	byte[] bytes = stream.readAllBytes();
@@ -109,7 +110,7 @@ public class TextDao {
         	}
         }
         catch(Exception e) {
-        	System.err.println("Could not load " + filename + " " + e.toString());
+        	System.err.println("Could not load " + resourceFilename + " " + e.toString());
         }
 		return patterns;
 	}

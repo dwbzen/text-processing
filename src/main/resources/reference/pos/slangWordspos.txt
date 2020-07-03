@@ -13,12 +13,12 @@ Buffalo	Q
 Canada	HR
 China	HR
 Chinatown	H
-Cuban sandwich	T
+Cuban sandwich	`nF`
 Damascus	Q
 Damn	!
-Diet Coke	T
+Diet Coke	`nB`
 Dixie	H
-Dr. Pepper	T
+Dr. Pepper	`nB`
 England	HR
 Europe	H
 France	HR
@@ -37,7 +37,7 @@ Israel	HR
 Italy	HR
 Japan	HR
 Jell-O	N
-Jell-O Salad	T
+Jell-O Salad	`nF`
 Jupiter	H
 Korea	HR
 Latin America	H
@@ -67,9 +67,9 @@ ass	NB
 awesome	!A
 balls	b
 bed	N
-beer	T
+beer	`nB`
 belly-button	B
-blood pudding	T
+blood pudding	`nF`
 blue	c
 boobs	d
 booger	N
@@ -78,15 +78,16 @@ brown	c
 chains	p
 chew	Vt
 chin	NB
-chocolate ants	pT
+chocolate ants	p`nF`
 coldsore-red	c
-cupcakes	pT
+cupcakes	p`nF`
 disgusting	A
+dope	A
 ear	NB
 ears	pB
 eat	Vt
 enormous	A
-escargot	T
+escargot	`nF`
 eye	Bbd
 eyes	pB
 face	NB
@@ -94,14 +95,15 @@ far out	!A
 fecund	A
 finger	NBVt
 flesh-colored	c
-foie gras	T
+foie gras	`nF`
 food	N
 foot	B
 for	P
-fried grasshopper	T
-fried rice	T
+fried grasshopper	`nF`
+fried rice	`nF`
 gigantic	A
 ginormous	A
+Gin & Tonic	`nB`
 grab	Vt
 gray	c
 greedily	v
@@ -128,6 +130,7 @@ lips	B
 loudly	v
 love	Vt
 make whoopee	Vi
+Martini	`nB`
 mauve	c
 mouth	B
 my	P
@@ -142,8 +145,8 @@ over	P
 penis	b
 pink	c
 pinky	B
-pizza	T
-pot roast	T
+pizza	`nF`
+pot roast	`nF`
 puce	c
 purple	c
 readily	v
@@ -154,13 +157,13 @@ royal blue	c
 rub	Vt
 she	rN
 shit-brindle brown	c
-short ribs	T
+short ribs	`nF`
 slimy	A
 sloppy	A
 soft	A
-spaghetti	T
-sushi	T
-tacos	pT
+spaghetti	`nF`
+sushi	`nF`
+tacos	p`nF`
 teal	c
 the Arctic Circle	H
 the Atlantic Ocean	H
@@ -192,9 +195,10 @@ want	Vt
 we	rp
 wet	A
 whip	N
+whiskey	`nB`
 white	c
 wildly	v
-wine & cheese	T
+wine & cheese	`nF`
 with	P
 yellow	c
 yucky	A

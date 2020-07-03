@@ -1,75 +1,81 @@
-Amazon	NH
-Apocalypse	NL
-Atomic	A
-Beach Party	`op`
-Biker	N
-Bloody	A
-Brides	Np
-Cannibals	Np
-Cat People	N
-Cheetah	N
-Colossal	A
-Cowboys	Np
-Creature	N
-Dead	NA
-Eyes	Np
-Flies	Np
-Frankenstein	NL
-From the Sea	`op`
-Ghost	N
-Giant	AN
-Goddess	N
-Hitchhiker	N
-Holocaust	N
-Inferno	N
-Killer	N
-Lawless	A
-Leeches	Np
-Madness	N
-Midnight	N
-Nightmare	N
-Pygmy	N
-Radioactive	A
-Robot	N
-Scream	N
-Seagulls	Np
-Serpent	N
-Shark	N
-Shrews	Np
-Singing	NA
-Sisters	Np
-Talking Mule	N
-Teenager	N
-Terror	N
-The Creeping	`sp`
-The Curse of the	`sp`
-The Grave of the	`sp`
-The Invasion of the	`sp`
-The Night of The	`sp`
-The Prisoner of the	`sp`
-The Revenge of the	`sp`
-The Trial of the	`sp`
-Transparent	A
-Vampire	N
-Weekend	N
-Werewolves	Np
-Whores	Np
-Zombie	N
-at Midnight	`op`
-from Hell	`op`
-from Outer Space	`op`
-from Pittsburgh	`op`
-in Gold Boots	`op`
-in Harlem	`op`
-in Lover's Lane	`op`
-in a Garden of Cucumbers	`op`
-of Destiny	`op`
-of Satan	`op`
-of Spider Island	`op`
-of the Mojave Desert	`op`
-on Old McDonald's Farm	`op`
-on a Prehistoric Planet	`op`
-that Wouldn't Die	`op`
-the Space Monster	`sp``op`
-versus the Lizard People	`op`
-with two Heads	`op`
+Amazon	NH#01
+And the Martians	`op`#03
+Apocalypse	NL#03
+Atomic	A#01
+Beach Party	`op`#03
+Biker	N#01
+Bloody	A#01
+Brides	Np#02
+Cannibals	Np#02
+Cat People	N#02
+Cheetah	N#02
+Colossal	A#01
+Cowboys	Np#02
+Creature	N#02
+Dead	NA#02
+Eyes	Np#02
+Flies	Np#02
+Frankenstein	NL#02
+From Pittsburgh	N#03
+From the Sea	`op`#03
+Ghost	N#02
+Giant	AN#01
+Goddess	N#02
+Hitchhiker	N#02
+Holocaust	N#03
+Inferno	N#03
+Killer	N#01
+Lawless	A#01
+Leeches	Np#02
+Madness	N#03
+Midnight	N#01
+Mummies	N#02
+Nightmare	N#01#03
+Programmers	N#02
+Pygmy	N#01
+Radioactive	A#01
+Robot	N#01
+Scream	N#02
+Seagulls	Np#02
+Serpent	N#02
+Shark	N#02
+Shrews	Np#02
+Singing	NA#01
+Sisters	Np#02
+Talking Mule	N#02
+Teenage	A#01
+Terror	N#02
+The Creeping	`sp`#01
+The Curse of the	`sp`#01
+The Grave of the	`sp`#01
+The Invasion of the	`sp`#01
+The Night of The	`sp`#01
+The Prisoner of the	`sp`#01
+The Revenge of the	`sp`#01
+The Trial of the	`sp`#01
+Transparent	A#01
+Vampire	N#01
+Wasps	N#02
+Weekend	N#02
+Werewolves	Np#02
+Whores	Np#02
+Zombie	N#01
+at Midnight	`op`#03
+from Hell	`op`#03
+from Outer Space	`op`#03
+from Pittsburgh	`op`#03
+in Gold Boots	`op`#03
+in Harlem	`op`#03
+in Lover's Lane	`op`#03
+in a Garden of Cucumbers	`op`#03
+of Destiny	`op`#03
+of Satan	`op`#03
+of Spider Island	`op`#03
+of the Mojave Desert	`op`#03
+on Old McDonald's Farm	`op`#03
+on a Prehistoric Planet	`op`#03
+that Wouldn't Die	`op`#03
+versus the Space Monster	`op`#03
+versus the Lizard People	`op`#03
+with a whip	`op`#03
+with two Heads	`op`#03

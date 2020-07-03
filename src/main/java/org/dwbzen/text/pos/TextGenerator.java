@@ -18,7 +18,8 @@ import org.apache.logging.log4j.Logger;
 import org.dwbzen.services.TextDao;
 import org.dwbzen.text.util.DataSourceType;
 import org.dwbzen.text.util.FunctionManager;
-import org.dwbzen.text.util.ITextGenerator;;
+import org.dwbzen.text.util.ITextGenerator;
+import org.dwbzen.text.util.PosUtil;;
 
 /**
  * Generates random text (words) from POS (part-of-speach) patterns.</br>
@@ -57,7 +58,8 @@ public class TextGenerator implements ITextGenerator, Function<Integer, String>,
 	public final static String QUOTE = "\"";
 	public final static String SPACE = " ";
 	
-	private PartsOfSpeechManager partsOfSpeechManager = null;
+	private IPartsOfSpeechManager partsOfSpeechManager = null;
+	
 	private Map<String, List<String>> wordMap = null;
 	private Map<String, Integer> posCount = new HashMap<>();
 	private List<PartOfSpeechPattern> partOfSpeechPatterns = new ArrayList<PartOfSpeechPattern>();
@@ -77,30 +79,28 @@ public class TextGenerator implements ITextGenerator, Function<Integer, String>,
 	private String delimiter = null;
 	private ThreadLocalRandom random = ThreadLocalRandom.current();
 	
-	public static TextGenerator newInstance(List<String> files) {
-		PartsOfSpeechManager pos = null;
-		try {
-				pos = (files == null || files.size()==0) ? PartsOfSpeechManager.newInstance() : PartsOfSpeechManager.newInstance(files);
-		}
-		catch(IOException ex)  {
-			System.err.println("Could not create ParsOfSpeechManager because " + ex.getMessage());
-			return null;
-		}
-		return new TextGenerator(pos);
+	/**
+	 * Support both legacy POS files and new JSON format POS files via the selected IPartsOfSpeechManager<br>
+	 * If files are not provided by the runner, the configured POS_FILE is used.
+	 * 
+	 * @param posManager the IPartsOfSpeechManager to use
+	 * @return TextGenerator instance
+	 */
+	public static TextGenerator newInstance(IPartsOfSpeechManager posManager) {
+		return new TextGenerator(posManager);
+	}
+
+	/**
+	 * Default constructor uses DictionaryManager for IPartsOfSpeechManager
+	 */
+	public  TextGenerator() {
+		setPartsOfSpeechManager(DictionaryManager.instance());
 	}
 	
-	public TextGenerator() {
-		try {
-			setPartsOfSpeechManager(PartsOfSpeechManager.newInstance());
-		}
-		catch(IOException ex)  {
-			System.err.println("Could not create ParsOfSpeechManager because " + ex.getMessage());
-		}
+	public TextGenerator(IPartsOfSpeechManager posManager) {
+		setPartsOfSpeechManager(posManager);
 	}
 	
-	public TextGenerator(PartsOfSpeechManager pos) {
-		setPartsOfSpeechManager(pos);
-	}
 		
 	/**
 	 * Sample patterns: "AANp" "ANp" "NvV" "Np" "Ap" "vVp" "!AN" "ALp"
@@ -211,8 +211,9 @@ public class TextGenerator implements ITextGenerator, Function<Integer, String>,
 				isText = !isText;
 				continue;
 			}
-			else if(posToken.equals("$")) {	// use a variable
+			else if(posToken.length() > 1 && posToken.charAt(0) == '$') {	// use a variable 
 				useVariable = true;
+				sb.append(String.valueOf(posToken.charAt(1)));
 				continue;
 			}
 			else if(posToken.equals("=")) {	// set a variable
@@ -268,37 +269,9 @@ public class TextGenerator implements ITextGenerator, Function<Integer, String>,
 	}
 	
 	public static List<String> parseInstance(PartOfSpeechPattern posPattern) {
-		return parseInstance(posPattern.createInstance());
+		return PosUtil.parseInstance(posPattern.createInstance(), false);		// returns delimiter with the pos or tag
 	}
 	
-	/**
-	 * Converts a part of speech instance string to a List<String> where each element is an individual POS<br>
-	 * For example, "N`op`A`sp` would be parsed to a 4-element List<String> ["N", "`op`, "A", "`sp`]
-	 * The multi-char pos delimiter (`) is retained.
-	 * @param patternInstance String
-	 * @return List<String>
-	 */
-	public static List<String> parseInstance(String patternInstance) {
-		List<String> tokens = new ArrayList<String>();
-		int index = 0;
-		int index2 = 0;
-		while(index < patternInstance.length()) {
-			char c = patternInstance.charAt(index);
-			if(c == '`') {
-				index2 = patternInstance.indexOf('`', index+1) + 1;
-				tokens.add(
-						index2 >= patternInstance.length() ?
-							patternInstance.substring(index) :
-							patternInstance.substring(index, index2));
-				index = index2;
-			}
-			else {
-				tokens.add(String.valueOf(c));
-				index++;
-			}
-		}
-		return tokens;
-	}
 	
 	public static final String PUNCUTATION = ".?!;:,\"'";
 	/**
@@ -414,14 +387,14 @@ public class TextGenerator implements ITextGenerator, Function<Integer, String>,
 
 	}
 
-	public PartsOfSpeechManager getPartsOfSpeechManager() {
+	public IPartsOfSpeechManager getPartsOfSpeechManager() {
 		return partsOfSpeechManager;
 	}
-
-	public void setPartsOfSpeechManager(PartsOfSpeechManager partsOfSpeech) {
-		partsOfSpeechManager = partsOfSpeech;
+	
+	public void setPartsOfSpeechManager(IPartsOfSpeechManager manager) {
+		partsOfSpeechManager = manager;
 		wordMap = partsOfSpeechManager.getWordMap();
-		Set<String> loadedPos = PartsOfSpeechManager.getLoadedPartsOfSpeech();
+		Set<String> loadedPos = LegacyPartsOfSpeechManager.getLoadedPartsOfSpeech();
 		loadedPos.forEach(ps -> posCount.put(ps, wordMap.get(ps).size()));
 	}
 
@@ -518,6 +491,12 @@ public class TextGenerator implements ITextGenerator, Function<Integer, String>,
 				jsonFieldname = pp.substring(pp.indexOf(":") + 1);
 			}
 		}
+	}
+	
+	public int setInputPatterns(List<String> patterns) {
+		int ret = 0;
+		
+		return ret;
 	}
 	
 	public int setInputPatterns(File f) {

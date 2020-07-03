@@ -11,7 +11,7 @@ import org.apache.logging.log4j.Logger;
 import org.dwbzen.text.element.Sentence;
 import org.dwbzen.text.element.Word;
 import org.dwbzen.text.util.TextFileReader;
-import org.dwbzen.text.util.Util;
+import org.dwbzen.text.util.PosUtil;
 import org.dwbzen.common.cp.CollectorStats;
 import org.dwbzen.common.cp.MarkovChain;
 import org.dwbzen.common.cp.OutputStyle;
@@ -40,7 +40,7 @@ public class CharacterCollectorRunner {
 			CharacterCollector collector = new CharacterCollector(order, inputFiles, ignorecaseflag);
 			collector.setMarkovChain(new MarkovChain<Character, Word, Sentence>(order));
 			for(String inputFile : inputFiles) {
-				String inputFilename = Util.getInputFilename(inputFile);
+				String inputFilename = PosUtil.getInputFilename(inputFile);
 				reader = TextFileReader.getInstance(inputFilename);
 				reader.setMinimumLength(order);
 				collector.setText( (ignorecaseflag? 
@@ -54,14 +54,14 @@ public class CharacterCollectorRunner {
 			CharacterCollector collector = new CharacterCollector(order, inputFiles, ignorecaseflag, pos);
 			collector.setMarkovChain(new MarkovChain<Character, Word, Sentence>(order));
 			for(String inputFile : inputFiles) {
-				String inputFilename = Util.getInputFilename(inputFile);
+				String inputFilename = PosUtil.getInputFilename(inputFile);
 				reader = TextFileReader.getInstance(inputFilename);
 				reader.setMinimumLength(order);
 				List<String> fileText = reader.getFileLines();
 				for(String s : fileText) {
 					String[] splits = s.split("\t");
 					if(splits.length > 1) {
-						if(Util.containsAny(splits[1], pos)) {
+						if(PosUtil.containsAny(splits[1], pos)) {
 							collector.setText( (ignorecaseflag ? splits[0].toLowerCase() : splits[0]) + " ");
 						}
 					}

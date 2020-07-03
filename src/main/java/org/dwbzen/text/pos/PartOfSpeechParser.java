@@ -28,13 +28,14 @@ public class PartOfSpeechParser implements IPatternParser, IJson {
 	@JsonProperty("valid")	private boolean valid = true;
 	@JsonProperty("error")	private String error = "";
 	@JsonProperty("patterns")	private List<PatternWord> patternWords = new ArrayList<PatternWord>();
-	@JsonProperty			private  Set<String> partsOfSpeechSet = PartsOfSpeechManager.getLoadedPartsOfSpeech();
+	@JsonProperty			private  Set<String> partsOfSpeechSet = LegacyPartsOfSpeechManager.getLoadedPartsOfSpeech();
 
 	/**
 	 * replacement variables: $1, ... $9
 	 * $1=x will save the value of 'x' in variable $1
 	 * ($1) uses that saved value
 	 * 
+	 * TODO: Use a state machine instead of discrete code
 	 * @return true if pattern is valid, false otherwise
 	 */
 	public boolean parse(String sentence) {
@@ -187,7 +188,12 @@ public class PartOfSpeechParser implements IPatternParser, IJson {
 				// use of variable: $1...$9
 				// "($1)" or "$1=x"
 				//
-				if(previousChar == '(') {	// as in "($1)"
+				if(isText && (nextChar < '0' || nextChar > '9')) {
+					// must be just text
+					continue;
+				}
+				// must indicate a variable 
+				if(previousChar == '(' ) {	// as in "($1)"
 					variable  = sentence.charAt(parsePosition++);
 				}
 				else {	// as in "$1=M" or "$1=`op`"
@@ -242,6 +248,7 @@ public class PartOfSpeechParser implements IPatternParser, IJson {
 					}
 					else {
 						error = "invalid part of speech: " + word;
+						System.err.println(error);
 						return false;
 					}
 					multiCharPos = null;
@@ -253,6 +260,13 @@ public class PartOfSpeechParser implements IPatternParser, IJson {
 					multiCharPos.append(c);
 					continue;
 				}
+			}
+			else if(c=='#'  && !isText) {	// start of a tag, #nn
+				word = sentence.substring(parsePosition - 1, parsePosition + 2);
+				words.add(word);
+				patternWord = new PatternWord(word);
+				patternWords.add(patternWord);
+				parsePosition += 2;
 			}
 			else {
 				if(isChoice && !isText) {
@@ -286,7 +300,8 @@ public class PartOfSpeechParser implements IPatternParser, IJson {
 						}
 						else {
 							valid = false;
-							error = "invalid part of speech: " + word;
+							error = "Invalid part of speech: " + word;
+							System.err.println(error);
 							return valid;	// invalid pattern
 						}
 					}

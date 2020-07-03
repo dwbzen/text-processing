@@ -1,211 +1,177 @@
 package org.dwbzen.text.pos;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.stream.Stream;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dwbzen.text.util.Configuration;
 
-/**
-	The format of each legacy POS entry is
-	<word><tab><POS tag(s)><unix newline>
-	
-	Where the POS tag is one or more of the following:
-	
-	N	Noun
-	L   Proper noun (not tagged) - N and first letter upper case
-	l   Improper noun (not tagged) - N, p and first letter lower case
-	H	Place name (proper noun)
-	M   Male person first name
-	F   Female person first name
-	S   Surname (last names)
-	p	Plural Noun
-	h	Noun Phrase
-	V	Verb (usu participle)
-	t	Verb (transitive)
-	i	Verb (intransitive)
-	A	Adjective
-	v	Adverb
-	C	Conjunction
-	P	Preposition
-	!	Interjection
-	r	Pronoun
-	D	Definite Article
-	I	Indefinite Article
-	o	Nominative
-	c	Color
-	w	Random digit 0 to 9
-	W   Random digit 1 to 9
-	
-	Derived Forms
-	-------------
-	G   gerund (V or t + ing)
-	Z   Adjectival verb (V or t + "er", as in taker, putter etc.)
-	z   derived possessive noun (N or p + "er" )
-	X	present tense verb (V, t)
-	x	past tense verb (V, t)
-	
-	B	body part 
-	b	body part - male    (optional tagged) added automatically for B
-	d	body part - female  (optional tagged) added automatically for B
-	
-	Unused in legacy: E, J, K, O, Q, R, T, U, Y, a, e, f, g, j, k, m, n, q, s, u, y
+public abstract class PartsOfSpeechManager implements IPartsOfSpeechManager {
 
-*/
-public class PartsOfSpeechManager {
+	protected static final Logger logger = LogManager.getLogger(TextGenerator.class);
+	public static final String POS_FILE = "3eslpos";
 
-	public static final String CONFIG_FILENAME = "/config.properties";
-
-	private final static String POS_DIR = "/reference/pos/";
-	private final static String POS_FILE = "3eslpos.txt";
-	private static String ALL_UPPER =  "^[A-Z]{2,}";	// at least 2 upper case chars
-	private static String PROPER_WORD = "^[A-Z][a-z]+";	// Title case
-	private static String ALL_NUMERIC = "^[0-9]{2,}";
-	private static String COMPOUND_WORDS = "^\\w+\\s+.*";
-
-    private static final Logger logger = LogManager.getLogger(PartsOfSpeech.class);
-    
     private static String[] Zwords = {" in", " on", " over" };
-    
-    private String posDir = null;
-    private String userDir = null;
-    private String posFile = null;
-    private String firstNamesFile = null;
-    private String lastNamesFile = null;
-    private String slangFile = null;
-    private String extendedVocabFile = null;
-    private String userFile = null;
-	private int upperWordsSkipped = 0;
-	private int properWordsSkipped = 0;
-	private int numericWordsSkipped = 0;
-	private int compoundWordsSkipped = 0;
-	private int fileWords = 0;	// initialized for each POS file
+
+	protected static String ALL_UPPER =  "^[A-Z]{2,}";	// at least 2 upper case chars
+	protected static String PROPER_WORD = "^[A-Z][a-z]+";	// Title case
+	protected static String ALL_NUMERIC = "^[0-9]{2,}";
+	protected static String COMPOUND_WORDS = "^\\w+\\s+.*";
+	protected static String TAG_POS = "#[0-9]{2}";
+	
+	protected static Set<String> LoadedPartsOfSpeech = PartsOfSpeech.PartsOfSpeechMap.keySet();
+	
 	/**
 	 * A Map<String, List<String>> of words keyed by part of speech
 	 */
-	private Map<String, List<String>> wordMap;
+	protected Map<String, List<String>> wordMap = null;
 	
 	/**
 	 * A MapMap<String, String> of parts of speech keyed by words
 	 */
-	private Map<String, String> posMap = new HashMap<String, String>();
+	protected Map<String, String> posMap = new HashMap<String, String>();
 	
-	private boolean ignoreUpperCaseWords = false;
-	private boolean ignoreProperWords = false;
-	private boolean ignoreAllNumbers=false;
-	private boolean ignoreCompoundWords = false;
-	
-	private List<String> posFiles = new ArrayList<String>();
-	private List<String> customPosFiles = new ArrayList<String>();
-	private BufferedReader posFileReader;
-	private Properties configProperties = null;
-	private Configuration configuration = null;
+	protected List<String> posFiles = new ArrayList<String>();
+	protected List<String> customPosFiles = new ArrayList<String>();
+	protected Properties configProperties = null;
+	protected Configuration configuration = null;
+	private int fileWords = 0;	// initialized for each POS file
+    protected String posDir = null;
+    protected String posFile = null;
+    private String firstNamesFile = null;
+    private String lastNamesFile = null;
+    private String slangFile = null;
+    private String extendedVocabFile = null;
+    private String userDir = null;
+    private String userFile = null;
 
-	/**
-	 * Command line arguments:
-	 * -include flag1,flag2...	TODO: types of words to include (load) that are normally ignored
-	 * 							uc  = words in all UPPER CASE
-	 * 							num = words entirely numeric chars
-	 * 							pn  = proper nouns, phrases
-	 * 							comp= compound words (phrases)
-	 * -filter pos1,pos2..		TODO: parts of speech to ignore (see above list)
-	 * -show pos1,pos2..		show words having these parts of speech
-	 * 
-	 * 
-	 */
-	public static void main(String[] args) {
-		PartsOfSpeechManager partsOfSpeechManager = null;
-		List<String> posToIgnore = new ArrayList<>();
-		List<String> wordsToInclude = new ArrayList<>();
-		String[] posToShow = {};
-		for(int i=0; i<args.length; i++) {
-			if(args[i].equalsIgnoreCase("-filter")) {
-				String[] sa = args[++i].split(",");
-				for(int ind=0;ind<sa.length;ind++) { posToIgnore.add(sa[ind]); }
-			}
-			if(args[i].equalsIgnoreCase("-include")) {
-				String[] sa = args[++i].split(",");
-				for(int ind=0;ind<sa.length;ind++) { wordsToInclude.add(sa[ind]); }
-			}
-			if(args[i].equalsIgnoreCase("-show")) {
-				posToShow = args[++i].split(",");
-			}
-		}
-		try {
-			partsOfSpeechManager = PartsOfSpeechManager.newInstance();
-		} catch(IOException ex) {
-			System.err.println(ex.getMessage());
-			System.exit(1);
-		}
-		System.out.println(partsOfSpeechManager.getStats());
-		if(posToShow.length > 0) {
-			Map<String, List<String>> map = partsOfSpeechManager.getWordsForPos(posToShow);
-			map.keySet().forEach(k -> {
-				System.out.println(PartsOfSpeech.partsOfSpeechLegacy.get(k));
-				System.out.println(map.get(k));
-			});
-		}
-	}
 	
-	/**
-	 * Creates a new PartsOfSpeech that takes input from the configured parts of speech files
-	 * Part Of Speech Database, July 23, 2000
-	 * Compiled by Kevin Atkinson <kevina@users.sourceforge.net>
-	 * 
-	 * @return
-	 * @throws FileNotFoundException
-	 */
-	public static PartsOfSpeechManager newInstance()throws IOException {
-		PartsOfSpeechManager pos = new PartsOfSpeechManager();
-		return pos;
-	}
-	
-	public static PartsOfSpeechManager newInstance(List<String> files)throws IOException {
-		PartsOfSpeechManager pos = new PartsOfSpeechManager(files);
-		return pos;
-	}
-	
-	protected PartsOfSpeechManager() throws IOException {
-		initialize();	// set configuration and load wordMap
-	}
-	
-	protected PartsOfSpeechManager(List<String> files) throws IOException {
-		customPosFiles.addAll(files);
-		initialize();	// set configuration and load wordMap
-	}
-
-	protected void initialize() throws IOException {
-		configure();
+	public PartsOfSpeechManager() {
 		wordMap = Collections.synchronizedMap(new HashMap<String, List<String>>());
-		partsOfSpeech.keySet().forEach(s -> wordMap.put(s, new ArrayList<String>()));
-		posFiles.forEach(f -> loadWords(f));
 	}
 	
-	/**
-	 * Load all the configured pos file names to use
-	 */
-	public void configure()  {
+	public IPartsOfSpeechManager getInstance(List<String> posFiles, String name) {
+		return getInstance(posFiles, null);
+	}
+	
+	public Map<String, List<String>> getWordMap() {
+		return wordMap;
+	}
+	
+	public Map<String, String> getPosMap() {
+		return posMap;
+	}
+	
+	public Configuration getConfiguration() {
+		return configuration;
+	}
+
+	public void setConfiguration(Configuration configuration) {
+		this.configuration = configuration;
+	}
+	
+	public Properties getConfigProperties() {
+		return configuration.getProperties();
+	}
+	
+	public List<String> getWords(String pos) {
+		return wordMap.get(pos);
+	}
+	public String getFirstNamesFile() {
+		return firstNamesFile;
+	}
+
+	public void setFirstNamesFile(String firstNamesFile) {
+		this.firstNamesFile = firstNamesFile;
+	}
+
+	public String getLastNamesFile() {
+		return lastNamesFile;
+	}
+
+	public void setLastNamesFile(String lastNamesFile) {
+		this.lastNamesFile = lastNamesFile;
+	}
+
+	public String getSlangFile() {
+		return slangFile;
+	}
+
+	public void setSlangFile(String slangFile) {
+		this.slangFile = slangFile;
+	}
+
+	public String getExtendedVocabFile() {
+		return extendedVocabFile;
+	}
+
+	public void setExtendedVocabFile(String extendedVocabFile) {
+		this.extendedVocabFile = extendedVocabFile;
+	}
+
+	public String getUserFile() {
+		return userFile;
+	}
+
+	public void setUserFile(String userFile) {
+		this.userFile = userFile;
+	}
+	
+	public void addPosFile(String posFileName) throws IOException {
+		posFiles.add(posFileName);
+		loadWords(posFileName);
+	}
+	
+	private String addPosFileName(String posFileName) {
+		posFiles.add(posFileName);
+		return posFileName;
+	}
+	
+	public void addCustomPosFile(String posFileName) throws IOException {
+		customPosFiles.add(posFileName);
+	}
+
+	public static Set<String> getLoadedPartsOfSpeech() {
+		return LoadedPartsOfSpeech;
+	}
+
+	public static Set<String> getPartsOfSpeech() {
+		return PartsOfSpeech.PartsOfSpeechMap.keySet();
+	}
+	
+	public String getStats() {
+		StringBuffer sb = new StringBuffer();
+		Iterator<String> keyIt = wordMap.keySet().stream().sorted().iterator();
+		while(keyIt.hasNext()) {
+			String key = keyIt.next();
+			int size = wordMap.get(key).size();
+			if(size > 0) {
+				sb.append(
+					(PartsOfSpeech.PartsOfSpeechMap.containsKey(key) ? PartsOfSpeech.PartsOfSpeechMap.get(key) : "Tag" )
+					+ " (" + key + "): " ).append(size + "\n");
+			}
+		} 
+		return sb.toString();
+	}
+	
+	public void configure() {
 		configuration = Configuration.getInstance(CONFIG_FILENAME);
 		configProperties = configuration.getProperties();
 		boolean customPos = customPosFiles.size() > 0;
 		// set file names & locations
-		posDir = configProperties.getProperty("POS_DIR", POS_DIR);		// mandatory
-		posFile = configProperties.getProperty("POS_FILE", POS_FILE);	// mandatory
+		posDir = configProperties.getProperty("POS_DIR", POS_DIR);
+		posFile = configProperties.getProperty("POS_FILE", POS_FILE);
 		if(customPos) {
 			customPosFiles.forEach(f -> addPosFileName(posDir + f));
 		}
@@ -223,76 +189,76 @@ public class PartsOfSpeechManager {
 		}
 		if(!customPos && configProperties.containsKey("FIRSTNAMES")) {
 			firstNamesFile = configProperties.getProperty("FIRSTNAMES");
-			addPosFileName(posDir + firstNamesFile);
+			addPosFileName(posDir + firstNamesFile );
 		}
 		if(!customPos && configProperties.containsKey("LASTNAMES")) {
 			lastNamesFile = configProperties.getProperty("LASTNAMES");
-			addPosFileName(posDir + lastNamesFile);
+			addPosFileName(posDir + lastNamesFile );
 		}
 		if(!customPos && configProperties.containsKey("SLANG_FILE")) {
 			slangFile = configProperties.getProperty("SLANG_FILE");
-			addPosFileName(posDir + slangFile);
+			addPosFileName(posDir + slangFile );
 		}
 		userDir = configProperties.getProperty("USER_DIR", "C:/data/text/");
 		if(!customPos && configProperties.containsKey("USER_FILE")) {
 			userFile = configProperties.getProperty("USER_FILE");
-			addPosFileName(userDir + userFile);
-		}
-    }
-    
-	private static Map<String, String> partsOfSpeech = PartsOfSpeech.partsOfSpeechLegacy;
-	private static Set<String> loadedPartsOfSpeech = PartsOfSpeech.partsOfSpeechLegacy.keySet();
-
-	public static Set<String> getLoadedPartsOfSpeech() {
-		return loadedPartsOfSpeech;
-	}
-
-	public static Set<String> getPartsOfSpeech() {
-		return partsOfSpeech.keySet();
-	}
-	
-	protected void loadWords(String aPosFile) {
-		fileWords = 0;
-		try {
-			if(aPosFile == null) {
-				readFileLines(new InputStreamReader(System.in));
-			}
-			else if(aPosFile.contains(":")) {	// like C:/data/text/
-					readFileLines(new FileReader(aPosFile));
-			}
-			else {
-				InputStream is = this.getClass().getResourceAsStream(aPosFile);
-				if(is != null) {
-					try(Stream<String> stream = new BufferedReader(new InputStreamReader(is)).lines()) {
-						stream.forEach(s -> analyzeAndSaveWord(s));
-					}
-				}
-				else {
-					logger.error("Unable to open " + aPosFile);
-				}
-			}
-		}
-		catch(FileNotFoundException e) {
-			logger.error("File not found: " + aPosFile);
-		}
-		catch(IOException e) {
-			logger.error("Unable to read: " + aPosFile);
+			addPosFileName(userDir + userFile );
 		}
 		
-		logger.debug(fileWords + " words analyzed/saved " + aPosFile);
-		if(properWordsSkipped > 0)
-			logger.debug(properWordsSkipped + " proper words skipped");
-		if(upperWordsSkipped > 0)
-			logger.debug(upperWordsSkipped + " upper case words skipped");
-		if(numericWordsSkipped > 0)
-			logger.debug(numericWordsSkipped + " numeric words skipped");
-		if(compoundWordsSkipped > 0)
-			logger.debug(compoundWordsSkipped + " compound words skipped");
+		/*
+		 * Initialize wordMap and load words from each POS file
+		 */
+		PartsOfSpeech.PartsOfSpeechMap.keySet().forEach(s -> wordMap.put(s, new ArrayList<String>()));
+		posFiles.forEach(f -> loadWords(f));
+	}
+	
+	/**
+	 * Default implementation does nothing.
+	 */
+	public int analyzeAndSaveWord(String line) {
+		return 0;
+	}
+	
+
+	public Map<String, List<String>> getWordsForPos(String[] poss) {
+		Map<String, List<String>> posWordMap = new TreeMap<>();
+		for(String key : poss) {
+			posWordMap.put(key, wordMap.get(key));
+		}
+		return posWordMap;
+	}
+	
+	public String lookup(String word) {
+		return posMap.get(word);
+	}
+	
+	public List<String> getPosFiles() {
+		return this.posFiles;
 	}
 
-	private int readFileLines(Reader reader)  throws IOException {
+	public List<String> getPosFileNames() {
+		return posFiles;
+	}
+	
+	public String getPosDir() {
+		return posDir;
+	}
+
+	public void setPosDir(String posDir) {
+		this.posDir = posDir;
+	}
+
+	public String getPosFile() {
+		return posFile;
+	}
+
+	public void setPosFile(String posFile) {
+		this.posFile = posFile;
+	}
+
+	protected int readFileLines(Reader reader)  throws IOException {
 		fileWords = 0;
-		posFileReader = new BufferedReader(reader);
+		BufferedReader posFileReader = new BufferedReader(reader);
 		String line = null;
 		while((line = posFileReader.readLine()) != null) {
 			analyzeAndSaveWord(line);
@@ -300,44 +266,8 @@ public class PartsOfSpeechManager {
 		posFileReader.close();
 		return fileWords;
 	}
-	
-	private void analyzeAndSaveWord(String line) {
-		int tab = line.indexOf('\t');
-		if(tab <= 0) return;
-		String word = line.substring(0,tab);
-		String pos = line.substring(tab+1);
-		if(word.length() <= 1) return;
-		if(ignoreUpperCaseWords &&  word.matches(ALL_UPPER)) {upperWordsSkipped++ ; return; }
-		if(ignoreProperWords && word.matches(PROPER_WORD)) {properWordsSkipped++; return; }
-		if(ignoreAllNumbers && word.matches(ALL_NUMERIC)) { numericWordsSkipped++; return; }
-		if(ignoreCompoundWords && word.matches(COMPOUND_WORDS )) { 
-			compoundWordsSkipped++;
-			return; 
-		}
-		List<String> posList = TextGenerator.parseInstance(pos);
-		for(String aPos : posList) {
-			// a word can have multiple parts of speech
-			boolean isproper = word.matches(PROPER_WORD);
-			if(aPos.equals("N")) {
-				if(isproper) {
-					saveWord(word, "L");
-				}
-				else {
-					saveWord(word, "l");
-				}
-			}
-			else if(aPos.equals("B")) {
-				saveWord(word, "d");
-				saveWord(word, "b");
-			}
 
-			saveWord(word, aPos);
-			fileWords++;
-		}
-		return;
-	}
-
-	private void saveWord(String word, String pos) {
+	protected void saveWord(String word, String pos) {
 		posMap.put(word, pos);
 			switch(pos) {
 			case "|":
@@ -380,6 +310,9 @@ public class PartsOfSpeechManager {
 			case "W":
 			case "`op`":
 			case "`sp`":
+			case "`np`":
+			case "`nF`":
+			case "`nB`":
 				addWord(word, pos);
 				break;
 			case "V":
@@ -390,12 +323,27 @@ public class PartsOfSpeechManager {
 				addDerrived(word, "X");
 				addDerrived(word, "x");
 				break;
-			default: /* invalid or non-legacy character */
-				logger.warn("Warning Invalid part of speech: '" + pos + "' " + word + " ignored");
+			default: /* invalid, non-legacy character, or a tag (#nn) */
+				if(pos.matches(TAG_POS)) {
+					addWord(word, pos);
+				}
+				else {
+					logger.warn("Warning Invalid part of speech: '" + pos + "' " + word + " ignored");
+				}
 			}
 	}
 	
-	private void addDerrived(String word, String pos) {
+	protected void addWord(String word, String pos) {
+		if(wordMap.containsKey(pos)) {
+			wordMap.get(pos).add(word);
+		}
+		else {	// add Tag
+			wordMap.put(pos, new ArrayList<String>());
+			wordMap.get(pos).add(word);
+		}
+	}
+	
+	protected void addDerrived(String word, String pos) {
 		if(word.endsWith("ing") && pos == "G") {
 			wordMap.get(String.valueOf(pos)).add(word);
 		}
@@ -431,104 +379,10 @@ public class PartsOfSpeechManager {
 		}
 	}
 
-	private void addWord(String word, String pos) {
-		wordMap.get(pos).add(word);
-	}
-	
-	
-	/**
-	 * Creates a count of words by part of speech
-	 * @return String the stats formatted
-	 */
-	public String getStats() {
-		StringBuffer sb = new StringBuffer();
-		wordMap.keySet().forEach(key -> sb.append(partsOfSpeech.get(key) + " (" + key + "): " ).append(wordMap.get(key).size() + "\n"));
-		return sb.toString();
-	}
-	
-	public Map<String, List<String>> getWordsForPos(String[] poss) {
-		Map<String, List<String>> posWordMap = new TreeMap<>();
-		for(String key : poss) {
-			posWordMap.put(key, wordMap.get(key));
-		}
-		
-		return posWordMap;
-	}
-	
-	public String lookup(String word) {
-		return posMap.get(word);
-	}
-	
-	public List<String> getPosFiles() {
-		return this.posFiles;
-	}
-	
-	public void addPosFile(String posFileName) throws IOException {
-		posFiles.add(posFileName);
-		loadWords(posFileName);
-	}
-	
-	private String addPosFileName(String posFileName) {
-		posFiles.add(posFileName);
-		return posFileName;
-	}
-	
-	public void addCustomPosFile(String posFileName) throws IOException {
-		customPosFiles.add(posFileName);
-	}
-
-	public boolean isIgnoreUpperCaseWords() {
-		return ignoreUpperCaseWords;
-	}
-
-	public void setIgnoreUpperCaseWords(boolean ignoreUpperCaseWords) {
-		this.ignoreUpperCaseWords = ignoreUpperCaseWords;
-	}
-
-	public boolean isIgnoreProperWords() {
-		return ignoreProperWords;
-	}
-
-	public void setIgnoreProperWords(boolean ignoreProperWords) {
-		this.ignoreProperWords = ignoreProperWords;
-	}
-
-	public boolean isIgnoreAllNumbers() {
-		return ignoreAllNumbers;
-	}
-
-	public void setIgnoreAllNumbers(boolean ignoreAllNumbers) {
-		this.ignoreAllNumbers = ignoreAllNumbers;
-	}
-
-	public boolean isIgnoreCompoundWords() {
-		return ignoreCompoundWords;
-	}
-
-	public void setIgnoreCompoundWords(boolean ignoreCompoundWords) {
-		this.ignoreCompoundWords = ignoreCompoundWords;
-	}
-
-	public List<String> getPosFileNames() {
-		return posFiles;
-	}
-
-	public Map<String, List<String>> getWordMap() {
-		return wordMap;
-	}
-	
-	public List<String> getWords(String pos) {
-		return wordMap.get(pos);
-	}
-
-	public Map<String, String> getPosMap() {
-		return posMap;
-	}
-	
 	/*
 	 * Eliminates the trailing "in", "on", "over"
 	 */
-	private void addDerrivedZ(String nWord) {
+	protected void addDerrivedZ(String nWord) {
 		for(String zword : Zwords) {
 			int ind = nWord.indexOf(zword);
 			if(ind > 0) {
@@ -539,68 +393,55 @@ public class PartsOfSpeechManager {
 		wordMap.get("Z").add(nWord + "er");
 	}
 
-	public String getPosDir() {
-		return posDir;
+	/**
+	 * Displays parts of speech statistics for the specified POS file.<br>
+	 * This assumes a JSON POS file unless -legacy is specified.<br>
+	 * Command line arguments<br>
+	 * -show pos1,pos2..		show words having these parts of speech<br>
+	 * 
+	 * TODO: implement -filter
+	 * 
+	 */
+	public static void main(String[] args) {
+		IPartsOfSpeechManager partsOfSpeechManager = null;
+		List<String> posToIgnore = new ArrayList<>();
+		List<String> customFiles = new ArrayList<>();
+		String[] posToShow = {};
+		boolean useLegacy = false;
+		for(int i=0; i<args.length; i++) {
+			if(args[i].equalsIgnoreCase("-filter")) {
+				String[] sa = args[++i].split(",");
+				for(int ind=0;ind<sa.length;ind++) { posToIgnore.add(sa[ind]); }
+			}
+			else if(args[i].equalsIgnoreCase("-show")) {
+				posToShow = args[++i].split(",");
+			}
+			else if(args[i].equalsIgnoreCase("-legacy")) {
+				useLegacy = true;
+			}
+			else {
+				customFiles.add(args[i]);
+			}
+		}
+		try {
+			if(customFiles.size() == 0) {
+				partsOfSpeechManager = useLegacy ? LegacyPartsOfSpeechManager.newInstance() : DictionaryManager.instance();
+			}
+			else {
+				partsOfSpeechManager =  useLegacy ? LegacyPartsOfSpeechManager.newInstance(customFiles) : DictionaryManager.instance(customFiles, "custom");
+			}
+			
+		} catch(IOException ex) {
+			System.err.println(ex.getMessage());
+			System.exit(1);
+		}
+		System.out.println(partsOfSpeechManager.getStats());
+		if(posToShow.length > 0) {
+			Map<String, List<String>> map = partsOfSpeechManager.getWordsForPos(posToShow);
+			map.keySet().forEach(k -> {
+				System.out.println(PartsOfSpeech.PartsOfSpeechMap.get(k));
+				System.out.println(map.get(k));
+			});
+		}
 	}
-
-	public void setPosDir(String posDir) {
-		this.posDir = posDir;
-	}
-
-	public String getPosFile() {
-		return posFile;
-	}
-
-	public void setPosFile(String posFile) {
-		this.posFile = posFile;
-	}
-
-	public String getFirstNamesFile() {
-		return firstNamesFile;
-	}
-
-	public void setFirstNamesFile(String firstNamesFile) {
-		this.firstNamesFile = firstNamesFile;
-	}
-
-	public String getLastNamesFile() {
-		return lastNamesFile;
-	}
-
-	public void setLastNamesFile(String lastNamesFile) {
-		this.lastNamesFile = lastNamesFile;
-	}
-
-	public String getSlangFile() {
-		return slangFile;
-	}
-
-	public void setSlangFile(String slangFile) {
-		this.slangFile = slangFile;
-	}
-
-	public String getExtendedVocabFile() {
-		return extendedVocabFile;
-	}
-
-	public void setExtendedVocabFile(String extendedVocabFile) {
-		this.extendedVocabFile = extendedVocabFile;
-	}
-
-	public String getUserFile() {
-		return userFile;
-	}
-
-	public void setUserFile(String userFile) {
-		this.userFile = userFile;
-	}
-
-	public Configuration getConfiguration() {
-		return configuration;
-	}
-
-	public void setConfiguration(Configuration configuration) {
-		this.configuration = configuration;
-	}
-	
 }

@@ -3,7 +3,7 @@
 // Add punctuation as a one-character literal such as (,) (.) (") etc.
 // lambda definition(s) appear first
 //
-%band=org.dwbzen.text.pos.TextGenerator(Resource,/reference/pos/bandNamePatterns.txt,TC);
+%band=org.dwbzen.text.pos.TextGenerator(Resource,bandNamePatterns.txt,TC);
 %band2=org.dwbzen.text.pos.TextGenerator(Text,[M|F](and)(the)p,TC);
 $1=MS(,) $2=FS(and I traveled to)H(to see a)A N(.)(\n)+
 (We were shocked at the)A{1,2}[N|p](we saw!)(\n)+
@@ -11,6 +11,6 @@ $1=MS(,) $2=FS(and I traveled to)H(to see a)A N(.)(\n)+
 ($1)(saw)cp(on his) B (and)($2)(sported a)cN(on her) B(.)(\n)+
 ("Where did you get that)A{1,2}[b|B|d](?)(")( I asked)($2)(.)(\n)+
 [("At)|("In)]H(")(,)(replied)($1)v(.)(\n)+
-(So we all went to)Q(,)R(where we enjoyed a fine meal of)T(and)T(,)(\n)+
+(So we all went to)Q(,)R(where we enjoyed a fine meal of)`nF`(and)`nB`(,)(\n)+
 // next line invokes the lambda defined above
 (and a concert with )(")%band;(")( and )(")%band2;(")(.)(\n)
