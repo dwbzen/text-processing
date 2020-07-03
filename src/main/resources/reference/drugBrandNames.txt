@@ -4,6 +4,7 @@ Acyclovir
 Aczone
 Adcirca
 Adderall
+Advair
 Adzenys
 Aggrenox
 Aimovig
@@ -67,6 +68,7 @@ Elidel
 Eliquis
 Emgality
 Enalapril
+Enbrel
 Enoxaparin
 Entresto
 Entyvio
@@ -89,11 +91,13 @@ Fosinopril
 Furosemide
 Gardasil
 Gemfibrozil
+Genvoya
 Gleevec
 Gocovri
 Guanfacine
 Harvoni
 Humira
+Ibrance
 Idhifa
 Ilumya
 Imbruvica
@@ -153,6 +157,7 @@ Prolia
 Ranexa
 Relpax
 Repatha
+Restasis
 Revlimid
 Rexulti
 Rinvoq
@@ -192,6 +197,8 @@ Trintellix
 Triumeq
 Trivora
 Trulicity
+Truvada
+Tukysa
 Vabomere
 Valacyclovir
 Valsartan
