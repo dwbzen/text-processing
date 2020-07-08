@@ -23,6 +23,6 @@ public class PartsOfSpeechTest  extends TestCase {
 			System.err.println(e.toString());
 		}
 		System.out.println(pos2.toJson());
-		assertEquals(pos, pos2);
+		assertEquals(pos.toJson(), pos2.toJson());
 	}
 }

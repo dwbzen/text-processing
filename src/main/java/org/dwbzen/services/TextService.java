@@ -43,34 +43,34 @@ public class TextService {
 		List<String> generatedText = null;
 		String theType = typeid.toLowerCase();
 		if(theType.startsWith("band")) {
-			// http://localhost:8010/text-service/rest/TextService/bands/20
+			// http://localhost:8010/text-processing/rest/TextService/bands/20
 			generatedText = generateFromPatternFile("bands", "TC,JSON", num);
 		}
 		else if(theType.equalsIgnoreCase("drugNames")) {
-			// sample: http://localhost:8010/text-service/rest/TextService/drugNames/20?order=3
+			// sample: http://localhost:8010/text-processing/rest/TextService/drugNames/20?order=3
 			// -file  "$RESOURCE/drugNames.txt"  -order 2 -list -ignoreCase -num 20 -min 5 -format "TC" -init -stat false
 			generatedText = generateDrugNames(num, order, queryParams);
 		}
 		else if(theType.equalsIgnoreCase("firstNames")) {
-			// sample: http://localhost:8010/text-service/rest/TextService/firstNames/10?gender=male&order=3
+			// sample: http://localhost:8010/text-processing/rest/TextService/firstNames/10?gender=male&order=3
 			// -file  "$RESOURCE/drugNames.txt"  -order 2 -list -ignoreCase -num 20 -min 5 -format "TC" -init -stat false
 			generatedText = generateFirstNames(num, order, queryParams);
 		}
 		else if(theType.startsWith("insult")) {
-			// http://localhost:8010/text-service/rest/TextService/insults/20
+			// http://localhost:8010/text-processing/rest/TextService/insults/20
 			generatedText = generateFromPatternFile("insults", "NC", num);
 		}
 		else if(theType.startsWith("fortune")) {
-			// http://localhost:8010/text-service/rest/TextService/fortune/1
+			// http://localhost:8010/text-processing/rest/TextService/fortune/1
 			generatedText = generateFromPatternFile("fortune", "NC", 1);
 		}
 		else if(theType.startsWith("madlib")) {
-			// http://localhost:8080/text-service/rest/TextService/madlib/2
+			// http://localhost:8080/text-processing/rest/TextService/madlib/2
 			List<String> temp = generateFromPatternFile("madlib", "NC", num);
 			generatedText = breakUpLines(temp, "\\R");		// regex end of line all platforms
 		}
 		else if(theType.startsWith("poem")) {
-			// http://localhost:8010/text-service/rest/TextService/poem/1
+			// http://localhost:8010/text-processing/rest/TextService/poem/1
 			List<String> temp = generateFromPatternFile("poem", "SC", num);
 			generatedText = breakUpLines(temp, "\\R");
 		}
