@@ -27,7 +27,7 @@ public class TextGeneratorRunner {
 		int numberToGenerate = 20;
 		String defaultPattern = "ANp";
 		List<String> patternList = new ArrayList<String>();
-		List<String>postProcessing = new ArrayList<String>();
+		String[] postProcessing = null;
 		String patternFileName = null;
 		String delim = ",";	// for CSV output - field separator
 		List<String> posFiles = Collections.emptyList();
@@ -46,7 +46,7 @@ public class TextGeneratorRunner {
 			}
 			else if(args[i].equalsIgnoreCase("-format")) {
 				// format processing
-				postProcessing.add(args[++i]);
+				postProcessing = args[++i].split(",");
 			}
 			else if(args[i].equalsIgnoreCase("-delim")) {
 				delim = args[++i];
@@ -88,7 +88,7 @@ public class TextGeneratorRunner {
 			generator.setPatternList(patternList);
 		}
 
-		if(postProcessing.size() > 0) {
+		if(postProcessing != null && postProcessing.length > 0) {
 			generator.setPostProcessing(postProcessing);
 			generator.setDelimiter(delim);
 		}

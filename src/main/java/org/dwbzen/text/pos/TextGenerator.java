@@ -76,7 +76,7 @@ public class TextGenerator implements ITextGenerator, Function<Integer, String>,
 	private boolean csvOutput = false;
 	private boolean tabSeparatedOutput = false;
 	private String jsonFieldname = null;
-	private String delimiter = null;
+	private String delimiter = ",";		// default field separator for CSV
 	private ThreadLocalRandom random = ThreadLocalRandom.current();
 	
 	/**
@@ -310,8 +310,13 @@ public class TextGenerator implements ITextGenerator, Function<Integer, String>,
 						sb.append(s.toLowerCase());
 					}
 					else if(titleCase) {
-						sb.append(s.substring(0, 1).toUpperCase());
-						sb.append(s.substring(1));
+						if(isArticle(s) && i > 0 ) {
+							sb.append(s);
+						}
+						else {
+							sb.append(s.substring(0, 1).toUpperCase());
+							sb.append(s.substring(1));	
+						}
 					}
 					else if(sentenceCase) {
 						if(startOfSentence) {
@@ -352,7 +357,13 @@ public class TextGenerator implements ITextGenerator, Function<Integer, String>,
 					sb.append(QUOTE + s.toUpperCase() + QUOTE);
 				}
 				else if(titleCase) {
-					sb.append(QUOTE + s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase() + QUOTE);
+					if( isArticle(s) && i > 0  ) {
+						// don't convert to title case if "and" or "the" and not the first word in the generatedList
+						sb.append(QUOTE + s + QUOTE);
+					}
+					else {
+						sb.append(QUOTE + s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase() + QUOTE);
+					}
 				}
 				else {
 					sb.append(QUOTE + s + QUOTE);
@@ -373,7 +384,13 @@ public class TextGenerator implements ITextGenerator, Function<Integer, String>,
 					sb.append(s.toUpperCase());
 				}
 				else if(titleCase) {
-					sb.append(s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase() );
+					if( isArticle(s) && i > 0  ) {
+						// don't convert to title case if "and" or "the" and not the first word in the generatedList
+						sb.append(QUOTE + s + QUOTE);
+					}
+					else {
+						sb.append(QUOTE + s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase() + QUOTE);
+					}
 				}
 				else {
 					sb.append(s);
@@ -385,6 +402,11 @@ public class TextGenerator implements ITextGenerator, Function<Integer, String>,
 			sb.append(QUOTE);
 		}
 
+	}
+	
+	public static boolean isArticle(String s) {
+		// Strings NOT to convert to title case
+		return s.equalsIgnoreCase("and") || s.equalsIgnoreCase("the") || s.equalsIgnoreCase("a");
 	}
 
 	public IPartsOfSpeechManager getPartsOfSpeechManager() {

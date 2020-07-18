@@ -44,7 +44,7 @@ public class TextService {
 		String theType = typeid.toLowerCase();
 		if(theType.startsWith("band")) {
 			// http://localhost:8010/text-processing/rest/TextService/bands/20
-			generatedText = generateFromPatternFile("bands", "TC,JSON", num);
+			generatedText = generateFromPatternFile("bands", "TC", num);
 		}
 		else if(theType.equalsIgnoreCase("drugNames")) {
 			// sample: http://localhost:8010/text-processing/rest/TextService/drugNames/20?order=3
@@ -130,8 +130,10 @@ public class TextService {
 		TextGenerator generator = new TextGenerator(partsOfSpeechManager);
 		List<String> generatedText = new ArrayList<>();
 		String[] patterns = textDao.getPatterns(type);
+		String[] ppFlags = postProcessing.split(",");
 		generator.setPatternList(patterns);
-		generator.setPostProcessing(postProcessing);
+		//generator.setDelimiter(" ");
+		generator.setPostProcessing(ppFlags);
 		generator.apply(num);
 		generatedText.addAll(generator.getGeneratedText());
 		return generatedText;
