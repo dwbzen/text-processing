@@ -9,18 +9,33 @@ import java.util.List;
 public class TextGeneratorRunner {
 
 	/**
-	 * Generates text from pattern(s) using configured PartsOfSpeech files<br>
-	 * If specified, "-pos file1,[file2...] overrides config setting POS_FILE<br>
-	 * To also include POS_FILE, add to the list<br>
-	 * POS files loaded from POS_DIR folder by default: /reference/pos/<br>
-	 * This can be overridden by specifying a complete file path, for example "C:/data/text/filename.pos"<br>
-	 * Default IPartsOfSpeechManager is DictionaryManager which uses JSON parts of speech files.<br>
 	 * 
+	 * This class generates text from pattern(s) using configured PartsOfSpeech files.
+	 * 
+	 * POS files loaded from POS_DIR folder by default: <i>/reference/pos/</i>. <br>
+	 * This can be overridden by specifying a complete file path, for example "C:/data/text/filename.pos".<br>
+	 * Default <tt>IPartsOfSpeechManager</tt> is <tt>DictionaryManager</tt> which uses JSON parts of speech files.<p>
+	 * Use the <tt>-legacy</tt> flag to use the original (legacy) parts of speech files. This feature will be deprecated in a future release.
+	 * <h2>Command Line Arguments</h2>
+	 * <dl>
+	 * <dt>-n <i>number</i></dt>
+	 * <dd>number of instances to generate</dd>
+	 * <dt>-pattern <i>pattern text</i></dt>
+	 * <dd>generate using the inline part-of-speech pattern</dt>
+	 * <dt>-template <i>filename</i></dt>
+	 * <dd>use pattern(s) in specified file. if only the name is provided, "bin/main/reference/pos/" is added to the path. See examples in <tt>reference/pos</tt> folder</dd>
+	 * <dt>-format <i>format code</i></dt>
+	 * <dd>Output formatting. See <tt>TextGenerator</tt> for details</dd>
+	 * <dt>-pos <i>file1[,file2,...filen]</i></dt>
+	 * <dd>Parts-of-speech file(s). This overrides the the <tt>POS_FILE</tt> setting in config.properties.</dd>
+	 * </dl>
 	 * Use -legacy command line option to use legacy text POS files and PartsOfSpeechManager.<br>
-	 * POS files are specified without the filename extension (.json, .txt).<br>
-	 * -template <filename> : if only the name is provided, "bin/main/reference/pos/" is added to the path.
+	 * POS files are specified without the filename extension (.json, .txt). 
+	 * 
+	 * @author Don Bacon
 	 * @param args
 	 * @throws Exception
+	 * @see org.dwbzen.text.pos.TextGenerator
 	 */
 	public static void main(String[] args) throws Exception {
 		TextGenerator generator = null;
