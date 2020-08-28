@@ -63,6 +63,7 @@ public class WordCollectorRunner {
 				else {
 					dataSourceDescription = new DataSourceDescription(DataSourceType.Text);
 					sourceText = args[i];
+					schemaName = "text";
 				}
 			}
 			if(inputFile != null) {

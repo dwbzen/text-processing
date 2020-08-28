@@ -116,7 +116,10 @@ public class SentenceProducer  implements IProducer<MarkovChain<Word, Sentence, 
 		 * This would indicate some kind of internal error so throw a RuntimeException
 		 */
 		if(cstats == null) {
-			throw new RuntimeException("getNextCharacter(): cstats null for nextSeed: " + nextSeed);
+			System.err.println("getNextCharacter(): cstats null for nextSeed: " + nextSeed);
+			cstats = markovChain.get(originalSeed);
+			nextSeed = originalSeed;
+			return new Word(Sentence.TERMINAL);
 		}
 		int occur = cstats.getTotalOccurrance();
 		int keysize = cstats.size();

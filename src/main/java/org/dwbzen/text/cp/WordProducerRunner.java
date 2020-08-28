@@ -25,7 +25,7 @@ import org.dwbzen.text.element.Word;
  *  -file <file list>	Comma-delimited list of text file names containing source Words.
  *  		Used to create the MarkovChain for generation.
  *  		If not provided, source is taken from the command line
- *  -num n	Number of Words to produce
+ *  -num n	Maximum number of unique Words to produce. The actual number produced will be <= n.
  *  -min n	Minimum word length, default is 4 characters
  *  -recycle n	How often to pick a new seed, default is pick a new seed after each word produced
  *  -ignoreCase	Ignores case (converts input to lower)
