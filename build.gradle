@@ -16,8 +16,8 @@ apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 apply plugin: 'war'
 
-sourceCompatibility = 14
-targetCompatibility = 14
+sourceCompatibility = 15
+targetCompatibility = 15
 version = '2.0'
 group = 'org.dwbzen.text-processing'
 description = "Text Processing Framework"
