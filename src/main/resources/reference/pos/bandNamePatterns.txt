@@ -2,6 +2,7 @@ A{1,2}[N|h|p]
 [M|F|N](and)(the)A?p
 NV(and)G
 [M|F](and)(the)p
+[M|F|N](the)[NH]
 A?Gp
 (The)A?p
 (A)N[(in)|(with)|(around)|(without)]A?p

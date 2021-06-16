@@ -78,6 +78,12 @@ public class DictionaryManager extends PartsOfSpeechManager {
 		return Dictionary.POS_FILE_TYPE;
 	}
 	
+	/**
+	 * Converts a legacy parts of speech file to JSON format<br>
+	 * Example: DictionaryManager -name "titlePos"<br>
+	 * Converts titlePos.txt to JSON and writes the output to stdout.
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		String name = null;
 		List<String> files = new ArrayList<>();

@@ -1,0 +1,7 @@
+[(A)|(The)] [A|N][N|p]
+[A|N][N|p]
+(The)[N|p](Of)[H|N|Q|R]
+(The)[H|B|N](That)[x|t]
+(A)N[(in)|(with)|(around)|(without)]A?p
+[(A)|(The)]cN[(In)|(Around)][H|Q|R]
+[(A)|(The)]c(and)A`nF`(Of)[Q|H]
