@@ -8,6 +8,7 @@ Beijing	Q
 Belfast	Q
 Berlin	Q
 Boston	Q
+Brazil	HR
 Britain	HR
 Buffalo	Q
 Canada	HR
@@ -23,6 +24,7 @@ England	HR
 Europe	H
 France	HR
 Germany	HR
+Good Gravy	!
 Great Britain	HR
 Greece	HR
 Hollywood	H
@@ -53,8 +55,10 @@ Nairobi	Q
 Northern Ireland	HR
 Rochester	Q
 Rome	Q
+Russia	HR
 San Francisco	Q
 Sao Paolo	Q
+Saturn	H
 Syria	HR
 USA	HR
 a dingy cellar	H
@@ -118,6 +122,7 @@ heel	B
 her	r
 his	Dr
 hot	A
+hot wings	`nF`
 icky	A
 in	P
 indigo	c
@@ -157,7 +162,7 @@ royal blue	c
 rub	Vt
 she	rN
 shit-brindle brown	c
-short ribs	`nF`
+short ribs	p`nF`
 slimy	A
 sloppy	A
 soft	A
@@ -200,5 +205,6 @@ white	c
 wildly	v
 wine & cheese	`nF`
 with	P
+without	P
 yellow	c
 yucky	A
