@@ -13,12 +13,12 @@ import org.dwbzen.text.element.Sentence;
 import org.dwbzen.text.element.Word;
 
 /**
- * Collects statistics on Characters within Words. The corresponding producer is WordProducer. </p>
- * CharacterCollector implements the following functional interfaces through ICollector:</p>
- * 	Function<Word, MarkovChain<Character, Word>> : apply(Word w) takes Word input, produces MarkovChain result</p>
+ * Collects statistics on Characters within Words. The corresponding producer is WordProducer. <br>
+ * CharacterCollector implements the following functional interfaces through ICollector:<br>
+ * 	Function<Word, MarkovChain<Character, Word>> : apply(Word w) takes Word input, produces MarkovChain result<br>
  * 	Consumer<Sentence>  : accept(Sentence s) consumes Sentence(s) to create the MarkovChain</p>
  * 
- * The resulting MarkovChain (CollectorStatsMap) uses 2 special characters to indicate terminal and null values.
+ * The resulting MarkovChain (CollectorStatsMap) uses 2 special characters to indicate terminal and null values.<br>
  * For example the testWordSample.txt has 5 Sentences (in this example each Sentence is a single Word)</p>
  	DON
 	DONALD

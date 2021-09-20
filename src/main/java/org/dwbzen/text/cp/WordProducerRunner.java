@@ -31,8 +31,8 @@ import org.dwbzen.text.element.Word;
  *  -ignoreCase	Ignores case (converts input to lower)
  *  -repeat n	#times to run the producer - each run produces <num> Words
  *  -sort  	Sort the output.
- *  -list true|false	Display produce Words in order produced, default is 'n'
- *  -trace true|false	Traces seed picking. Sets trace mode on CharacterCollector, default is 'n'
+ *  -list true|false	Display produce Words in order produced, default is false
+ *  -trace true|false	Traces seed picking. Sets trace mode on CharacterCollector, default is false
  *  -format	post-processing: TC = title case, UC = upper case, LC = lower case
  *  -init		choose initial seed only (start of word)
  *  -pos		Specify parts of speech. Assumes file list includes a POS file.
