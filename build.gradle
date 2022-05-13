@@ -18,7 +18,7 @@ apply plugin: 'maven-publish'
 
 sourceCompatibility = 15
 targetCompatibility = 15
-version = '2.1'
+version = '3.0'
 group = 'org.dwbzen.text-processing'
 description = "Text Processing Framework"
 
@@ -63,7 +63,7 @@ dependencies {
     testImplementation 'junit:junit:4.13.1'
     implementation  'org.apache.logging.log4j:log4j-api:2.11.2'
     implementation  'org.apache.logging.log4j:log4j-core:2.11.2'
-	implementation  'org.dwbzen.commonlib:commonlib:2.0'
+	implementation  'org.dwbzen.commonlib:commonlib:3.0'
     implementation  'com.fasterxml.jackson.core:jackson-core:2.12.0'
     implementation  'com.fasterxml.jackson.core:jackson-annotations:2.12.0'
     implementation  'com.fasterxml.jackson.core:jackson-databind:2.12.0'
