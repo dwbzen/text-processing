@@ -31,6 +31,9 @@
   }, {
     "word" : "Cat People",
     "pos" : [ "N", "#02" ]
+  },{
+    "word" : "Children of the",
+    "pos" : [ "`sp`", "#01" ]
   }, {
     "word" : "Cheetah",
     "pos" : [ "N", "#02" ]
@@ -198,6 +201,9 @@
     "pos" : [ "`op`", "#03" ]
   }, {
     "word" : "from Pittsburgh",
+    "pos" : [ "`op`", "#03" ]
+  },  {
+    "word" : "of London",
     "pos" : [ "`op`", "#03" ]
   }, {
     "word" : "in Gold Boots",

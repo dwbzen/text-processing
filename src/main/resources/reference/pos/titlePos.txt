@@ -9,6 +9,7 @@ Brides	Np#02
 Cannibals	Np#02
 Cat People	N#02
 Cheetah	N#02
+Children of the	`sp`#01
 Colossal	A#01
 Cowboys	Np#02
 Creature	N#02
@@ -69,6 +70,7 @@ in Harlem	`op`#03
 in Lover's Lane	`op`#03
 in a Garden of Cucumbers	`op`#03
 of Destiny	`op`#03
+of London	`op`#03
 of Satan	`op`#03
 of Spider Island	`op`#03
 of the Mojave Desert	`op`#03

@@ -40,7 +40,7 @@ repositories {
     }
 	flatDir {
         name "commonlibLib"
-        dirs "../commonlib/lib"
+        dirs "../commonlib/build/libs"
     }
 }
 
