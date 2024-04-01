@@ -569,6 +569,7 @@ Lantus
 Latuda
 Lemtrada
 Lenvima
+Leqvio
 Letairis
 Leukine
 Levemir
@@ -844,6 +845,7 @@ Qudexy
 Quelicin
 Questran
 Qutenza
+Quviviq
 Qvar
 R-Gene
 RCF
@@ -939,6 +941,7 @@ Somavert
 Sonata
 Soriatane
 Sotalol
+Sotyktu
 Sovaldi
 Spinraza
 Spiriva
@@ -1097,6 +1100,7 @@ Vemlidy
 Venclexta
 Ventavis
 Ventolin
+Veozah
 Verapamil
 Verzenio
 Vfend
